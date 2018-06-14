@@ -19,3 +19,11 @@ class HotelKeeper(Person):
 class RegisteredUser(User):
     userName = models.CharField(max_length=50)
     password = models.PasswordInput(max_length=50)
+
+class Booking(models.Model):
+    customerId = models.ForeignKey(User)
+    roomId = models.ForeignKey(Room)
+
+    #### Lasciare anche orario o solo data? ###
+    checkIn = models.DateTimeField()
+    checkOut = models.DateTimeField()
