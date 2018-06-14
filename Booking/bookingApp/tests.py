@@ -1,5 +1,7 @@
 from django.test import TestCase
 
+from enum import Enum
+
 import unittest
 from .models import *
 
