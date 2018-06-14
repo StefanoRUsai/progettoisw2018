@@ -23,6 +23,7 @@ class Person(models.Model):
     date = models.DateField()
     cf = models.CharField(max_length=20)
     email = models.EmailField(max_length=100)
+    address = models.ForeignKey(Address,on_delete=models.CASCADE)
 
 
 class User(Person):
