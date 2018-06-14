@@ -26,7 +26,7 @@ class Person(models.Model):
 
 
 class User(Person):
-    #TODO CreditCard
+    creditCard = models.ForeignKey(CreditCard, on_delete=models.CASCADE, null=True)
 
 
 class HotelKeeper(Person):
