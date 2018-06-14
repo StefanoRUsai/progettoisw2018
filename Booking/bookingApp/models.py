@@ -19,3 +19,24 @@ class HotelKeeper(Person):
 class RegisteredUser(User):
     userName = models.CharField(max_length=50)
     password = models.PasswordInput(max_length=50)
+
+class Booking(models.Model):
+    customerId = models.ForeignKey(User)
+    roomId = models.ForeignKey(Room)
+
+    #### Lasciare anche orario o solo data? ###
+    checkIn = models.DateTimeField()
+    checkOut = models.DateTimeField()
+
+class CreditCard(models.Model):
+    number = models.IntegerField()
+    expirationYear = models.IntegerField()
+    expirationMonth = models.IntegerField()
+    cvvCode = models.IntegerField()
+
+class Address(models.Model):
+    street = models.CharField(max_length=100)
+    houseNumber = models.IntegerField()
+    city = models.CharField(max_length=30)
+    zipCode = models.CharField(max_length=15)
+
