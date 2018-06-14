@@ -34,3 +34,9 @@ class CreditCard(models.Model):
     expirationMonth = models.IntegerField()
     cvvCode = models.IntegerField()
 
+class Address(models.Model):
+    street = models.CharField(max_length=100)
+    houseNumber = models.IntegerField()
+    city = models.CharField(max_length=30)
+    zipCode = models.CharField(max_length=15)
+
