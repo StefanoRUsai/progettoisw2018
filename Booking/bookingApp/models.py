@@ -12,3 +12,6 @@ class Person(models.Model):
 class User(Person):
     #to do carta di credito
 
+class HotelKeeper(Person):
+    userName = models.CharField(max_length=50)
+    password = models.PasswordInput(max_length=50)
