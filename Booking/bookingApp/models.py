@@ -27,3 +27,10 @@ class Booking(models.Model):
     #### Lasciare anche orario o solo data? ###
     checkIn = models.DateTimeField()
     checkOut = models.DateTimeField()
+
+class CreditCard(models.Model):
+    number = models.IntegerField()
+    expirationYear = models.IntegerField()
+    expirationMonth = models.IntegerField()
+    cvvCode = models.IntegerField()
+
