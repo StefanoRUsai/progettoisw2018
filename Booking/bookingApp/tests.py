@@ -1,3 +1,9 @@
 from django.test import TestCase
 
-# Create your tests here.
+import unittest
+from .models import *
+
+class ModelTest(TestCase):
+    def setUp(self):
+        person = Person(name = 'Stefano', surname = 'Usai', email = 'susai@gmail.com', birthday = '30/10/1984', cf = 'SUASFN84R30B354E')
+        person.save()
