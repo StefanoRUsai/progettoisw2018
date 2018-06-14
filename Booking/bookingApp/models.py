@@ -15,3 +15,7 @@ class User(Person):
 class HotelKeeper(Person):
     userName = models.CharField(max_length=50)
     password = models.PasswordInput(max_length=50)
+
+class RegisteredUser(User):
+    userName = models.CharField(max_length=50)
+    password = models.PasswordInput(max_length=50)
