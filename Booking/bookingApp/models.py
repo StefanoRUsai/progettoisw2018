@@ -1,10 +1,11 @@
 from django.db import models
+from django import forms
 
 # Create your models here.
 
 
 class CreditCard(models.Model):
-    number = models.IntegerField()
+    cardNumber = models.IntegerField()
     expirationYear = models.IntegerField()
     expirationMonth = models.IntegerField()
     cvvCode = models.IntegerField()
@@ -32,12 +33,12 @@ class User(Person):
 
 class HotelKeeper(Person):
     userName = models.CharField(max_length=50)
-    password = models.PasswordInput(max_length=50)
+    password = forms.CharField(max_length=50, widget=forms.PasswordInput)
 
 
 class RegisteredUser(User):
     userName = models.CharField(max_length=50)
-    password = models.PasswordInput(max_length=50)
+    password = forms.CharField(max_length=50, widget=forms.PasswordInput)
 
 
 class Hotel(models.Model):
@@ -57,8 +58,8 @@ class Room(models.Model):
 
 
 class Booking(models.Model):
-    customerId = models.ForeignKey(User)
-    roomId = models.ForeignKey(Room)
+    customerId = models.ForeignKey(User, on_delete=models.CASCADE)
+    roomId = models.ForeignKey(Room, on_delete=models.CASCADE)
     #### Lasciare anche orario o solo data? ###
     checkIn = models.DateTimeField()
     checkOut = models.DateTimeField()
