@@ -1,7 +1,8 @@
 from django.test import TestCase
-import enum from Enum
+import enum
 import unittest
 from .models import *
+import datetime
 
 
 class ModelTest(TestCase):
@@ -15,4 +16,4 @@ class ModelTest(TestCase):
         hotel = Hotel(name = 'T Hotel', description = 'Nel cuore di Cagliari...', town = 'Cagliari', OwnerID = 1)
         hotel.save()
 
-        
+        booking = Booking(clientId = 1234, ownerId = 1234, checkIn = datetime.date(2018,11,12), checkOut = datetime.date(2018,11,18))
