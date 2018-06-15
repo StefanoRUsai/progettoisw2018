@@ -44,7 +44,6 @@ class RegisteredUser(User):
 class Hotel(models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField()
-    city = models.CharField(max_length=20)
     hotelKeeperId = models.ForeignKey(HotelKeeper, on_delete=models.CASCADE)
     address = models.ForeignKey(Address,on_delete=models.CASCADE)
 
