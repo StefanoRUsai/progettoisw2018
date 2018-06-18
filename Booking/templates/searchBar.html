@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Bar</title>
+</head>
+<body>
+
+        <nav>
+            <!-- erediterà da base-->
+        </nav>
+
+        <div class="container">
+            <div>
+                <h2>What would you like to book?</h2>
+            </div>
+            <div class = "searchBar">
+                <table>
+                    <tr>
+                        <th>Insert City:</th>
+                        <th>Number beds:</th>
+                        <th>CheckIn date:</th>
+                        <th>CheckOut date:</th>
+                    </tr>
+                    <tr>
+                        <th><input type = text value = "City"></th>
+                        <th>
+                            <form>
+                                <select name="beds" >
+                                    <option value=1>1</option>
+                                    <option value=2 selected="selected">2</option>
+                                    <option value=3>3</option>
+                                    <option value=4>4</option>
+                                </select>
+                            </form>
+                        </th>
+                        <th><input type = date value = "CheckIn"></th>
+                        <th><input type = date value = "CheckOut"></th>
+                    </tr>
+                </table>
+                <button type = submit>Search</button>
+            </div>
+        </div>
+
+
+    </body>
+</html>
