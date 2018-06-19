@@ -50,6 +50,7 @@ class Hotel(models.Model):
 
 
 class Room(models.Model):
+    roomNumber = models.IntegerField(default=0)
     capacity = models.IntegerField(default=0)
     price = models.FloatField(default=0.0)
     hotelId = models.ForeignKey(Hotel, on_delete=models.CASCADE)
