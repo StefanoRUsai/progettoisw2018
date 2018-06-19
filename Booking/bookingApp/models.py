@@ -1,7 +1,17 @@
 from django.db import models
 from django import forms
+from enum import Enum
 
 # Create your models here.
+
+class Services(Enum):
+    TELEPHONE = "telephone"
+    GARAGE = "garage"
+    WI_FI = "wi-fi"
+    BREAKFAST = "breakfast"
+    LUNCH = "lunch"
+    DINNER = "dinner"
+    BRUNCH = "brunch"
 
 
 class CreditCard(models.Model):
@@ -33,12 +43,12 @@ class User(Person):
 
 class HotelKeeper(Person):
     userName = models.CharField(max_length=50)
-    password = forms.CharField(max_length=50, widget=forms.PasswordInput)
+    password = models.CharField(max_length=50)
 
 
 class RegisteredUser(User):
     userName = models.CharField(max_length=50)
-    password = forms.CharField(max_length=50, widget=forms.PasswordInput)
+    password = models.CharField(max_length=50)
 
 
 class Hotel(models.Model):
@@ -46,6 +56,7 @@ class Hotel(models.Model):
     description = models.TextField()
     hotelKeeperId = models.ForeignKey(HotelKeeper, on_delete=models.CASCADE)
     address = models.ForeignKey(Address,on_delete=models.CASCADE)
+    photoUrl = models.ImageField(default=None, null=True)
 
 
 class Room(models.Model):
@@ -59,8 +70,7 @@ class Room(models.Model):
 class Booking(models.Model):
     customerId = models.ForeignKey(User, on_delete=models.CASCADE)
     roomId = models.ForeignKey(Room, on_delete=models.CASCADE)
-    #### Lasciare anche orario o solo data? ###
-    checkIn = models.DateTimeField()
-    checkOut = models.DateTimeField()
+    checkIn = models.DateField()
+    checkOut = models.DateField()
 
 
