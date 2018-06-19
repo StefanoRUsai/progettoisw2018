@@ -1,17 +1,8 @@
 from django.db import models
-from django import forms
 from enum import Enum
 
-# Create your models here.
 
-class ServicesEnum(models.Model, Enum):
-    TELEPHONE = "telephone"
-    GARAGE = "garage"
-    WI_FI = "wi-fi"
-    BREAKFAST = "breakfast"
-    LUNCH = "lunch"
-    DINNER = "dinner"
-    BRUNCH = "brunch"
+# Create your models here.
 
 class CreditCard(models.Model):
     cardNumber = models.IntegerField()
@@ -30,10 +21,10 @@ class Address(models.Model):
 class Person(models.Model):
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
-    date = models.DateField()
+    birthday = models.DateField()
     cf = models.CharField(max_length=20)
     email = models.EmailField(max_length=100)
-    address = models.ForeignKey(Address,on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
 
 
 class User(Person):
@@ -54,7 +45,7 @@ class Hotel(models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField()
     hotelKeeperId = models.ForeignKey(HotelKeeper, on_delete=models.CASCADE)
-    address = models.ForeignKey(Address,on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
     photoUrl = models.ImageField(default=None, null=True)
 
 
@@ -71,6 +62,26 @@ class Booking(models.Model):
     checkOut = models.DateField()
 
 
-class Service(models.Model):
-    service = models.ForeignKey(ServicesEnum,on_delete=models.CASCADE)
-    rooms = models.ForeignKey(Room, on_delete=models.CASCADE)
+class IncludedService(models.Model):
+    NONE = 'NONE'
+    TELEPHONE = 'TELEPHONE'
+    GARAGE = 'GARAGE'
+    WIFI = 'WIFI'
+    BREAKFAST = 'BREAKFAST'
+    LUNCH = 'LUNCH'
+    DINNER = 'DINNER'
+    BRUNCH = 'BRUNCH'
+
+    choiceValues = (
+        (NONE, "No services"),
+        (TELEPHONE, "Telephone"),
+        (GARAGE, "Garage"),
+        (WIFI, "Wifi"),
+        (BREAKFAST, "Breakfast"),
+        (LUNCH, "Lunch"),
+        (DINNER, "Dinner"),
+        (BRUNCH, "Brunch")
+    )
+
+    service = models.CharField(max_length=100, choices=choiceValues, default=NONE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
