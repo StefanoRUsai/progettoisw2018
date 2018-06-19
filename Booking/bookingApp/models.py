@@ -1,7 +1,4 @@
 from django.db import models
-from django import forms
-
-# Create your models here.
 
 
 class CreditCard(models.Model):
@@ -33,12 +30,12 @@ class User(Person):
 
 class HotelKeeper(Person):
     userName = models.CharField(max_length=50)
-    password = forms.CharField(max_length=50, widget=forms.PasswordInput)
+    password = models.CharField(max_length=50)
 
 
 class RegisteredUser(User):
     userName = models.CharField(max_length=50)
-    password = forms.CharField(max_length=50, widget=forms.PasswordInput)
+    password = models.CharField(max_length=50)
 
 
 class Hotel(models.Model):
@@ -46,6 +43,7 @@ class Hotel(models.Model):
     description = models.TextField()
     hotelKeeperId = models.ForeignKey(HotelKeeper, on_delete=models.CASCADE)
     address = models.ForeignKey(Address,on_delete=models.CASCADE)
+    photoUrl = models.ImageField(default=None, null=True)
 
 
 class Room(models.Model):
@@ -54,13 +52,13 @@ class Room(models.Model):
     SERVICES = ( (0, "Minibar"), (1, "Telephone"), (2, "Breakfast") )
     service = models.IntegerField(max_length=1, choices=SERVICES, default=None)
     hotelId = models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    photoUrl = models.ImageField(default=None, null=True)
 
 
 class Booking(models.Model):
     customerId = models.ForeignKey(User, on_delete=models.CASCADE)
     roomId = models.ForeignKey(Room, on_delete=models.CASCADE)
-    #### Lasciare anche orario o solo data? ###
-    checkIn = models.DateTimeField()
-    checkOut = models.DateTimeField()
+    checkIn = models.DateField()
+    checkOut = models.DateField()
 
 
