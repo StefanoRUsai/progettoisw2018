@@ -50,6 +50,7 @@ class Hotel(models.Model):
 
 
 class Room(models.Model):
+    roomNumber = models.IntegerField(default=0)
     capacity = models.IntegerField(default=0)
     price = models.FloatField(default=0.0)
     hotelId = models.ForeignKey(Hotel, on_delete=models.CASCADE)
@@ -72,7 +73,7 @@ class IncludedService(models.Model):
     DINNER = 'DINNER'
     BRUNCH = 'BRUNCH'
 
-    choiceValues = (
+    availableServices = (
         (NONE, "No services"),
         (TELEPHONE, "Telephone"),
         (GARAGE, "Garage"),
@@ -83,5 +84,5 @@ class IncludedService(models.Model):
         (BRUNCH, "Brunch")
     )
 
-    service = models.CharField(max_length=100, choices=choiceValues, default=NONE)
+    service = models.CharField(max_length=100, choices=availableServices, default=NONE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
