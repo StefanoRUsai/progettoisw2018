@@ -6,16 +6,19 @@
 </head>
 <body>
 <div>
-    <div class="FormAddRoom">
-     <form>
-            <fieldset>
-         <legend>Add your hotel</legend>
-                Name: <input type="text"><br>
-                Description: <input type="text"><br>
-                Address: <input type="text"><br>
-                Add image: <input type="text"><br>
-          </fieldset>
-     </form>
+    <div class="FormAddHotel">
+        <form class="container" action="" method="POST">
+        {% csrf_token %}
+        {% for field in formAddHotel %}
+        <div class="form-group">
+            {{ filed.error }}
+            <a style="color:black">{{ field.label_tag }}</a>
+            {{ field }}
+        </div>
+        {% endfor %}
+            <button type="submit" class="btn btn-primary">Confirm</button>
+            </form>
+        </form>
     </div>
 </div>
 
