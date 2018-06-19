@@ -72,7 +72,7 @@ class IncludedService(models.Model):
     DINNER = 'DINNER'
     BRUNCH = 'BRUNCH'
 
-    choiceValues = (
+    availableServices = (
         (NONE, "No services"),
         (TELEPHONE, "Telephone"),
         (GARAGE, "Garage"),
@@ -83,5 +83,5 @@ class IncludedService(models.Model):
         (BRUNCH, "Brunch")
     )
 
-    service = models.CharField(max_length=100, choices=choiceValues, default=NONE)
+    service = models.CharField(max_length=100, choices=availableServices, default=NONE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
