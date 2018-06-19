@@ -4,7 +4,8 @@ from enum import Enum
 
 # Create your models here.
 
-class ServicesEnum(models.Model, Enum):
+class ServicesEnum(Enum):
+    NONE = "no services"
     TELEPHONE = "telephone"
     GARAGE = "garage"
     WI_FI = "wi-fi"
@@ -72,5 +73,5 @@ class Booking(models.Model):
 
 
 class Service(models.Model):
-    service = models.ForeignKey(ServicesEnum,on_delete=models.CASCADE)
+    service = ServicesEnum.NONE
     rooms = models.ForeignKey(Room, on_delete=models.CASCADE)

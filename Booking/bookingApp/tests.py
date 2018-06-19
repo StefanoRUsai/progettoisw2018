@@ -7,6 +7,9 @@ from .models import *
 
 class ModelTest(TestCase):
     def setUp(self):
+
+        print("inizio")
+
         address = Address(
             street = 'via Piave',
             houseNumber =  60,
@@ -69,10 +72,19 @@ class ModelTest(TestCase):
         room = Room(
             capacity=3,
             price='120.00',
-            services = Room.SERVICES.BREAKFAST,
             hotelId = 2)
 
         room.save()
+
+        service = Service(ServicesEnum.GARAGE, room)
+
+        service.save()
+
+        print(str(Service.objects.all()))
+        for o in Service.objects.all().values():
+            print(o)
+
+
 
         user = User(
             name = 'Carlo',
