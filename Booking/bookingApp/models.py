@@ -4,7 +4,7 @@ from enum import Enum
 
 # Create your models here.
 
-class Services(Enum):
+class ServicesEnum(models.Model, Enum):
     TELEPHONE = "telephone"
     GARAGE = "garage"
     WI_FI = "wi-fi"
@@ -12,7 +12,6 @@ class Services(Enum):
     LUNCH = "lunch"
     DINNER = "dinner"
     BRUNCH = "brunch"
-
 
 class CreditCard(models.Model):
     cardNumber = models.IntegerField()
@@ -62,8 +61,6 @@ class Hotel(models.Model):
 class Room(models.Model):
     capacity = models.IntegerField(default=0)
     price = models.FloatField(default=0.0)
-    SERVICES = ( (0, "Minibar"), (1, "Telephone"), (2, "Breakfast") )
-    service = models.IntegerField(max_length=1, choices=SERVICES, default=None)
     hotelId = models.ForeignKey(Hotel, on_delete=models.CASCADE)
 
 
@@ -74,3 +71,6 @@ class Booking(models.Model):
     checkOut = models.DateField()
 
 
+class Service(models.Model):
+    service = models.ForeignKey(ServicesEnum,on_delete=models.CASCADE)
+    rooms = models.ForeignKey(Room, on_delete=models.CASCADE)
