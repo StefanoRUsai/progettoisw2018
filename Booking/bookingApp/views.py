@@ -1,10 +1,6 @@
 from django.shortcuts import render, redirect
-from .forms import AddHotelForm
-from .forms import AddRoomForm
-from .models import Hotel
-from .models import Address
-from .models import Room
-from .models import IncludedService
+from .forms import AddHotelForm,AddRoomForm
+from .models import Hotel,Address,Room,IncludedService
 
 
 def addHotel (request):
@@ -36,7 +32,7 @@ def addHotel (request):
     return render(request, 'addHotel.html', context)
 
 
-def addRoom (request):
+def addRoomToHotel(request):
     if request.method == 'POST':
         form = AddRoomForm(request.POST)
         if form.is_valid():
@@ -64,3 +60,32 @@ def addRoom (request):
 
     context = {'formAddRoom': form}
     return render(request, 'addRoom.html', context)
+
+
+
+def notRegisteredHome(request):
+    pass
+
+def loginPage(request):
+    pass
+
+def registerUser(request):
+    pass
+
+def registeredUserHome(request):
+    pass
+
+def searchResults(request):
+    pass
+
+def bookARoom(request):
+    pass
+
+def hotelKeeperHome(request):
+    pass
+
+def hotelsList(request):
+    pass
+
+def hotelDetail(request):
+    pass

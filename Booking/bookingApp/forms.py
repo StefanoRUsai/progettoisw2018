@@ -14,5 +14,5 @@ class AddHotelForm (forms.Form):
 class AddRoomForm (forms.Form):
     roomNumber = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
     bedsNumber = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    services = forms.MultipleChoiceField(choices=IncludedService.availableServices, widget=forms.CheckboxSelectMultiple(attr={"class": "form-control"}))
+    services = forms.MultipleChoiceField()
     price = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
