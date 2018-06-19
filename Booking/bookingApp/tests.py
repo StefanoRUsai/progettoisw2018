@@ -62,16 +62,17 @@ class ModelTest(TestCase):
 
         hotel.save()
 
-        room = Room(
+        room1 = Room(
             capacity=3,
             price='120.00',
             hotelId = hotel)
 
-        room.save()
+        room1.save()
 
-        service = Service(ServicesEnum.GARAGE, room)
+        service = IncludedService(service=IncludedService.GARAGE, room=room1)
 
         service.save()
+
 
 
         user = User(
@@ -99,8 +100,8 @@ class ModelTest(TestCase):
         registeredUser.save()
 
         booking = Booking(
-            customerId=1234,
-            ownerId=1234,
+            customerId=user,
+            roomId=room1,
             checkIn=datetime.date(2018, 11, 12),
             checkOut = datetime.date(2018, 11, 18))
 
@@ -108,6 +109,6 @@ class ModelTest(TestCase):
 
 
     def test_print_service(self):
-        print(str(Service.objects.all()))
-        for o in Service.objects.all().values():
+        print(str(IncludedService.objects.all()))
+        for o in IncludedService.objects.all():
             print(o)
