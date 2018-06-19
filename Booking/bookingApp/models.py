@@ -31,7 +31,7 @@ class Address(models.Model):
 class Person(models.Model):
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
-    date = models.DateField()
+    birthday = models.DateField()
     cf = models.CharField(max_length=20)
     email = models.EmailField(max_length=100)
     address = models.ForeignKey(Address,on_delete=models.CASCADE)
@@ -73,5 +73,5 @@ class Booking(models.Model):
 
 
 class Service(models.Model):
-    service = ServicesEnum.NONE
+    service = models.CharField(max_length=100, choices=[(tag, tag.value) for tag in ServicesEnum], default=ServicesEnum.NONE )
     rooms = models.ForeignKey(Room, on_delete=models.CASCADE)
