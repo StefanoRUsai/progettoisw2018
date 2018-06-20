@@ -1,19 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add a room</title>
-</head>
-<body>
-    <nav>
-        <h1>Booking.com</h1>
-        <ul>
-            <li>
-                <button>Logout</button>
-            </li>
-        </ul>
-    </nav>
-    <br><br>
+{% extends "base.html" %}
+     {% block content %}
+
     <div class="addRoomFormDiv">
         <p>Add a room!</p>
         <form action="TODO#TODO#TODO" method="POST">
@@ -32,7 +19,4 @@
 
             <input type="submit" value="Add the room">
         </form>
-    </div>
-
-</body>
-</html>
+{% endblock %}
