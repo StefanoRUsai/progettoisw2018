@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import AddHotelForm,AddRoomForm,formLogin,registrationForm
-from .models import Hotel,Address,Room,IncludedService,RegisteredUser
+from .models import Hotel,Address,Room,IncludedService,RegisteredUser,HotelKeeper
 
 
 
@@ -29,15 +29,27 @@ def login(request):
             passW = form.cleaned_data['password']
 
             for ut in RegisteredUser.objects.all():
-                if(ut.username == userN and ut.password == passW):
+                if(ut.userName == userN and ut.password == passW):
                     request.session['usr'] = form.cleaned_data['username']
                     return redirect('/homeRegistered/')
+            for ut in HotelKeeper.objects.all():
+                if (ut.userName == userN and ut.password == passW):
+                    request.session['usr'] = form.cleaned_data['username']
+                    return redirect('/home/')
 
     else:  #Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET
         form = formLogin()
 
     context = {'form' : form}
     return render(request,'login.html',context)
+
+
+
+def registeredUserHome(request):
+    return render(request,'homeRegisteredUser.html')
+
+def hotelKeeperHome(request):
+    return render(request,'homeHotelKeeper.html')
 
 
 def addHotel (request):
@@ -157,16 +169,11 @@ def viewProfileUser(request):
 
 
 
-def registeredUserHome(request):
-    pass
 
 def searchResults(request):
     pass
 
 def bookARoom(request):
-    pass
-
-def hotelKeeperHome(request):
     pass
 
 def hotelsList(request):
