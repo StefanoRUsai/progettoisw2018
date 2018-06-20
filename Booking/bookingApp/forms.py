@@ -20,3 +20,14 @@ class AddRoomForm (forms.Form):
 class formLogin(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={"class" : "form-control"}))
     password = forms.CharField(widget=forms.TextInput(attrs={"class" : "form-control"}))
+    
+class registrationForm(forms.Form):
+    nome = forms.CharField(max_length=50, required=True)
+    surname = forms.CharField(max_length=50, required=True)
+    birthday = forms.DateField(required=True)
+    cf = forms.CharField(max_length=20, required=True)
+    email = forms.EmailField(max_length=100, required=True)
+    street = forms.CharField(max_length=100, required=True)
+    houseNumber = forms.IntegerField(required=True)
+    city = forms.CharField(max_length=30, required=True)
+    zipCode = forms.CharField(max_length=15, required=True)
