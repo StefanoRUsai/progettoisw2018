@@ -127,16 +127,16 @@ def registerUser(request):
 def viewProfileUser(request):
     userName = request.session['usr']
 
+
     for userAtrs in RegisteredUser.objects.all():
         if(userAtrs.userName==userName):
             userSession = userAtrs
             break
 
-    context={'userProfile':userAtrs}
+    cardCreditNrUserSession = userSession.creditCard.cardNumber
+
+    context={'userProfile':userAtrs, 'creditCardView':cardCreditNrUserSession}
     return render(request, 'profile.html', context)
-
-
-
 
 
 
