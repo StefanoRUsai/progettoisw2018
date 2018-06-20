@@ -1,6 +1,26 @@
 from django.shortcuts import render, redirect
-from .forms import AddHotelForm,AddRoomForm
-from .models import Hotel,Address,Room,IncludedService
+from .forms import AddHotelForm,AddRoomForm,formLogin
+from .models import Hotel,Address,Room,IncludedService,RegisteredUser
+
+
+def login(request):
+    if(request.method == 'POST'):
+        form = formLogin(request.POST)
+        if(form.is_valid()):
+            #Setto in sessione le variabili relative all'utente loggato tranne la password
+            userN = form.cleaned_data['username']
+            passW = form.cleaned_data['password']
+
+            for ut in RegisteredUser.objects.all():
+                if(ut.username == userN and ut.password == passW):
+                    request.session['usr'] = form.cleaned_data['username']
+                    return redirect('/homeRegistered/')
+
+    else:  #Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET
+        form = formLogin()
+
+    context = {'form' : form}
+    return render(request,'login.html',context)
 
 
 def addHotel (request):
@@ -66,8 +86,6 @@ def addRoomToHotel(request):
 def notRegisteredHome(request):
     pass
 
-def loginPage(request):
-    pass
 
 def registerUser(request):
     pass
