@@ -10,6 +10,9 @@ class CreditCard(models.Model):
     expirationMonth = models.CharField(max_length=2)
     cvvCode = models.CharField(max_length=3)
 
+    def __unicode__(self):
+       return self.cardNumber + self.expirationYear + self.expirationMonth + self.cvvCode
+
 
 class Address(models.Model):
     street = models.CharField(max_length=100)
@@ -17,6 +20,8 @@ class Address(models.Model):
     city = models.CharField(max_length=30)
     zipCode = models.CharField(max_length=15)
 
+    def __unicode__(self):
+       return self.street + self.houseNumber + self.city + self.zipCode
 
 class Person(models.Model):
     name = models.CharField(max_length=50)
@@ -35,11 +40,15 @@ class HotelKeeper(Person):
     userName = models.CharField(max_length=50)
     password = models.CharField(max_length=50)
 
+    def __unicode__(self):
+       return self.name + self.surname
 
 class RegisteredUser(User):
     userName = models.CharField(max_length=50)
     password = models.CharField(max_length=50)
 
+    def __unicode__(self):
+       return self.name + self.surname + "...con username --> " + self.userName
 
 class Hotel(models.Model):
     name = models.CharField(max_length=30)
@@ -48,6 +57,8 @@ class Hotel(models.Model):
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     photoUrl = models.ImageField(default=None, null=True)
 
+    def __unicode__(self):
+       return self.name + self.address
 
 class Room(models.Model):
     roomNumber = models.IntegerField(default=0)
@@ -55,6 +66,8 @@ class Room(models.Model):
     price = models.FloatField(default=0.0)
     hotelId = models.ForeignKey(Hotel, on_delete=models.CASCADE)
 
+    def __unicode__(self):
+       return "Hotel di appartenenza -->" + self.hotelId + "Room number --> " + self.roomNumber
 
 class Booking(models.Model):
     customerId = models.ForeignKey(User, on_delete=models.CASCADE)
