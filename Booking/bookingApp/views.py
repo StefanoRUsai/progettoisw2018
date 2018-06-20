@@ -124,6 +124,19 @@ def registerUser(request):
     return render(request,'signUp.html',context)
 
 
+def viewProfileUser(request):
+    userName = request.session['usr']
+
+    for userAtrs in RegisteredUser.objects.all():
+        if(userAtrs.userName==userName):
+            userSession = userAtrs
+            break
+
+    context={'userProfile':userAtrs}
+    return render(request, 'profile.html', context)
+
+
+
 
 
 
