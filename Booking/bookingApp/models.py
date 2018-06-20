@@ -55,7 +55,7 @@ class Hotel(models.Model):
     description = models.TextField()
     hotelKeeperId = models.ForeignKey(HotelKeeper, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
-    photoUrl = models.ImageField(default=None, null=True)
+    photoUrl = models.ImageField(default=None, null=True, upload_to="static/img")
 
     def __unicode__(self):
        return self.name + self.address
