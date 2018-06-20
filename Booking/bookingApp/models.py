@@ -5,10 +5,10 @@ from enum import Enum
 # Create your models here.
 
 class CreditCard(models.Model):
-    cardNumber = models.IntegerField()
-    expirationYear = models.IntegerField()
-    expirationMonth = models.IntegerField()
-    cvvCode = models.IntegerField()
+    cardNumber = models.CharField(max_length=10)
+    expirationYear = models.CharField(max_length=4)
+    expirationMonth = models.CharField(max_length=2)
+    cvvCode = models.CharField(max_length=3)
 
 
 class Address(models.Model):
