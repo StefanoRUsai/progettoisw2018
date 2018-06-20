@@ -3,6 +3,23 @@ from .forms import AddHotelForm,AddRoomForm,formLogin,registrationForm
 from .models import Hotel,Address,Room,IncludedService,RegisteredUser
 
 
+
+
+def notRegisteredHome(request):
+    contatore = 0
+    lista = []
+
+    for ht in Hotel.objects.all():
+        if(contatore < 3):
+            lista.append(ht)
+            contatore = contatore + 1
+
+
+    context = { 'hotel1' : lista[0] , 'hotel2' : lista[1] , 'hotel3' : lista[2]}
+    return render(request,'homeNotRegisteredUser.html',context)
+
+
+
 def login(request):
     if(request.method == 'POST'):
         form = formLogin(request.POST)
@@ -139,9 +156,6 @@ def viewProfileUser(request):
     return render(request, 'profile.html', context)
 
 
-
-def notRegisteredHome(request):
-    pass
 
 def registeredUserHome(request):
     pass
