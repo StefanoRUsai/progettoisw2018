@@ -190,9 +190,6 @@ def viewProfileUser(request):
 def searchResults(request):
     listResult = []
 
-    '''Vista per vedere la lista degli annunci che contengono
-        il sottopath'''
-    # Codice per cercare
     if request.method == 'GET':  # quando viene premuto il tasto di ricerca
         searchPatternCity = request.GET.get('search_city', None)
         searchPatternNumber = request.GET.get('search_number', None)
@@ -208,15 +205,14 @@ def searchResults(request):
                         if (r not in Booking.objects.all() or\
                               (b.checkIn < searchPatternCheckIn and b.checkOut > searchPatternCheckOut)):
                             listResult.append(r.hotelId.name, r.roomNumber, IncludedService.objects.filter(r))
-        else:
-            print("vuoto")
+    else:
+        return redirect("/search/")
+
 
     context = {'listResult': listResult}  # è  buona norma passare context a render
 
     return render(request, "search.html", context)
 
-def searchResults(request):
-    pass
 
 def bookARoom(request):
     pass
@@ -226,5 +222,6 @@ def hotelsList(request):
 
 def hotelDetail(request):
     pass
-def searchBar(request):
-    return render(request,'searchBar.html')
+
+#def searchBar(request):
+    #   return render(request,'searchBar.html')

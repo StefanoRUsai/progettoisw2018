@@ -1,18 +1,6 @@
 <!-- Pagina di output delle ricerche -->
-<!-- {% extends "base.html" %} -->
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Search</title>
-    </head>
-    <body>
-
-        <nav>
-            <!-- erediterà da base-->
-        </nav>
-
-        <div class="container">
+{% extends "searchBar.html" %}
+    {% block container %}
             <div>
                 <h2>Risultati ricerca</h2>
             </div>
@@ -24,17 +12,14 @@
                     <th>Service</th>
                     <th>N°</th>
                   </tr>
+                    {% for item in listResult %}
                   <tr>
-                    <th>Hilton</th>
-                    <th>€ 300,00</th>
-                    <th>BreakFast</th>
-                    <th>3</th>
+                    <th>{{item.0}}</th>
+                    <th>{{item.0}}</th>
+                    <th>{{item.0}}</th>
+                     {% endfor %}
                   </tr>
                 </table>
 
             </div>
-        </div>
-
-
-    </body>
-</html>
+    {% endblock %}
