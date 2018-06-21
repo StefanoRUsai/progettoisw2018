@@ -13,21 +13,22 @@
                         <th>CheckOut date:</th>
                     </tr>
                     <tr>
-                        <th><input type = text value = "City"></th>
+                         <form type="get" action="." style="margin: auto;">
+                        {% csrf_token %}
                         <th>
-                            <form>
-                                <select name="beds" >
-                                    <option value=1>1</option>
-                                    <option value=2 selected="selected">2</option>
-                                    <option value=3>3</option>
-                                    <option value=4>4</option>
-                                </select>
-                            </form>
+                         <input  id="search_box" type="text" name="search_city"></th>
+                        <th>
+                            <select name="search_number"  >
+                                <option value=1selected="selected">1</option>
+                                <option value=2>2</option>
+                                <option value=3>3</option>
+                                <option value=4>4</option>
+                            </select>
                         </th>
-                        <th><input type = date value = "CheckIn"></th>
-                        <th><input type = date value = "CheckOut"></th>
+                        <th><input type = date name="search_checkin" value = "CheckIn"></th>
+                        <th><input type = date name="search_checkout" value = "CheckOut"></th>
                     </tr>
                 </table>
-                <button type = submit>Search</button>
+                <buttonn id="search_submit" type="submit" >Search</button>
             </div>
 {% endblock %}
