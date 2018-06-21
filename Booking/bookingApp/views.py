@@ -188,9 +188,6 @@ def viewProfileUser(request):
 
 
 def searchResults(request):
-    return render(request, "search.html")
-
-def searchBar(request):
     listResult = []
 
     if request.method == 'GET':  # quando viene premuto il tasto di ricerca
@@ -198,23 +195,31 @@ def searchBar(request):
         searchPatternNumber = request.GET.get('search_number', None)
         searchPatternCheckIn = request.GET.get('search_checkin', None)
         searchPatternCheckOut = request.GET.get('search_checkout', None)
-        if (searchPatternCity != None and searchPatternNumber != None and\
-            searchPatternCheckIn != None and searchPatternCheckOut != None):
+
+        print(str(searchPatternNumber))
+        if (searchPatternCity != None and searchPatternNumber != None and \
+                searchPatternCheckIn != None and searchPatternCheckOut != None):
 
             for r in Room.objects.all():
-                if (r.hotelId.address.returnCity() == searchPatternCity and \
-                        r.hotelId.address.returnCity() == searchPatternNumber):
-                    for b in Booking.objects.all():
-                        if (r not in Booking.objects.all() or\
-                              (b.checkIn < searchPatternCheckIn and b.checkOut > searchPatternCheckOut)):
-                            listResult.append(r.hotelId.name, r.roomNumber, IncludedService.objects.filter(r))
+                if (r.hotelId.address.city == searchPatternCity and\
+                        str(r.capacity) == searchPatternNumber):
+                    temp =[r.hotelId.name, r.roomNumber, "DEFAULT"]
+                    listResult.append(temp)
+
+                    print(str(r.hotelId.name))
+                # for b in Booking.objects.all():
+                      #  if (r not in Booking.objects.all() or \
+                       #         (b.checkIn < searchPatternCheckIn and b.checkOut > searchPatternCheckOut)):
+
     else:
         return redirect("/search/")
-
 
     context = {'listResult': listResult}  # è  buona norma passare context a render
 
     return render(request, "search.html", context)
+
+def searchBar(request):
+     return render(request, "search.html")
 
 "prenotazione: " \
 "controllo se non vi è utente loggato" \

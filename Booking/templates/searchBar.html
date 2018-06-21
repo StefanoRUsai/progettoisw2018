@@ -15,7 +15,7 @@
                            </table>
 
 
-                        <form method="POST" action="/search/" style="margin: auto;">
+                        <form method="GET" action="/search/" style="margin: auto;">
                         {% csrf_token %}
                     <input  id="search_box" type="text" name="search_city">
                            <select name="search_number"  >

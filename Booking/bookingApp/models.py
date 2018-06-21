@@ -22,6 +22,8 @@ class Address(models.Model):
 
     def __unicode__(self):
        return self.street + self.houseNumber + self.city + self.zipCode
+    def cityReturn(self):
+        return self.city
 
 class Person(models.Model):
     name = models.CharField(max_length=50)
@@ -60,8 +62,7 @@ class Hotel(models.Model):
     def __unicode__(self):
        return self.name + self.address
 
-    def returnCity(self):
-        return self.city
+
 
 
 class Room(models.Model):
