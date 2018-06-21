@@ -60,6 +60,10 @@ class Hotel(models.Model):
     def __unicode__(self):
        return self.name + self.address
 
+    def returnCity(self):
+        return self.city
+
+
 class Room(models.Model):
     roomNumber = models.IntegerField(default=0)
     capacity = models.IntegerField(default=0)
