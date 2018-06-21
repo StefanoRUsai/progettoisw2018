@@ -218,7 +218,19 @@ def bookARoom(request):
     pass
 
 def hotelsList(request):
-    pass
+    hotelKeeperUsr = request.session["usr"]
+    listHt = []
+    cont = 0
+
+    for ht in Hotel.objects.all():
+        if (hotelKeeperUsr == ht.hotelKeeperId.userName):
+            for room in Room.objects.all():
+                if (room.hotelId.address == ht.address):
+                    cont+=1
+            listHt.append((ht, cont))
+
+    context = {'hotelList': listHt}
+    return render(request, 'viewListOfHotels.html', context)
 
 def hotelDetail(request):
     pass
