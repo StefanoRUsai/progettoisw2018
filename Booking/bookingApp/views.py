@@ -46,10 +46,21 @@ def login(request):
 
 
 def registeredUserHome(request):
-    return render(request,'homeRegisteredUser.html')
+
+    contatore = 0
+    lista = []
+
+    for ht in Hotel.objects.all():
+        if(contatore < 3):
+            lista.append(ht)
+            contatore = contatore + 1
+
+
+    context = { 'hotel1' : lista[0] , 'hotel2' : lista[1] , 'hotel3' : lista[2]}
+    return render(request, 'homeRegisteredUser.html', context)
 
 def hotelKeeperHome(request):
-    return render(request,'homeHotelKeeper.html')
+    return render(request,'homeHotelKeeper.html', context)
 
 
 def addHotel (request):
