@@ -15,10 +15,15 @@
                            </table>
 
 
-                        <form method="POST" action="." style="margin: auto;">
+                        <form method="POST" action="/search/" style="margin: auto;">
                         {% csrf_token %}
                     <input  id="search_box" type="text" name="search_city">
-                    <input  id="search_box" type="text" name="search_number">
+                           <select name="search_number"  >
+                                <option value=1 selected="selected">1</option>
+                                <option value=2>2</option>
+                                <option value=3>3</option>
+                                <option value=4>4</option>
+                            </select>
                         <input type = date name="search_checkin" value = "CheckIn">
                         <input type = date name="search_checkout" value = "CheckOut">
                       <button id="search_submit" type="submit" >Search</button>

@@ -49,10 +49,3 @@ class PaymentForm(forms.Form):
     year = forms.CharField(min_length=4, max_length=4, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     cvv = forms.CharField(min_length=3, max_length=3, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     checkNewUser = forms.BooleanField(widget=forms.CheckboxInput(attrs={"class": "form-control"}))
-
-
-class Search(forms.Form):
-    city = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    number = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    checkIn = forms.DateField(widget=forms.SelectDateWidget(empty_label="Nothing"))
-    checkOut = forms.DateField(widget=forms.SelectDateWidget(empty_label="Nothing"))
