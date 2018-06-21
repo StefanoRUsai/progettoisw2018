@@ -21,34 +21,23 @@
     <div class="hotelDetailsDiv">
         <ul>
             <li>
-                Nome: La marina
+                Nome: {{hotel.name}}
             </li>
             <li>
-                Descrizione: uno bello hotel
+                Descrizione: {{hotel.description}}
             </li>
             <li>
-                Indirizzo: via di qua 911, viareggio 05452
+                Indirizzo:{{hotel.address.rue}}{{ hotel.addess.houseNumber}}{{ hotel.address.city}}{{ hotel.address.zipCode}}
             </li>
         </ul>
     </div>
-    </div class="roomsListDiv">
-        <div class="roomListHeaderDiv">
-
-        </div>
-        <div class="roomItemListDiv">
-            <ul>
-                <li>Room number: 666</li>
-                <li>Beds: 2</li>
-                <li>Services: Telephone, Internet</li>
-            </ul>
-        </div>
-        <div class="roomItemListDiv">
-            <ul>
-                <li>Room number: 61</li>
-                <li>Beds: 10</li>
-                <li>Services: Telephone, Internet</li>
-            </ul>
-        </div>
+    </div class="container">
+        {% for rm in roomList %}
+        <p>Numero stanza: {{rm.roomNumber}}</p>
+        <p>Capacità: {{rm.capacity}}</p>
+        <p>Prezzo: {{rm.price}}</p>
+        {% endfor %}
     </div>
+
 </body>
 </html>

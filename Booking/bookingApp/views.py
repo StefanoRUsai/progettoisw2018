@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from .forms import *
 from .models import *
 
@@ -295,7 +296,23 @@ def hotelsList(request):
     return render(request, 'viewListOfHotels.html', context)
 
 def hotelDetail(request):
-    pass
+    listaCamereHotel = []
+
+    hotelName = request.GET.get('name',None)
+    hotelNumber = request.GET.get('civN',None)
+    hotelCity = request.GET.get('city',None)
+
+    for ht in Hotel.objects.all():
+        if(ht.name == hotelName and ht.address.houseNumber == int(hotelNumber) and ht.address.city == hotelCity):
+            print("qua arrivo")
+            for rm in Room.objects.all():
+                if(rm.hotelId == ht):
+                    listaCamereHotel.append(rm)
+
+            context = {'hotel': ht,'roomList': listaCamereHotel}
+
+    return render(request,"manageHotel.html",context)
+
 
 def bookARoom(request):
     pass

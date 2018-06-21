@@ -10,8 +10,8 @@ class CreditCard(models.Model):
     expirationMonth = models.CharField(max_length=2)
     cvvCode = models.CharField(max_length=3)
 
-    def __unicode__(self):
-       return self.cardNumber + self.expirationYear + self.expirationMonth + self.cvvCode
+    def __str__(self):
+       return str(self.cardNumber) + " " + str(self.expirationYear) + " " + str(self.expirationMonth) + " " + str(self.cvvCode)
 
 
 class Address(models.Model):
@@ -20,8 +20,8 @@ class Address(models.Model):
     city = models.CharField(max_length=30)
     zipCode = models.CharField(max_length=15)
 
-    def __unicode__(self):
-       return self.street + self.houseNumber + self.city + self.zipCode
+    def __str__(self):
+       return str(self.street) + " " + str(self.houseNumber) + " " + str(self.city) + " " + str(self.zipCode)
 
 class Person(models.Model):
     name = models.CharField(max_length=50)
@@ -40,15 +40,15 @@ class HotelKeeper(Person):
     userName = models.CharField(max_length=50)
     password = models.CharField(max_length=50)
 
-    def __unicode__(self):
-       return self.name + self.surname
+    def __str__(self):
+       return str(self.name) + " " + str(self.surname)
 
 class RegisteredUser(User):
     userName = models.CharField(max_length=50)
     password = models.CharField(max_length=50)
 
-    def __unicode__(self):
-       return self.name + self.surname + "...con username --> " + self.userName
+    def __str__(self):
+       return str(self.name) + " " + str(self.surname) + " ...con username --> " + str(self.userName)
 
 class Hotel(models.Model):
     name = models.CharField(max_length=30)
@@ -57,8 +57,8 @@ class Hotel(models.Model):
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     photoUrl = models.ImageField(default=None, null=True, upload_to="static/img")
 
-    def __unicode__(self):
-       return self.name + self.address
+    def __str__(self):
+       return str(self.name) + " " + self.address.__str__()
 
     def returnCity(self):
         return self.city
@@ -70,8 +70,8 @@ class Room(models.Model):
     price = models.FloatField(default=0.0)
     hotelId = models.ForeignKey(Hotel, on_delete=models.CASCADE)
 
-    def __unicode__(self):
-       return "Hotel di appartenenza -->" + self.hotelId + "Room number --> " + self.roomNumber
+    def __str__(self):
+       return "Hotel di appartenenza --> " + self.hotelId.__str__() + " Room number --> " + str(self.roomNumber)
 
 class Booking(models.Model):
     customerId = models.ForeignKey(User, on_delete=models.CASCADE)
