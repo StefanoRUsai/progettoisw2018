@@ -1,25 +1,20 @@
-{% extends "base.html" %}
-     {% block content %}
-<div>
-    <div id="Add Hotel">
-        <button type="button">Add hotel</button>
-    </div>
+{% extends "searchBar.html" %}
+{% load static %}
+{% block container %}
 
-    <div id="List of Hotels">
+<h2>Your hotels</h2>
         {% for item in hotelList %}
-        <ul>
-            <li>
-                <h3>Name Hotel: {{item.0.name}}</h3>
-
-                <p>
-                    Number of room: {{item.1}}
-                </p>
-
-                <button type="button">View details</button>
-            </li>
-        </ul>
+            <div class="card" style="height:100%" align = "center">
+                <img class="card-img-top" style="height:240px" src={{hotel.photoUrl}} alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title"><a>{{ item.name }}</a></h4>
+                    <p class="card-text">{{ item.description }}</p>
+                    <a href="booking/?hotelName={{ item.name }}" class="btn btn-primary">Go to details</a>
+                </div>
+            </div>
         {% endfor %}
-
-    </div>
-</div>
 {% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
