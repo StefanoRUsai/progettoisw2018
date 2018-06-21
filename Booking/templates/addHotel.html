@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>AddHotel</title>
-</head>
-<body>
-<div>
+{% extends "base.html" %}
+     {% block content %}
     <div class="FormAddHotel">
-        <form class="container" action="" method="POST">
+        <form class="container" style="width:40%;margin-top:2%;"  action="" method="POST">
         {% csrf_token %}
         {% for field in formAddHotel %}
         <div class="form-group">
@@ -20,7 +14,4 @@
             </form>
         </form>
     </div>
-</div>
-
-</body>
-</html>
+{% endblock %}
