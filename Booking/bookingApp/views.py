@@ -297,6 +297,7 @@ def hotelsList(request):
 
 def hotelDetail(request):
     listaCamereHotel = []
+    hotel = None
 
     hotelName = request.GET.get('name',None)
     hotelNumber = request.GET.get('civN',None)
@@ -305,14 +306,80 @@ def hotelDetail(request):
     for ht in Hotel.objects.all():
         if(ht.name == hotelName and ht.address.houseNumber == int(hotelNumber) and ht.address.city == hotelCity):
             print("qua arrivo")
+            hotel = ht
             for rm in Room.objects.all():
-                if(rm.hotelId == ht):
+                if(rm.hotelId == hotel):
                     listaCamereHotel.append(rm)
 
-            context = {'hotel': ht,'roomList': listaCamereHotel}
+    if(hotel != None):
+        context = {'hotel': hotel,'roomList': listaCamereHotel}
+    else:
+        return HttpResponse("<h3>Nessun dettaglio al momento disponibile</h3>")
+
 
     return render(request,"manageHotel.html",context)
 
 
 def bookARoom(request):
-    pass
+    if (request.session == 'null'):
+
+        if (request.method == 'POST'):
+            formBooking = PaymentForm(request.POST)
+
+    if (formBooking.is_valid()):
+                    name = formBooking.cleaned_data['name']
+                    surname = formBooking.cleaned_data['surname']
+                    birthday = formBooking.cleaned_data['birthday']
+                    cf = formBooking.cleaned_data['cf']
+                    email = formBooking.cleaned_data['email']
+                    street = formBooking.cleaned_data['street']
+                    civicNumber = formBooking.cleaned_data['street']
+                    city = formBooking.cleaned_data['street']
+                    zipCode = formBooking.cleaned_data['street']
+                    cardNumber = formBooking.cleaned_data['cardNumber']
+                    month = formBooking.cleaned_data['month']
+                    year = formBooking.cleaned_data['year']
+                    cvv = formBooking.cleaned_data['cvv']  ##
+                    checkIn = formBooking.cleaned_data['checkin']
+                    checkOut = formBooking.cleaned_data['checkout']
+                    room = formBooking.cleaned_data['room']
+                    checkNewUser = formBooking.checkNewUser.cleaned_data['checkNewUser']
+
+
+    if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
+        return redirect('booking/')
+
+        card = CreditCard(cardNumber, year, month, cvv)
+        card.save()
+        address = Address(street, civicNumber, city, zipCode)
+        address.save()
+        user = User(name, surname, birthday, cf, email, address, card)
+        user.save()
+        booking = Booking(user, room, checkIn, checkOut)
+        booking.save()
+
+        context = {'paymentForm': formBooking}
+
+        return render(request, 'booking/', context)
+    else:
+        userName = request.session['usr']
+
+    for userAtrs in RegisteredUser.objects.all():
+        if (userAtrs.userName == userName):
+            userSession = userAtrs
+            break
+
+    if (request.method == 'POST'):
+        formBooking = PaymentForm(request.POST)
+
+        checkIn = formBooking.cleaned_data['checkin']
+        checkOut = formBooking.cleaned_data['checkout']
+        room = formBooking.cleaned_data['room']
+
+        booking = Booking(userSession, room, checkIn, checkOut)
+        booking.save()
+
+        context = {'paymentForm': formBooking}
+
+    return render(request, 'booking/', context)
+
