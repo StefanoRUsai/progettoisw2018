@@ -181,3 +181,5 @@ def hotelsList(request):
 
 def hotelDetail(request):
     pass
+def searchBar(request):
+    return render(request,'searchBar.html')
