@@ -187,7 +187,33 @@ def viewProfileUser(request):
     return render(request, 'profile.html', context)
 
 
+def searchResults(request):
+    listResult = []
 
+    '''Vista per vedere la lista degli annunci che contengono
+        il sottopath'''
+    # Codice per cercare
+    if request.method == 'GET':  # quando viene premuto il tasto di ricerca
+        searchPatternCity = request.GET.get('search_city', None)
+        searchPatternNumber = request.GET.get('search_number', None)
+        searchPatternCheckIn = request.GET.get('search_checkin', None)
+        searchPatternCheckOut = request.GET.get('search_checkout', None)
+        if (searchPatternCity != None and searchPatternNumber != None and\
+            searchPatternCheckIn != None and searchPatternCheckOut != None):
+
+            for r in Room.objects.all():
+                if (r.hotelId.address.returnCity() == searchPatternCity and \
+                        r.hotelId.address.returnCity() == searchPatternNumber):
+                    for b in Booking.objects.all():
+                        if (r not in Booking.objects.all() or\
+                              (b.checkIn < searchPatternCheckIn and b.checkOut > searchPatternCheckOut)):
+                            listResult.append(r.hotelId.name, r.roomNumber, IncludedService.objects.filter(r))
+        else:
+            print("vuoto")
+
+    context = {'listResult': listResult}  # è  buona norma passare context a render
+
+    return render(request, "search.html", context)
 
 def searchResults(request):
     pass
