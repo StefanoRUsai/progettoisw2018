@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import AddHotelForm,AddRoomForm,formLogin,registrationForm
-from .models import Hotel,Address,Room,IncludedService,RegisteredUser,HotelKeeper
+from .models import *
 
 
 
@@ -60,6 +60,14 @@ def registeredUserHome(request):
     return render(request, 'homeRegisteredUser.html', context)
 
 def hotelKeeperHome(request):
+
+    hotelKeeperUsr = request.session["usr"]
+    listPr = []
+    for pr in Booking.objects.all():
+
+        if (hotelKeeperUsr == pr.roomId.hotelId.hotelKeeperId.userName):
+            listPr.append(pr)
+    context = {'listaPrenotazioni': listPr}
     return render(request,'homeHotelKeeper.html', context)
 
 
