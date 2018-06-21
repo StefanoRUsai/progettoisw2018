@@ -280,6 +280,8 @@ def bookARoom(request):
             context = {'paymentForm': formBooking}
             return render(request, 'booking/', context)
 
+
+
 def hotelsList(request):
     hotelKeeperUsr = request.session["usr"]
     listHt = []

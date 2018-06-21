@@ -31,10 +31,14 @@ class Person(models.Model):
     email = models.EmailField(max_length=100)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.name) + " " + str(self.surname) + " " + str(self.birthday) + " " + str(self.cf) + " " + str(self.email) + " " + self.address.__str__()
 
 class User(Person):
     creditCard = models.ForeignKey(CreditCard, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return str(self.name) + " " + str(self.surname) + " " + str(self.birthday) + " " + str(self.cf) + " " + str(self.email) + " " + self.address.__str__() + " " + self.creditCard.__str__()
 
 class HotelKeeper(Person):
     userName = models.CharField(max_length=50)
@@ -79,6 +83,8 @@ class Booking(models.Model):
     checkIn = models.DateField()
     checkOut = models.DateField()
 
+    def __str__(self):
+        return self.customerId.__str__() + " " + self.roomId.__str__() + " " + str(self.checkIn) + " " + str(self.checkOut)
 
 class IncludedService(models.Model):
     NONE = 'NONE'
