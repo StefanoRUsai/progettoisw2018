@@ -1,52 +1,14 @@
-<!-- Pop up di pagamento e reindirizzamento alla registrazione -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<div>
-    <div class="FormCard">
-     <form>
-            <fieldset>
-         <legend>Compile the form:</legend>
-                Your name: <input type="text"><br>
-                Surname: <input type="text"><br>
-                Email: <input type="email"><br>
-                Card number: <input type="text"><br>
-                Date expiration: <input type="date"><br>
-                CVV: <input type="text"><br>
-
-                 <input type="checkbox" name="hotelKepper" value="hotelKepper"/> Do you want save the card? Sign up!
-          </fieldset>
-     </form>
-    </div>
-    <div class="Details">
-        <h2>Details</h2>
-        <ul>
-            <li>
-                Hotel La Marina
-            </li>
-            <li>
-                Room Number: 34
-            </li>
-            <li>
-                Number of beds: 4
-            </li>
-            <li>
-                Price: 40€
-            </li>
-            <li>
-                Check-in: 14-05-18
-            </li>
-            <li>
-                Check-out: 15-05-18
-            </li>
-        </ul>
-
-    </div>
-</div>
-
-</body>
-</html>
+{% extends "base.html" %}
+     {% block content %}
+    <form class="container" style="width:50%;margin-top:12%;" action="" method="POST">
+        {% csrf_token %}
+        {% for field in formBooking %}
+            <div class="form-group">
+                {{ filed.error }}
+                <a>{{ field.label_tag }}</a>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">reserve</button>
+    </form>
+{% endblock %}
