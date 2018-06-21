@@ -48,7 +48,7 @@ class PaymentForm(forms.Form):
     month = forms.CharField(min_length=2, max_length=2, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     year = forms.CharField(min_length=4, max_length=4, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     cvv = forms.CharField(min_length=3, max_length=3, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    checkNewUser = forms.BooleanField(widget=forms.CheckboxInput(attrs={""}))
+    checkNewUser = forms.BooleanField(widget=forms.CheckboxInput(attrs={"class": "form-control"}))
 
 
 class Search(forms.Form):
