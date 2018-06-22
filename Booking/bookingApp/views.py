@@ -215,10 +215,11 @@ def searchResults(request):
                             else:
                                 tmp = [r.hotelId.name, r.roomNumber, r.price, "DEFAULT"]
                                 listResult.append(tmp)
-        else:
-            return redirect("/search/")
 
-    context = {'listResult': listResult}  # è  buona norma passare context a render
+    if len(listResult) > 0:
+        context = {'listResult': listResult}  # è  buona norma passare context a render
+    else:
+        context = {'listaVuota': '1'}
 
     return render(request, "search.html", context)
 

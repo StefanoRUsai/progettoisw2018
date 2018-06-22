@@ -26,9 +26,9 @@
   --->
 </div>
 {%endfor%}
-{% if listResult == None %}
+{% for item in listaVuota %}
     <div>
-        <h2>Spiacenti! Non abbiamo trovato alcuna camera che soddisfi le tue richieste.</h2>
+        <h3>Non ci sono camera disponibili con questi dati</h3>
     </div>
-{% endif %}
+{%endfor%}
     {% endblock %}

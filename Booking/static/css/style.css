@@ -1,0 +1,20 @@
+
+.searchBar{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+input[type=date] {
+  text-align: right;
+}
+
+input[type="date"]:before {
+  color: lightgrey;
+  content: attr(placeholder) !important;
+  margin-right: 0.5em;
+}
+
+input[type=date] {
+  text-align: right;
+}

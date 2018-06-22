@@ -1,34 +1,26 @@
 {% extends "base.html" %}
      {% block content %}
 
-            <div>
+            <div style="margin:auto; text-align: center">
                 <h2>What would you like to book?</h2>
             </div>
-            <div class = "searchBar">
-                <table>
-                    <tr>
-                        <th>Insert City:</th>
-                        <th>Number beds:</th>
-                        <th>CheckIn date:</th>
-                        <th>CheckOut date:</th>
-                    </tr>
-                           </table>
 
 
-                        <form method="GET" action="/search/" style="margin: auto;">
+                <div class="searchBar">
+                        <form method="GET" action="/search/">
                         {% csrf_token %}
-                    <input  id="search_box" type="text" name="search_city">
-                           <select name="search_number"  >
-                                <option value=1 selected="selected">1</option>
-                                <option value=2>2</option>
-                                <option value=3>3</option>
-                                <option value=4>4</option>
+                    <input  id="search_box" type="text" name="search_city" placeholder="In che città vuoi andare?">
+                           <select name="search_number"  placeholder="Numero posti letto">
+                                <option value=1 selected="selected">Numero posti 1</option>
+                                <option value=2>Numero posti 2</option>
+                                <option value=3>Numero posti 3</option>
+                                <option value=4>Numero posti 4</option>
                             </select>
-                        <input type = date name="search_checkin" value = "CheckIn">
-                        <input type = date name="search_checkout" value = "CheckOut">
+                        <input type = date name="search_checkin" value = "CheckIn" placeholder="check In?">
+                        <input type = date name="search_checkout" value = "CheckOut" placeholder="check Out?">
                       <button id="search_submit" type="submit" >Search</button>
                     </form>
+                </div>
 
-            </div>
     {% block container %}{% endblock %}
 {% endblock %}
