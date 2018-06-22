@@ -5,7 +5,7 @@
     <title>Manage your hotel</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 </head>
-<body style="background-color:#d4f6f9">
+<body style="background-color:#e8f0ff">
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -21,12 +21,12 @@
     </form>
   </div>
 </nav>
-<table style="margin-top:2%">
+<table style="margin-top:5%">
     <tr>
         <td>
 <div class="container">
-<div class="card" style="border-radius:1rem;height:380px">
-    <img class="card-img-top" style="height:240px" src=/{{hotel.photoUrl}} alt="Card image cap">
+<div class="card" style="height:380px;border-radius:0.5rem;">
+    <img class="card-img-top" style="height:240px;border-radius:0.5rem;" src=/{{hotel.photoUrl}} alt="Card image cap">
     <div class="card-body">
         <h4 class="card-title"><a>Nome: {{hotel.name}}</a></h4>
         <p class="card-text">Descrizione: {{hotel.description}}</p>
@@ -40,7 +40,7 @@
     <div class="row">
     {% for rm in roomList %}
         <div class="col-sm-6">
-    <div class="card" style="height:380px;width:250px;border-radius:1rem">
+    <div class="card" style="height:380px;width:250px;border-radius:1rem;">
       <div class="card-body">
         <h5 class="card-title">Numero camera: {{rm.roomNumber}}</h5>
         <p class="card-text">Posti letto: {{rm.capacity}}</p>
