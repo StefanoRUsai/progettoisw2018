@@ -4,17 +4,16 @@
 
 <h2>Your hotels</h2>
         {% for item in hotelList %}
-            <div class="card" style="height:100%" align = "center">
-                <img class="card-img-top" style="height:240px" src={{hotel.photoUrl}} alt="Card image cap">
+            <div class="card" style="width:40%;height:100%;margin:auto;margin-top:1%">
+                <img class="card-img-top" style="height:240px" src=/{{item.0.photoUrl}} alt="Card image cap">
                 <div class="card-body">
-                    <h4 class="card-title"><a>{{ item.name }}</a></h4>
-                    <p class="card-text">{{ item.description }}</p>
-                    <a href="booking/?hotelName={{ item.name }}" class="btn btn-primary">Go to details</a>
+                    <h4 class="card-title"><a>{{ item.0.name }}</a></h4>
+                    <p class="card-text">{{ item.0.description }}</p>
+                    <a href="/hotel/?name={{item.0.name}}&civN={{item.0.address.houseNumber}}&city={{item.0.address.city}}" class="btn btn-primary">Go to details</a>
                 </div>
             </div>
         {% endfor %}
 {% endblock %}
-
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>

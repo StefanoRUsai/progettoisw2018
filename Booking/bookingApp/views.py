@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from .forms import *
 from .models import *
-
+import datetime
 
 contextResultSearch ={}
 
@@ -196,30 +197,33 @@ def searchResults(request):
         searchPatternCheckIn = request.GET.get('search_checkin', None)
         searchPatternCheckOut = request.GET.get('search_checkout', None)
 
-        print(str(searchPatternNumber))
         if (searchPatternCity != None and searchPatternNumber != None and \
                 searchPatternCheckIn != None and searchPatternCheckOut != None):
 
             for r in Room.objects.all():
                 if (r.hotelId.address.city == searchPatternCity and\
                         str(r.capacity) == searchPatternNumber):
-                    temp =[r.hotelId.name, r.roomNumber, "DEFAULT"]
-                    listResult.append(temp)
-
-                    print(str(r.hotelId.name))
-                # for b in Booking.objects.all():
-                      #  if (r not in Booking.objects.all() or \
-                       #         (b.checkIn < searchPatternCheckIn and b.checkOut > searchPatternCheckOut)):
-
-    else:
-        return redirect("/search/")
+                     for b in Booking.objects.all():
+                        if (r.id not in Booking.objects.filter()):
+                            listIn = searchPatternCheckIn.split("-")
+                            listOut = searchPatternCheckOut.split("-")
+                            logIn_dt = datetime.datetime(int(listIn[0]), int(listIn[1]), int(listIn[2]))
+                            logOut_dt = datetime.datetime(int(listOut[0]), int(listOut[1]), int(listOut[2]))
+                            between = Booking.objects.filter(checkIn=logIn_dt, checkOut=logOut_dt)
+                            if between.exists():
+                                return redirect(".")
+                            else:
+                                tmp = [r.hotelId.name, r.roomNumber, "DEFAULT"]
+                                listResult.append(tmp)
+        else:
+            return redirect("/search/")
 
     context = {'listResult': listResult}  # è  buona norma passare context a render
 
     return render(request, "search.html", context)
 
 def searchBar(request):
-     return render(request, "search.html")
+     return render(request, "searchBar.html")
 
 "prenotazione: " \
 "controllo se non vi è utente loggato" \
@@ -284,6 +288,8 @@ def bookARoom(request):
             context = {'paymentForm': formBooking}
             return render(request, 'booking/', context)
 
+
+
 def hotelsList(request):
     hotelKeeperUsr = request.session["usr"]
     listHt = []
@@ -300,7 +306,90 @@ def hotelsList(request):
     return render(request, 'viewListOfHotels.html', context)
 
 def hotelDetail(request):
-    pass
+    listaCamereHotel = []
+    hotel = None
+
+    hotelName = request.GET.get('name',None)
+    hotelNumber = request.GET.get('civN',None)
+    hotelCity = request.GET.get('city',None)
+
+    for ht in Hotel.objects.all():
+        if(ht.name == hotelName and ht.address.houseNumber == int(hotelNumber) and ht.address.city == hotelCity):
+            print("qua arrivo")
+            hotel = ht
+            for rm in Room.objects.all():
+                if(rm.hotelId == hotel):
+                    listaCamereHotel.append(rm)
+
+    if(hotel != None):
+        context = {'hotel': hotel,'roomList': listaCamereHotel}
+    else:
+        return HttpResponse("<h3>Nessun dettaglio al momento disponibile</h3>")
+
+
+    return render(request,"manageHotel.html",context)
+
 
 def bookARoom(request):
-    pass
+    if (request.session == 'null'):
+
+        if (request.method == 'POST'):
+            formBooking = PaymentForm(request.POST)
+
+    if (formBooking.is_valid()):
+                    name = formBooking.cleaned_data['name']
+                    surname = formBooking.cleaned_data['surname']
+                    birthday = formBooking.cleaned_data['birthday']
+                    cf = formBooking.cleaned_data['cf']
+                    email = formBooking.cleaned_data['email']
+                    street = formBooking.cleaned_data['street']
+                    civicNumber = formBooking.cleaned_data['street']
+                    city = formBooking.cleaned_data['street']
+                    zipCode = formBooking.cleaned_data['street']
+                    cardNumber = formBooking.cleaned_data['cardNumber']
+                    month = formBooking.cleaned_data['month']
+                    year = formBooking.cleaned_data['year']
+                    cvv = formBooking.cleaned_data['cvv']  ##
+                    checkIn = formBooking.cleaned_data['checkin']
+                    checkOut = formBooking.cleaned_data['checkout']
+                    room = formBooking.cleaned_data['room']
+                    checkNewUser = formBooking.checkNewUser.cleaned_data['checkNewUser']
+
+
+    if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
+        return redirect('booking/')
+
+        card = CreditCard(cardNumber, year, month, cvv)
+        card.save()
+        address = Address(street, civicNumber, city, zipCode)
+        address.save()
+        user = User(name, surname, birthday, cf, email, address, card)
+        user.save()
+        booking = Booking(user, room, checkIn, checkOut)
+        booking.save()
+
+        context = {'paymentForm': formBooking}
+
+        return render(request, 'booking/', context)
+    else:
+        userName = request.session['usr']
+
+    for userAtrs in RegisteredUser.objects.all():
+        if (userAtrs.userName == userName):
+            userSession = userAtrs
+            break
+
+    if (request.method == 'POST'):
+        formBooking = PaymentForm(request.POST)
+
+        checkIn = formBooking.cleaned_data['checkin']
+        checkOut = formBooking.cleaned_data['checkout']
+        room = formBooking.cleaned_data['room']
+
+        booking = Booking(userSession, room, checkIn, checkOut)
+        booking.save()
+
+        context = {'paymentForm': formBooking}
+
+    return render(request, 'booking/', context)
+
