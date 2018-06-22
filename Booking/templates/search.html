@@ -4,31 +4,22 @@
             <div>
                 <h2>Risultati ricerca</h2>
             </div>
-{% for item in listResult %}
-<div class="card" style="width: 30rem;">
-  <img class="card-img-top" src="static/img" alt="Card image cap">
-  <div class="card-body">
-    <h5 class="card-title">{{item.0}}</h5>
-  </div>
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item">:Stanza: {{item.1}}</li>
-    <li class="list-group-item">Total price: {{item.2}}</li>
-    <li class="list-group-item">Services: {{item.3}}</li>
-  </ul>
-  <div class="card-body">
-    <a href="" class="btn btn-primary">Go to details</a>
-  </div>
-    <!--- oppure, al posto del div precedente che reindirizzerebbe ad un'altra pagina,
-  <div class="card-body">
-    <a href="#" class="card-link">Accetta</a>
-    <a href="#" class="card-link">Rifiuta</a>
-  </div>
-  --->
-</div>
-{%endfor%}
-{% if listResult == None %}
-    <div>
-        <h2>Spiacenti! Non abbiamo trovato alcuna camera che soddisfi le tue richieste.</h2>
-    </div>
-{% endif %}
+            <div>
+                <table>
+                  <tr>
+                    <th>Hotel</th>
+                    <th>Total Price</th>
+                    <th>Service</th>
+                    <th>N°</th>
+                  </tr>
+                    {% for item in listResult %}
+                  <tr>
+                    <th>{{item.0}}</th>
+                    <th>{{item.1}}</th>
+                    <th>{{item.2}}</th>
+                     {% endfor %}
+                  </tr>
+                </table>
+
+            </div>
     {% endblock %}
