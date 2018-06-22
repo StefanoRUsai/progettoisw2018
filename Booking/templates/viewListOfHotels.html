@@ -5,11 +5,11 @@
 <h2>Your hotels</h2>
         {% for item in hotelList %}
             <div class="card" style="width:40%;height:100%;margin:auto;margin-top:1%">
-                <img class="card-img-top" style="height:240px" src=/{{item.photoUrl}} alt="Card image cap">
+                <img class="card-img-top" style="height:240px" src=/{{item.0.photoUrl}} alt="Card image cap">
                 <div class="card-body">
-                    <h4 class="card-title"><a>{{ item.name }}</a></h4>
-                    <p class="card-text">{{ item.description }}</p>
-                    <a href="/hotel/?name={{item.name}}&civN={{item.address.houseNumber}}&city={{item.address.city}}" class="btn btn-primary">Go to details</a>
+                    <h4 class="card-title"><a>{{ item.0.name }}</a></h4>
+                    <p class="card-text">{{ item.0.description }}</p>
+                    <a href="/hotel/?name={{item.0.name}}&civN={{item.0.address.houseNumber}}&city={{item.0.address.city}}" class="btn btn-primary">Go to details</a>
                 </div>
             </div>
         {% endfor %}
