@@ -211,9 +211,9 @@ def searchResults(request):
                             logOut_dt = datetime.datetime(int(listOut[0]), int(listOut[1]), int(listOut[2]))
                             between = Booking.objects.filter(checkIn=logIn_dt, checkOut=logOut_dt)
                             if between.exists():
-                                return redirect(".")
+                                return render(request, "search.html")
                             else:
-                                tmp = [r.hotelId.name, r.roomNumber, "DEFAULT"]
+                                tmp = [r.hotelId.name, r.roomNumber, r.price, "DEFAULT"]
                                 listResult.append(tmp)
         else:
             return redirect("/search/")
