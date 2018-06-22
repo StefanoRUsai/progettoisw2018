@@ -2,18 +2,6 @@ from django.db import models
 from enum import Enum
 
 
-# Create your models here.
-
-class CreditCard(models.Model):
-    cardNumber = models.CharField(max_length=10)
-    expirationYear = models.CharField(max_length=4)
-    expirationMonth = models.CharField(max_length=2)
-    cvvCode = models.CharField(max_length=3)
-
-    def __str__(self):
-       return str(self.cardNumber) + " " + str(self.expirationYear) + " " + str(self.expirationMonth) + " " + str(self.cvvCode)
-
-
 class Address(models.Model):
     street = models.CharField(max_length=100)
     houseNumber = models.IntegerField()
@@ -35,10 +23,22 @@ class Person(models.Model):
         return str(self.name) + " " + str(self.surname) + " " + str(self.birthday) + " " + str(self.cf) + " " + str(self.email) + " " + self.address.__str__()
 
 class User(Person):
-    creditCard = models.ForeignKey(CreditCard, on_delete=models.CASCADE, null=True)
+    #creditCard = models.ForeignKey(CreditCard, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return str(self.name) + " " + str(self.surname) + " " + str(self.birthday) + " " + str(self.cf) + " " + str(self.email) + " " + self.address.__str__() + " " + self.creditCard.__str__()
+        return str(self.name) + " " + str(self.surname) + " " + str(self.birthday) + " " + str(self.cf) + " " + str(self.email) + " " + self.address.__str__()
+
+class CreditCard(models.Model):
+    cardNumber = models.CharField(max_length=10)
+    expirationYear = models.CharField(max_length=4)
+    expirationMonth = models.CharField(max_length=2)
+    cvvCode = models.CharField(max_length=3)
+
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+       return str(self.cardNumber) + " " + str(self.expirationYear) + " " + str(self.expirationMonth) + " " + str(self.cvvCode)
+
 
 class HotelKeeper(Person):
     userName = models.CharField(max_length=50)
