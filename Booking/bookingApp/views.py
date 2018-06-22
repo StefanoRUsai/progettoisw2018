@@ -175,8 +175,6 @@ def registerUser(request):
 
 def viewProfileUser(request):
     userName = request.session['usr']
-
-
     for userAtrs in RegisteredUser.objects.all():
         if(userAtrs.userName==userName):
             userSession = userAtrs
@@ -223,8 +221,75 @@ def searchResults(request):
 
     return render(request, "search.html", context)
 
+
 def searchBar(request):
-     return render(request, "searchBar.html")
+    return render(request, "searchBar.html")
+
+"<Book a Room>"
+"Verifica della tipologia di utente:"
+def verificationTypeUser(request):
+    userName = request.session['usr']
+
+    for user in RegisteredUser.objects.all():
+        if (user.userName == userName):
+            return user
+    return None
+
+"""
+primo caso: se l'utente è loggato e dunque registrato visualizza SOLO il form per la carta di credito. " \
+"se l'utente ha già salvato la sua carta di credito, i campi sarano precompilati " \
+"secondo caso: se l'utente non è loggato o non è registrato oltre al form di compilazione (visualizzato in maniera" \
+"totale) verrà visualizzata una stringa di suggerimento se loggare o registrarsi "
+
+*******************" \
+"DA QUI" \
+"*******************"
+def bookARoom(request):
+    user = verificationTypeUser(request)
+    formBooking = PaymentForm(request.POST)
+
+    if(user!=None):
+        creditCardUser = None
+        for creditCard in CreditCard.objects.all():
+            if (user.creditCard == creditCard.id):
+                creditCardUser = creditCard
+                break
+        if(creditCardUser!=None):
+            cardNumber = creditCardUser.cardNumber
+            month = creditCardUser.expirationMonth
+            year = creditCardUser.expirationYear
+            cvv = creditCardUser.cvvCode
+        else:
+            cardNumber = formBooking.cleaned_data['cardNumber']
+            month = formBooking.cleaned_data['month']
+            year = formBooking.cleaned_data['year']
+            cvv = formBooking.cleaned_data['cvv']
+            if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
+                return redirect('booking/')
+            card = CreditCard(cardNumber, year, month, cvv, owner)
+            card.save()
+
+
+    else:
+        name = formBooking.cleaned_data['name']
+        surname = formBooking.cleaned_data['surname']
+        birthday = formBooking.cleaned_data['birthday']
+        cf = formBooking.cleaned_data['cf']
+        email = formBooking.cleaned_data['email']
+        street = formBooking.cleaned_data['street']
+        civicNumber = formBooking.cleaned_data['street']
+        city = formBooking.cleaned_data['street']
+        zipCode = formBooking.cleaned_data['street']
+        cardNumber = formBooking.cleaned_data['cardNumber']
+        month = formBooking.cleaned_data['month']
+        year = formBooking.cleaned_data['year']
+        cvv = formBooking.cleaned_data['cvv']  ##
+
+        if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
+            return redirect('booking/')
+
+"</Book a Room>"
+"""
 
 "prenotazione: " \
 "controllo se non vi è utente loggato" \
@@ -233,6 +298,7 @@ def searchBar(request):
 "e dettagli camera" \
 "secondo ramo" \
 "visualizzione dettagli prenotazione e ricerca utente per creare una Prenotazione"
+
 def bookARoom(request):
     if(request.session == 'null'):
         if(request.method == 'POST'):
