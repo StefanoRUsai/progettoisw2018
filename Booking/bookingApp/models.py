@@ -68,11 +68,37 @@ class Hotel(models.Model):
         return self.city
 
 
+class IncludedService(models.Model):
+    TELEPHONE = 'TELEPHONE'
+    GARAGE = 'GARAGE'
+    WIFI = 'WIFI'
+    BREAKFAST = 'BREAKFAST'
+    LUNCH = 'LUNCH'
+    DINNER = 'DINNER'
+    BRUNCH = 'BRUNCH'
+
+    availableServices = (
+        (TELEPHONE, "Telephone"),
+        (GARAGE, "Garage"),
+        (WIFI, "Wifi"),
+        (BREAKFAST, "Breakfast"),
+        (LUNCH, "Lunch"),
+        (DINNER, "Dinner"),
+        (BRUNCH, "Brunch")
+    )
+
+    service = models.CharField(max_length=100, choices=availableServices)
+
+    def __str__(self):
+        return self.service.__str__()
+
+
 class Room(models.Model):
     roomNumber = models.IntegerField(default=0)
     capacity = models.IntegerField(default=0)
     price = models.FloatField(default=0.0)
     hotelId = models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    services = models.ManyToManyField(IncludedService)
 
     def __str__(self):
        return "Hotel di appartenenza --> " + self.hotelId.__str__() + " Room number --> " + str(self.roomNumber)
@@ -85,27 +111,3 @@ class Booking(models.Model):
 
     def __str__(self):
         return self.customerId.__str__() + " " + self.roomId.__str__() + " " + str(self.checkIn) + " " + str(self.checkOut)
-
-class IncludedService(models.Model):
-    NONE = 'NONE'
-    TELEPHONE = 'TELEPHONE'
-    GARAGE = 'GARAGE'
-    WIFI = 'WIFI'
-    BREAKFAST = 'BREAKFAST'
-    LUNCH = 'LUNCH'
-    DINNER = 'DINNER'
-    BRUNCH = 'BRUNCH'
-
-    availableServices = (
-        (NONE, "No services"),
-        (TELEPHONE, "Telephone"),
-        (GARAGE, "Garage"),
-        (WIFI, "Wifi"),
-        (BREAKFAST, "Breakfast"),
-        (LUNCH, "Lunch"),
-        (DINNER, "Dinner"),
-        (BRUNCH, "Brunch")
-    )
-
-    service = models.CharField(max_length=100, choices=availableServices, default=NONE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
