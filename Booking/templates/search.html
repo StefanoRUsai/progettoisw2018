@@ -5,26 +5,19 @@
                 <h2>Risultati ricerca</h2>
             </div>
 {% for item in listResult %}
-<div class="card" style="width: 30rem;">
-  <img class="card-img-top" src="static/img" alt="Card image cap">
+<div class="card liste" style="width: 30rem;">
+  <img class="card-img-top" src="/{{item.4}}" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">{{item.0}}</h5>
   </div>
   <ul class="list-group list-group-flush">
-    <li class="list-group-item">:Stanza: {{item.1}}</li>
-    <li class="list-group-item">Total price: {{item.2}}</li>
+    <li class="list-group-item">Stanza: {{item.1}}</li>
+    <li class="list-group-item">Total price: € {{item.2}}</li>
     <li class="list-group-item">Services: {{item.3}}</li>
   </ul>
   <div class="card-body">
     <a href="" class="btn btn-primary">Go to details</a>
-  </div>
-    <!--- oppure, al posto del div precedente che reindirizzerebbe ad un'altra pagina,
-  <div class="card-body">
-    <a href="#" class="card-link">Accetta</a>
-    <a href="#" class="card-link">Rifiuta</a>
-  </div>
-  --->
-</div>
+
 {%endfor%}
 {% for item in listaVuota %}
     <div>

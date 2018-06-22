@@ -213,7 +213,7 @@ def searchResults(request):
                             if between.exists():
                                 return render(request, "search.html")
                             else:
-                                tmp = [r.hotelId.name, r.roomNumber, r.price, "DEFAULT"]
+                                tmp = [r.hotelId.name, r.roomNumber, r.price, "DEFAULT", r.hotelId.photoUrl]
                                 listResult.append(tmp)
 
     if len(listResult) > 0:
