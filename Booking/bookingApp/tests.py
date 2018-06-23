@@ -4,6 +4,8 @@ import enum
 import unittest
 import datetime
 from .models import *
+from .forms import *
+from .views import *
 
 
 class ModelTest(TestCase):
@@ -203,3 +205,28 @@ class HotelsListTest(TestCase):
         self.request_factory = RequestFactory()
 
         self.middleware = SessionMiddleware()
+
+    def TestHotelListVisualization(self):
+        request = self.request_factory.get('/hotels/')
+        self.middleware.process_request(request)
+        request.session.save()
+
+        request.session['usr'] = self.userWithHotels.userName
+
+        response = hotelsList(request)
+
+        # print(response.status_code)
+        self.assertContains(response, 'Hotel Acquaragia')
+        self.assertContains(response, 'Hotel Napoleone')
+
+    def TestEmptyHotelListVisualization(self):
+        request = self.request_factory.get('/hotels/')
+        self.middleware.process_request(request)
+        request.session.save()
+
+        request.session['usr'] = self.userWithHotels.userName
+
+        response = hotelsList(request)
+
+        # print(response.status_code)
+        self.assertContains(response, "You didn't register an hotel yet")
