@@ -52,7 +52,7 @@ class RegisteredUser(User):
     password = models.CharField(max_length=50)
 
     def __str__(self):
-       return str(self.name) + " " + str(self.surname) + " ...con username --> " + str(self.userName)
+       return str(self.userName) # + " " + str(self.surname) + " ...con username --> " + str(self.userName)
 
 class Hotel(models.Model):
     name = models.CharField(max_length=30)
