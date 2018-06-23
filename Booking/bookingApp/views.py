@@ -448,9 +448,17 @@ def bookARoom(request):
     return render(request, 'payment_form.html', context)
 
 
-from django.contrib import auth
 
 def logout_view(request):
-  auth.logout(request)
+    if 'usr' in request.session:
+        del request.session['usr']
+    else:
+        print('no usr in sessione')
+
+    return redirect("/")
+#from django.contrib import auth
+
+#def logout_view(request):
+  #auth.logout(request)
   # Redirect to a success page.
-  return HttpResponseRedirect("/home/")
+  #return HttpResponseRedirect("/home/")
