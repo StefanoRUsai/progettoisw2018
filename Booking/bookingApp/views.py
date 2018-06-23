@@ -124,7 +124,8 @@ def addRoomToHotel(request):
                 temp = IncludedService(service=s,room=tmpRoom)
                 temp.save()
 
-            return redirect('addRoom')
+            context = {'form': form}
+            return render(request,"addRoom.html",context)
     else:
         form = AddRoomForm()
 
@@ -237,86 +238,6 @@ def verificationTypeUser(request):
             return user
     return None
 
-#primo caso: se l'utente è loggato e dunque registrato visualizza SOLO il form per la carta di credito. " \
-#"se l'utente ha già salvato la sua carta di credito, i campi sarano precompilati " \
-#"secondo caso: se l'utente non è loggato o non è registrato oltre al form di compilazione (visualizzato in maniera" \
-#"totale) verrà visualizzata una stringa di suggerimento se loggare o registrarsi "
-#
-def bookARoom(request):
-    username = verificationTypeUser(request)
-    try:
-        print(username)
-        user = RegisteredUser.objects.get(userName = str(username))
-    except ObjectDoesNotExist:
-
-        user = None
-
-
-    if (user != None):
-        try:
-            creditCardUser = CreditCard.objects.get(owner=user.id)
-        except ObjectDoesNotExist:
-            creditCardUser = None
-
-        if(request.method == 'POST'):
-            if user != None:
-                formBooking = creditCard(request.POST)
-                if(formBooking.is_valid()):
-                    if creditCardUser == None:
-                        cardNumber = formBooking.cleaned_data['cardNumber']
-                        month = formBooking.cleaned_data['month']
-                        year = formBooking.cleaned_data['year']
-                        cvv = formBooking.cleaned_data['cvv']
-                        if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
-                            return redirect('booking/')
-                        card = CreditCard(cardNumber, year, month, cvv)
-                        card.save()
-                        return redirect('booking/')
-            else:
-                formBooking = PaymentForm(request.POST)
-                if (formBooking.is_valid()):
-                    name = formBooking.cleaned_data['nome']
-                    surname = formBooking.cleaned_data['cognome']
-                    bd = formBooking.cleaned_data['birthday']
-                    codF = formBooking.cleaned_data['cf']
-                    emailAddr = formBooking.cleaned_data['email']
-                    userN = formBooking.cleaned_data['username']
-                    passW = formBooking.cleaned_data['password']
-                    rue = formBooking.cleaned_data['street']
-                    civicNr = formBooking.cleaned_data['civicNumber']
-                    userCity = formBooking.cleaned_data['city']
-                    cap = formBooking.cleaned_data['zipCode']
-                    cardNumber = formBooking.cleaned_data['cardNumber']
-                    month = formBooking.cleaned_data['month']
-                    year = formBooking.cleaned_data['year']
-                    cvv = formBooking.cleaned_data['cvv']
-                    if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
-                        card = CreditCard(cardNumber, year, month, cvv)
-                        card.save()
-                    userAddr = Address(street=str(rue), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
-                    Address.save()
-                    ut = RegisteredUser(nome=str(name), cognome=str(surname), birthday=str(bd), cf=str(codF), email=str(emailAddr),
-                                        username=str(userN), password=str(passW), address=userAddr)
-                    ut.save()
-                    return redirect('booking/')
-        else:
-            if user != None:
-                formBooking = creditCard()
-            else:
-                if creditCardUser != None:
-                    formBooking = creditCard(request.POST)
-                    cardNumber = formBooking.cleaned_data[str(creditCardUser.cardNumber)]
-                    month = formBooking.cleaned_data[str(creditCardUser.expirationMonth)]
-                    year = formBooking.cleaned_data[str(creditCardUser.expirationYear)]
-                    cvv = formBooking.cleaned_data[str(creditCardUser.cvvCode)]
-                    return redirect('booking/')
-                else:
-                    formBooking = PaymentForm()
-
-
-    context = {'formBooking': formBooking}
-    return render(request, 'payment_form.html', context)
-
 
 def hotelsList(request):
     hotelKeeperUsr = request.session["usr"]
@@ -357,3 +278,94 @@ def hotelDetail(request):
 
     return render(request,"manageHotel.html",context)
 
+def bookingNotRegistered(request):
+
+    if (request.method == 'POST'):
+        formBooking = PaymentForm(request.POST)
+        if (formBooking.is_valid()):
+            name = formBooking.cleaned_data['nome']
+            surname = formBooking.cleaned_data['cognome']
+            bd = formBooking.cleaned_data['birthday']
+            codF = formBooking.cleaned_data['cf']
+            emailAddr = formBooking.cleaned_data['email']
+            userN = formBooking.cleaned_data['username']
+            passW = formBooking.cleaned_data['password']
+            rue = formBooking.cleaned_data['street']
+            civicNr = formBooking.cleaned_data['civicNumber']
+            userCity = formBooking.cleaned_data['city']
+            cap = formBooking.cleaned_data['zipCode']
+            cardNumber = formBooking.cleaned_data['cardNumber']
+            month = formBooking.cleaned_data['month']
+            year = formBooking.cleaned_data['year']
+            cvv = formBooking.cleaned_data['cvv']
+            if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
+                card = CreditCard(cardNumber, year, month, cvv)
+                card.save()
+            userAddr = Address(street=str(rue), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
+            Address.save()
+            ut = RegisteredUser(nome=str(name), cognome=str(surname), birthday=str(bd), cf=str(codF),
+                                email=str(emailAddr),
+                                username=str(userN), password=str(passW), address=userAddr)
+            ut.save()
+            return redirect('booking/')
+    else:
+        formBooking = PaymentForm()
+
+    return formBooking
+
+def bookingRegisteredUserWithoutCard(request):
+    if (request.method == 'POST'):
+        formBooking = creditCard(request.POST)
+        if (formBooking.is_valid()):
+            cardNumber = formBooking.cleaned_data['cardNumber']
+            month = formBooking.cleaned_data['month']
+            year = formBooking.cleaned_data['year']
+            cvv = formBooking.cleaned_data['cvv']
+            if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
+                return redirect('booking/')
+            card = CreditCard(cardNumber, year, month, cvv)
+            card.save()
+            return redirect('booking/')
+    else:
+        formBooking = creditCard()
+
+    return formBooking
+
+def bookARoom(request):
+    username = verificationTypeUser(request)
+
+    flagRegistered = False
+    flagNotRegistered = False
+    flagRegisteredWithoutCard =False
+    try:
+        print(username)
+        user = RegisteredUser.objects.get(userName = str(username))
+    except ObjectDoesNotExist:
+        user = None
+
+    if user == None:
+        formBooking = bookingNotRegistered(request)
+        flagNotRegistered =True
+    else:
+        try:
+            creditCardUser = CreditCard.objects.get(owner=user.id)
+        except ObjectDoesNotExist:
+            creditCardUser = None
+
+        if creditCardUser == None:
+            formBooking = bookingRegisteredUserWithoutCard(request)
+            flagRegisteredWithoutCard = True
+        else:
+            flagRegistered = True
+
+
+
+
+    if flagNotRegistered == True:
+        context = {'formBooking': formBooking}
+    if flagRegisteredWithoutCard == True:
+        context = {'formBookingwithout': formBooking, 'bookingUser': user }
+    if flagRegistered == True:
+        context = {'bookingUser': user, 'creditCardUser': creditCardUser}
+
+    return render(request, 'payment_form.html', context)

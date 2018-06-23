@@ -1,5 +1,50 @@
 {% extends "base.html" %}
      {% block content %}
+    <!-- Utente esistente -->
+    {% if bookingUser is not None and creditCardUser is not None %}
+        <ul>
+            <li>
+                Name: {{bookingUser.name}}
+            </li>
+            <li>
+                Surname: {{bookingUser.surname}}
+            </li>
+            <li>
+                Email: {{bookingUser.email}}
+            </li>
+            <li>
+                Date of birth: {{bookingUser.birthday}}
+            </li>
+        </ul>
+    {% endif %}
+
+    <!-- esiste pure la carta esistente -->
+
+    {% if creditCardUser is not None %}
+        <ul>
+            <li>
+                Numero Carta: {{creditCardUser.cardNumber}}
+            </li>
+        </ul>
+    {% endif%}
+    <!-- non esiste la carta -->
+
+    {% if formBookingwithout is not None %}
+    <form class="container" style="width:50%;margin-top:12%;" action="" method="POST">
+        {% csrf_token %}
+        {% for field in formBookingwithout %}
+            <div class="form-group">
+                {{ filed.error }}
+                <a>{{ field.label_tag }}</a>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">reserve</button>
+    </form>
+    {% endif %}
+
+    <!-- l'utente deve registrarsi -->
+    {% if formBooking is not None %}
     <form class="container" style="width:50%;margin-top:12%;" action="" method="POST">
         {% csrf_token %}
         {% for field in formBooking %}
@@ -11,4 +56,5 @@
         {% endfor %}
         <button type="submit" class="btn btn-primary">reserve</button>
     </form>
+    {% endif %}
 {% endblock %}

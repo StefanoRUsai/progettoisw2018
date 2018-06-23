@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 import enum
 import unittest
 import datetime
@@ -107,8 +107,92 @@ class ModelTest(TestCase):
 
         booking.save()
 
+''''User story 6. (req. Gestione Hotel)'''
+class ManageHotelTest(TestCase):
+    def setUp(self):
 
-    def test_print_service(self):
-        print(str(IncludedService.objects.all()))
-        for o in IncludedService.objects.all():
-            print(o)
+        hkAddress = Address(
+            street='via francesco',
+            houseNumber=12,
+            city='savona',
+            zipCode='00989')
+        hkAddress.save()
+
+        hotelKeeper = HotelKeeper(
+            name='francesco',
+            surname='fadda',
+            birthday= datetime.date(1996,10,20),
+            cf='dasf12r1324',
+            email='francesco@fadda.net',
+            address=hkAddress,
+            userName='francesco',
+            password='isw'
+        )
+        hotelKeeper.save()
+
+        hotelAddress = Address(
+            street='via hotel bellissimo',
+            houseNumber=12,
+            city='savona',
+            zipCode='00929')
+        hotelAddress.save()
+
+        hotel = Hotel(
+            name='Hotel Acquaragia',
+            description='Hotel bellissimo',
+            hotelKeeperId=hotelKeeper,
+            address=hotelAddress,
+            photoUrl='/static/img/amsterdamHotel.jpg')
+        hotel.save()
+
+        service1 = IncludedService(
+            service = IncludedService.GARAGE
+        )
+
+        service1.save()
+
+        service2 = IncludedService(
+            service = IncludedService.TELEPHONE
+        )
+        service2.save()
+
+        room1 = Room(
+            roomNumber=12,
+            capacity=3,
+            price=40.0,
+            hotelId=hotel
+        )
+
+        room1.save()
+        room1.services.add(service1)
+
+        room2 = Room(
+            roomNumber=14,
+            capacity=3,
+            price=60.0,
+            hotelId=hotel
+        )
+
+        room2.save()
+        room2.services.add(service2)
+
+        #self.user = hotelKeeper
+        #self.client = Client()
+        #self.client.logout()
+
+
+    def testHotelDataVisualization(self):
+        #response = self.client.login(username=self.user.userName, password=self.user.password)
+
+        #self.client.session['usr'] = self.user.userName
+        #self.assertTrue(response)
+        #response = self.client.get('/hotels', follow=True)
+        #self.assertContains(response, 'Hotel Acquaragia')
+        #self.assertContains(response, '12')
+        #self.assertContains(response, 'garage')
+        #self.assertContains(response, '14')
+        #self.assertContains(response, 'telephone')
+        pass
+
+    def testRoomsListVisualization(self):
+        pass
