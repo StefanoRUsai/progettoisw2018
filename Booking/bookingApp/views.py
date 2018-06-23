@@ -11,6 +11,7 @@ def notRegisteredHome(request):
     contatore = 0
     lista = []
 
+
     for ht in Hotel.objects.all():
         if(contatore < 3):
             lista.append(ht)
@@ -23,6 +24,8 @@ def notRegisteredHome(request):
 
 
 def login(request):
+    print(request.session['usr']+' ciao\n')
+
     if(request.method == 'POST'):
         form = formLogin(request.POST)
         if(form.is_valid()):
@@ -41,6 +44,7 @@ def login(request):
 
     else:  #Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET
         form = formLogin()
+
 
     context = {'form' : form}
     return render(request,'login.html',context)
@@ -189,6 +193,8 @@ def viewProfileUser(request):
 
 
 def searchResults(request):
+
+
     listResult = []
 
     if request.method == 'GET':  # quando viene premuto il tasto di ricerca
@@ -213,7 +219,7 @@ def searchResults(request):
                             if between.exists():
                                 return render(request, "search.html")
                             else:
-                                tmp = [r.hotelId.name, r.roomNumber, r.price, "DEFAULT", r.hotelId.photoUrl]
+                                tmp = [r.hotelId.name, r.roomNumber, r.price, "DEFAULT", r.hotelId.photoUrl, r.id]
                                 listResult.append(tmp)
 
     if len(listResult) > 0:
@@ -230,12 +236,14 @@ def searchBar(request):
 def verificationTypeUser(request):
     """<Booking a Room>
     Verifica della tipologia di utente:"""
-
-    userName = request.session['usr']
-
-    for user in RegisteredUser.objects.all():
-        if (user.userName == userName):
-            return user
+    try:
+        userName = request.session['usr']
+    except:
+        userName = None
+    if userName != None:
+        for user in RegisteredUser.objects.all():
+            if (user.userName == userName):
+                return user
     return None
 
 
@@ -332,7 +340,18 @@ def bookingRegisteredUserWithoutCard(request):
     return formBooking
 
 def bookARoom(request):
+
+    try:
+        roomid = request.GET.get('roomid', None)
+    except:
+        roomid = None
+    print(str(roomid) + "sono qui")
+
     username = verificationTypeUser(request)
+
+    roomBooking = Room.objects.get(id=roomid)
+
+
 
     flagRegistered = False
     flagNotRegistered = False
@@ -362,10 +381,10 @@ def bookARoom(request):
 
 
     if flagNotRegistered == True:
-        context = {'formBooking': formBooking}
+        context = {'roomBooking' : roomBooking, 'formBooking': formBooking}
     if flagRegisteredWithoutCard == True:
-        context = {'formBookingwithout': formBooking, 'bookingUser': user }
+        context = {'roomBooking' : roomBooking, 'formBookingwithout': formBooking, 'bookingUser': user }
     if flagRegistered == True:
-        context = {'bookingUser': user, 'creditCardUser': creditCardUser}
+        context = {'roomBooking' : roomBooking, 'bookingUser': user, 'creditCardUser': creditCardUser}
 
     return render(request, 'payment_form.html', context)
