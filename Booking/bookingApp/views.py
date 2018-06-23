@@ -52,7 +52,6 @@ def login(request):
 
 
 def registeredUserHome(request):
-
     contatore = 0
     lista = []
 
@@ -65,14 +64,21 @@ def registeredUserHome(request):
     context = { 'hotel1' : lista[0] , 'hotel2' : lista[1] , 'hotel3' : lista[2]}
     return render(request, 'homeRegisteredUser.html', context)
 
+
 def hotelKeeperHome(request):
-
-    hotelKeeperUsr = request.session["usr"]
     listPr = []
-    for pr in Booking.objects.all():
 
-        if (hotelKeeperUsr == pr.roomId.hotelId.hotelKeeperId.userName):
-            listPr.append(pr)
+    try:
+        hotelKeeperUsr = request.session["usr"]
+    except:
+        hotelKeeperUsr = None
+
+    if hotelKeeperUsr != None:
+
+        for pr in Booking.objects.all():
+
+            if (hotelKeeperUsr == pr.roomId.hotelId.hotelKeeperId.userName):
+                listPr.append(pr)
     context = {'listaPrenotazioni': listPr}
     return render(request,'homeHotelKeeper.html', context)
 
@@ -186,15 +192,21 @@ def viewProfileUser(request):
             userSession = userAtrs
             break
 
-    cardCreditNrUserSession = userSession.creditCard.cardNumber
+    flag = False
 
-    context={'userProfile':userAtrs, 'creditCardView':cardCreditNrUserSession}
+    creditCardOfUser = None
+    for creditCard in CreditCard.objects.all():
+        if (userSession.id == creditCard.owner.id):
+            creditCardOfUser = creditCard
+            flag=True
+            break
+
+
+    context = {'userProfile': userAtrs, 'creditCardView': creditCardOfUser, 'flag':flag}
     return render(request, 'profile.html', context)
 
 
 def searchResults(request):
-
-
     listResult = []
 
     if request.method == 'GET':  # quando viene premuto il tasto di ricerca

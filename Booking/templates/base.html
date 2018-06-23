@@ -18,7 +18,7 @@
             </ul>
                 {% if request.session.usr  is not None %}
                     <a href="logout/" style="margin-right:2%">log out</a>
-                    <a href="profile/">{{request.session.usr}}</a>
+                    <a href="/profile/">{{request.session.usr}}</a>
                 {% else %}
                     <a href="signUp/" style="margin-right:2%">sign up</a>
                     <a href="login/">login</a>

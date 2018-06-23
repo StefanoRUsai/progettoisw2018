@@ -14,25 +14,28 @@
         <li>
             Date of birth: {{userProfile.birthday}}
         </li>
-        <li>
+        {% if flag == True%}
+         <li>
             Number of card credit: {{creditCardView.cardNumber}}
         </li>
-        <li>
-            Chronology:
+        {% endif %}
+             Chronology:
             <ul>
-                    <li>Hotel: Hilton</li>
-                    <li>Price: € 300,00</li>
-                    <li>Service: BreakFast</li>
-                    <li>Number of beds: 3</li>
-                <br>
+            {% for item in listBooking %}
+                <li>
+                    CheckIn: {{item.0.checkIn}}
+                </li>
+                <li>
+                    CheckOut: {{item.0.checkOut}}
+                </li>
+                <li>
+                    Price: {{item.1.price}}
+                </li>
+                <li>
+                    Room Number: {{item.1.roomNumber}}
+                </li>
+            {% endfor %}
             </ul>
-            <ul>
-                    <li>Hotel: B&B Mario Piras </li>
-                    <li>Price: € 56,00</li>
-                    <li>Service: BreakFast, Garage</li>
-                    <li>Number of beds: 1</li>
-            </ul>
-        </li>
     </ul>
 </div>
 {% endblock %}

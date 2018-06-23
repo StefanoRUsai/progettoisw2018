@@ -14,7 +14,7 @@
     <a class="navbar-brand" href="/homeHotelKeeper/">Booking.ISW</a>
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
         <li class="nav-item">
-            <a href="/addRoom/">Add room</a>
+            <a href="/addRoom/">Add a room</a>
         </li>
     </ul>
       <a href="/">logout</a>
@@ -28,9 +28,9 @@
 <div class="card" style="width:600px;height:380px;border-radius:0.5rem;">
     <img class="card-img-top" style="height:240px;border-radius:0.5rem;" src=/{{hotel.photoUrl}} alt="Card image cap">
     <div class="card-body">
-        <h4 class="card-title"><a>Nome: {{hotel.name}}</a></h4>
-        <p class="card-text">Descrizione: {{hotel.description}}</p>
-        <p class="card-text">Indirizzo: {{hotel.address.rue}} {{hotel.address.houseNumber}} {{hotel.address.city}} {{hotel.address.zipCode}}</p>
+        <h4 class="card-title"><a>Name of hotel: {{hotel.name}}</a></h4>
+        <p class="card-text">Description: {{hotel.description}}</p>
+        <p class="card-text">Address: {{hotel.address.rue}} {{hotel.address.houseNumber}} {{hotel.address.city}} {{hotel.address.zipCode}}</p>
     </div>
 </div>
 </div>
@@ -42,9 +42,9 @@
         <div class="col-sm-6">
     <div class="card" style="height:380px;width:250px;border-radius:1rem;">
       <div class="card-body">
-        <h5 class="card-title">Numero camera: {{rm.roomNumber}}</h5>
-        <p class="card-text">Posti letto: {{rm.capacity}}</p>
-          <p>Prezzo: {{rm.price}}</p>
+        <h5 class="card-title">Room number: {{rm.roomNumber}}</h5>
+        <p class="card-text">beds number: {{rm.capacity}}</p>
+          <p>Price: € {{rm.price}}</p>
       </div>
     </div>
   </div>
