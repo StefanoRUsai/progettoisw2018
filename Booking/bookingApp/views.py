@@ -231,6 +231,8 @@ def searchResults(request):
                             listOut = searchPatternCheckOut.split("-")
                             logIn_dt = datetime.datetime(int(listIn[0]), int(listIn[1]), int(listIn[2]))
                             logOut_dt = datetime.datetime(int(listOut[0]), int(listOut[1]), int(listOut[2]))
+                            request.session['logIn_dt'] = searchPatternCheckIn
+                            request.session['logOut_dt'] = searchPatternCheckOut
                             between = Booking.objects.filter(checkIn=logIn_dt, checkOut=logOut_dt)
                             if between.exists():
                                 return render(request, "search.html")
@@ -244,6 +246,7 @@ def searchResults(request):
         context = {'listaVuota': '1'}
 
     return render(request, "search.html", context)
+
 
 
 def searchBar(request):
