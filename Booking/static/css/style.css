@@ -1,8 +1,45 @@
-
+/* INIZIO CLASSI searchBar.html */
 .searchBar{
-    width: 80%;
+    width: 90%;
     margin-left: auto;
     margin-right: auto;
+}
+
+.searchDropDown{
+    width:15%;
+    height:40%;
+    border-radius:2px;
+    border-color:lightgrey;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* FINE CLASSI searchBar.html*/
+
+/* INIZIO CLASSI login.html*/
+
+.backgroungTag{
+    height:845px;
+    margin:auto;
+    margin-bottom:0%;
+    margin-top:-15%;
+    background-image:url('../img/LoginImg3.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.logForm{
+    margin-top:10%;
+    width:50%;
+    padding-top:8%;
+    margin-left:7%;
 }
 
 .liste{
@@ -10,6 +47,8 @@
     margin-right: auto;
     margin-top: 5%;
 }
+
+/* FINE CLASSI login.html*/
 
 input[type=date] {
   text-align: right;
@@ -45,6 +84,7 @@ input[type=date] {
 .addRoomBtn{
     margin-top:3%;
     width:15%;
+    height:auto;
     margin-left:85%
 }
 /* FINE CLASSI addRoom.html*/
