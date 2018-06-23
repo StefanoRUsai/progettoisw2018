@@ -315,7 +315,7 @@ def bookingNotRegistered(request):
                                 email=str(emailAddr),
                                 username=str(userN), password=str(passW), address=userAddr)
             ut.save()
-            return redirect('booking/')
+            return redirect('/booking/')
     else:
         formBooking = PaymentForm()
 
@@ -333,7 +333,7 @@ def bookingRegisteredUserWithoutCard(request):
                 return redirect('booking/')
             card = CreditCard(cardNumber, year, month, cvv)
             card.save()
-            return redirect('booking/')
+            return redirect('/booking/')
     else:
         formBooking = creditCard()
 
@@ -345,7 +345,6 @@ def bookARoom(request):
         roomid = request.GET.get('roomid', None)
     except:
         roomid = None
-    print(str(roomid) + "sono qui")
 
     username = verificationTypeUser(request)
 
@@ -395,4 +394,4 @@ from django.contrib import auth
 def logout_view(request):
   auth.logout(request)
   # Redirect to a success page.
-  return HttpResponseRedirect("home/")
+  return HttpResponseRedirect("/home/")
