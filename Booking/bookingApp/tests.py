@@ -1,4 +1,5 @@
-from django.test import TestCase, Client
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.test import TestCase, Client, RequestFactory
 import enum
 import unittest
 import datetime
@@ -107,8 +108,8 @@ class ModelTest(TestCase):
 
         booking.save()
 
-''''User story 6. (req. Gestione Hotel)'''
-class ManageHotelTest(TestCase):
+''''User story 4. (req. ViewHotelList)'''
+class HotelsListTest(TestCase):
     def setUp(self):
 
         hkAddress = Address(
@@ -176,23 +177,29 @@ class ManageHotelTest(TestCase):
         room2.save()
         room2.services.add(service2)
 
-        #self.user = hotelKeeper
-        #self.client = Client()
-        #self.client.logout()
+        hotel2 = Hotel(
+            name='Hotel Napoleone',
+            description='Hotel bellissimo',
+            hotelKeeperId=hotelKeeper,
+            address=hotelAddress,
+            photoUrl='/static/img/amsterdamHotel.jpg')
+        hotel2.save()
+
+        hotelKeeperNoHotels = HotelKeeper(
+            name='fabrizio',
+            surname='secci',
+            birthday= datetime.date(1996,10,20),
+            cf='dasf12r1324',
+            email='fabrizio@secci.net',
+            address=hkAddress,
+            userName='fabrizio',
+            password='isw'
+        )
+        hotelKeeperNoHotels.save()
 
 
-    def testHotelDataVisualization(self):
-        #response = self.client.login(username=self.user.userName, password=self.user.password)
+        self.userWithHotels = hotelKeeper
+        self.userWithoutHotels = hotelKeeperNoHotels
+        self.request_factory = RequestFactory()
 
-        #self.client.session['usr'] = self.user.userName
-        #self.assertTrue(response)
-        #response = self.client.get('/hotels', follow=True)
-        #self.assertContains(response, 'Hotel Acquaragia')
-        #self.assertContains(response, '12')
-        #self.assertContains(response, 'garage')
-        #self.assertContains(response, '14')
-        #self.assertContains(response, 'telephone')
-        pass
-
-    def testRoomsListVisualization(self):
-        pass
+        self.middleware = SessionMiddleware()
