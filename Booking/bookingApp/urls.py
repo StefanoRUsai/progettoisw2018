@@ -15,4 +15,5 @@ urlpatterns = [
     path('addHotel', v.addHotel),
     path('hotel/', v.hotelDetail),
     path('searchbar/', v.searchBar),
+    path('logout/', v.logout_view)
 ]

@@ -1,5 +1,16 @@
 {% extends "base.html" %}
      {% block content %}
+    <div class="card liste" style="width: 30rem;">
+  <img class="card-img-top" src="/{{roomBooking.hotelId.photoUrl}}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{roomBooking.hotelId.name}}</h5>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Stanza: {{roomBooking.roomNumber}}</li>
+    <li class="list-group-item">Total price: € {{roomBooking.price}}</li>
+    <li class="list-group-item">Services: {{item.3}}</li>
+  </ul>
+    </div>
     <!-- Utente esistente -->
     {% if bookingUser is not None and creditCardUser is not None %}
         <ul>

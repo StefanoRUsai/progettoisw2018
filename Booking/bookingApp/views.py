@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .forms import *
 from .models import *
 import datetime
+from django.contrib import auth
 
 contextResultSearch ={}
 
@@ -24,7 +25,6 @@ def notRegisteredHome(request):
 
 
 def login(request):
-    print(request.session['usr']+' ciao\n')
 
     if(request.method == 'POST'):
         form = formLogin(request.POST)
@@ -388,3 +388,11 @@ def bookARoom(request):
         context = {'roomBooking' : roomBooking, 'bookingUser': user, 'creditCardUser': creditCardUser}
 
     return render(request, 'payment_form.html', context)
+
+
+from django.contrib import auth
+
+def logout_view(request):
+  auth.logout(request)
+  # Redirect to a success page.
+  return HttpResponseRedirect("home/")
