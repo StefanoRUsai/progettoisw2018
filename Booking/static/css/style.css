@@ -15,6 +15,11 @@ input[type=date] {
   text-align: right;
 }
 
+.addRoomFormDiv{
+    width: 40%;
+
+}
+
 input[type="date"]:before {
   color: lightgrey;
   content: attr(placeholder) !important;

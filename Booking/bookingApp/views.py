@@ -123,7 +123,8 @@ def addRoomToHotel(request):
                 temp = IncludedService(service=s,room=tmpRoom)
                 temp.save()
 
-            return redirect('addRoom')
+            context = {'form': form}
+            return render(request,"addRoom.html",context)
     else:
         form = AddRoomForm()
 
