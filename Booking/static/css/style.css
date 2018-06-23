@@ -15,10 +15,40 @@ input[type=date] {
   text-align: right;
 }
 
+
+/* INIZIO CLASSI addRoom.html*/
 .addRoomFormDiv{
     width: 40%;
 
 }
+
+.bkgrd{
+    width:100%;
+    height:758px;
+    background-image:url('../img/addRoom.jpg');
+    background-repeat:no-repeat;
+    background-size: cover;
+}
+
+.formCont{
+    width:60%;
+    height:auto;
+    padding-top:6%;
+    margin-left:35%;
+}
+
+.forAddR{
+    color:white;
+    font-size:20px;
+}
+
+.addRoomBtn{
+    margin-top:3%;
+    width:15%;
+    margin-left:85%
+}
+/* FINE CLASSI addRoom.html*/
+
 
 input[type="date"]:before {
   color: lightgrey;

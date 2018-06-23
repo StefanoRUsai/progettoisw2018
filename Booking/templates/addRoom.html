@@ -1,15 +1,17 @@
 {% extends "base.html" %}
      {% block content %}
-<div class="container" style="width:60%;">
+<div class="container-fluid bkgrd">
+
+<div class="container formCont">
 <form>
   <div class="form-group row">
-    <label for="inputEmail3" class="col-sm-2 col-form-label">Room number</label>
+    <label for="inputEmail3" class="col-sm-2 col-form-label forAddR">Room number</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" id="inputEmail3" placeholder="21">
     </div>
   </div>
   <div class="form-group row">
-    <label for="inputPassword3" class="col-sm-2 col-form-label">Capacity</label>
+    <label for="inputPassword3" class="col-sm-2 col-form-label forAddR">Capacity</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" id="inputPassword3" placeholder="3">
     </div>
@@ -20,7 +22,7 @@
     <div class="col-sm-10">
       <div class="form-check">
         <input class="form-check-input" type="checkbox" id="gridCheck1">
-        <label class="form-check-label" for="gridCheck1">
+        <label class="form-check-label forAddR" for="gridCheck1">
           Telephone
         </label>
       </div>
@@ -31,7 +33,7 @@
     <div class="col-sm-10">
       <div class="form-check">
         <input class="form-check-input" type="checkbox" id="gridCheck2">
-        <label class="form-check-label" for="gridCheck2">
+        <label class="form-check-label forAddR" for="gridCheck2">
           Garage
         </label>
       </div>
@@ -42,7 +44,7 @@
     <div class="col-sm-10">
       <div class="form-check">
         <input class="form-check-input" type="checkbox" id="gridCheck3">
-        <label class="form-check-label" for="gridCheck3">
+        <label class="form-check-label forAddR" for="gridCheck3">
           WiFi
         </label>
       </div>
@@ -53,7 +55,7 @@
     <div class="col-sm-10">
       <div class="form-check">
         <input class="form-check-input" type="checkbox" id="gridCheck4">
-        <label class="form-check-label" for="gridCheck4">
+        <label class="form-check-label forAddR" for="gridCheck4">
           Breakfast
         </label>
       </div>
@@ -64,7 +66,7 @@
     <div class="col-sm-10">
       <div class="form-check">
         <input class="form-check-input" type="checkbox" id="gridCheck5">
-        <label class="form-check-label" for="gridCheck5">
+        <label class="form-check-label forAddR" for="gridCheck5">
           Lunch
         </label>
       </div>
@@ -75,7 +77,7 @@
     <div class="col-sm-10">
       <div class="form-check">
         <input class="form-check-input" type="checkbox" id="gridCheck6">
-        <label class="form-check-label" for="gridCheck6">
+        <label class="form-check-label forAddR" for="gridCheck6">
           Dinner
         </label>
       </div>
@@ -86,7 +88,7 @@
     <div class="col-sm-10">
       <div class="form-check">
         <input class="form-check-input" type="checkbox" id="gridCheck7">
-        <label class="form-check-label" for="gridCheck7">
+        <label class="form-check-label forAddR" for="gridCheck7">
           Brunch
         </label>
       </div>
@@ -94,33 +96,16 @@
       </div>
   </fieldset>
     <div class="form-group row">
-        <label for="inputprice" class="col-sm-2 col-form-label">Price</label>
+        <label for="inputprice" class="col-sm-2 col-form-label forAddR">Price</label>
         <div class="col-sm-10">
         <input type="number" class="form-control" id="inputprice" placeholder="€ 45">
      </div>
     </div>
-  <div class="form-group row">
-    <div class="col-sm-10">
-      <button type="submit" class="btn btn-success">Add room</button>
-    </div>
-  </div>
 </form>
+    <div>
+        <button type="submit" class="btn btn-success addRoomBtn">Add room</button>
+    </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</div>
 {% endblock %}
