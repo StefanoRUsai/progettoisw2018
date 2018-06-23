@@ -456,9 +456,3 @@ def logout_view(request):
         print('no usr in sessione')
 
     return redirect("/")
-#from django.contrib import auth
-
-#def logout_view(request):
-  #auth.logout(request)
-  # Redirect to a success page.
-  #return HttpResponseRedirect("/home/")

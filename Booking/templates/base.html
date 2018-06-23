@@ -15,8 +15,13 @@
             <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
                 <a class="navbar-brand" href="#">Booking.ISW</a>
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            </ul>
-                {% if request.session.usr  is not None %}
+                    {% if request.session.usrType is not None and request.session.usrType == 'hotelKeepr' %}
+                        <li class="nav-item">
+                               <a href="/hotels/">My hotels</a>
+                       </li>
+                    {% endif %}
+                </ul>
+                {% if request.session.usr is not None %}
                     <a href="/logout/" style="margin-right:2%">log out</a>
                     <a href="/profile/">{{request.session.usr}}</a>
                 {% else %}
