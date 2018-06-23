@@ -302,19 +302,18 @@ def hotelDetail(request):
 
     return render(request,"manageHotel.html",context)
 
-def bookingNotRegistered(request):
+""" check su bookin not registered ora funziona"""
+def bookingNotRegistered(request, roomBoking):
 
     if (request.method == 'POST'):
         formBooking = PaymentForm(request.POST)
         if (formBooking.is_valid()):
-            name = formBooking.cleaned_data['nome']
-            surname = formBooking.cleaned_data['cognome']
+            name = formBooking.cleaned_data['name']
+            surname = formBooking.cleaned_data['surname']
             bd = formBooking.cleaned_data['birthday']
             codF = formBooking.cleaned_data['cf']
             emailAddr = formBooking.cleaned_data['email']
-            userN = formBooking.cleaned_data['username']
-            passW = formBooking.cleaned_data['password']
-            rue = formBooking.cleaned_data['street']
+            street = formBooking.cleaned_data['street']
             civicNr = formBooking.cleaned_data['civicNumber']
             userCity = formBooking.cleaned_data['city']
             cap = formBooking.cleaned_data['zipCode']
@@ -322,22 +321,42 @@ def bookingNotRegistered(request):
             month = formBooking.cleaned_data['month']
             year = formBooking.cleaned_data['year']
             cvv = formBooking.cleaned_data['cvv']
-            if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
-                card = CreditCard(cardNumber, year, month, cvv)
-                card.save()
-            userAddr = Address(street=str(rue), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
-            Address.save()
-            ut = RegisteredUser(nome=str(name), cognome=str(surname), birthday=str(bd), cf=str(codF),
-                                email=str(emailAddr),
-                                username=str(userN), password=str(passW), address=userAddr)
+            #if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
+            print('arrivo qui carta? ')
+            userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
+            userAddr.save()
+            ut = User(name=str(name), surname=str(surname), birthday=bd, cf=str(codF),
+                                email=str(emailAddr), address=userAddr)
+            print('arrivo qui persona?')
             ut.save()
+
+            card = CreditCard(owner=ut, cardNumber=cardNumber, expirationYear=year,
+                              expirationMonth=month, cvvCode = cvv)
+            card.save()
+
+            try:
+                searchPatternCheckIn = request.session['logIn_dt']
+                searchPatternCheckOut = request.session['logOut_dt']
+                listIn = searchPatternCheckIn.split("-")
+                listOut = searchPatternCheckOut.split("-")
+                logIn_dt = datetime.datetime(int(listIn[0]), int(listIn[1]), int(listIn[2]))
+                logOut_dt = datetime.datetime(int(listOut[0]), int(listOut[1]), int(listOut[2]))
+                booking = Booking(customerId=ut, roomId=roomBoking, checkIn=logIn_dt, checkOut=logOut_dt)
+                booking.save()
+            except:
+                booking = None
+
+
+
             return redirect('/booking/')
+
     else:
         formBooking = PaymentForm()
 
     return formBooking
 
-def bookingRegisteredUserWithoutCard(request):
+
+def bookingRegisteredUserWithoutCard(request, user, roomBooking):
     if (request.method == 'POST'):
         formBooking = creditCard(request.POST)
         if (formBooking.is_valid()):
@@ -345,15 +364,31 @@ def bookingRegisteredUserWithoutCard(request):
             month = formBooking.cleaned_data['month']
             year = formBooking.cleaned_data['year']
             cvv = formBooking.cleaned_data['cvv']
-            if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
-                return redirect('booking/')
-            card = CreditCard(cardNumber, year, month, cvv)
+            card = CreditCard(owner=user, cardNumber=cardNumber, expirationYear=year,
+                              expirationMonth=month, cvvCode=cvv)
             card.save()
+
+
+            try:
+                searchPatternCheckIn = request.session['logIn_dt']
+                searchPatternCheckOut = request.session['logOut_dt']
+                listIn = searchPatternCheckIn.split("-")
+                listOut = searchPatternCheckOut.split("-")
+                logIn_dt = datetime.datetime(int(listIn[0]), int(listIn[1]), int(listIn[2]))
+                logOut_dt = datetime.datetime(int(listOut[0]), int(listOut[1]), int(listOut[2]))
+                booking = Booking(customerId=user, roomId=roomBooking, checkIn=logIn_dt, checkOut=logOut_dt)
+                booking.save()
+            except:
+                booking = None
+
             return redirect('/booking/')
     else:
         formBooking = creditCard()
 
     return formBooking
+
+
+
 
 def bookARoom(request):
 
@@ -366,19 +401,16 @@ def bookARoom(request):
 
     roomBooking = Room.objects.get(id=roomid)
 
-
-
     flagRegistered = False
     flagNotRegistered = False
     flagRegisteredWithoutCard =False
     try:
-        print(username)
         user = RegisteredUser.objects.get(userName = str(username))
     except ObjectDoesNotExist:
         user = None
 
     if user == None:
-        formBooking = bookingNotRegistered(request)
+        formBooking = bookingNotRegistered(request, roomBooking)
         flagNotRegistered =True
     else:
         try:
@@ -387,13 +419,21 @@ def bookARoom(request):
             creditCardUser = None
 
         if creditCardUser == None:
-            formBooking = bookingRegisteredUserWithoutCard(request)
+            formBooking = bookingRegisteredUserWithoutCard(request, user, roomBooking)
             flagRegisteredWithoutCard = True
         else:
             flagRegistered = True
-
-
-
+            try:
+                searchPatternCheckIn = request.session['logIn_dt']
+                searchPatternCheckOut = request.session['logOut_dt']
+                listIn = searchPatternCheckIn.split("-")
+                listOut = searchPatternCheckOut.split("-")
+                logIn_dt = datetime.datetime(int(listIn[0]), int(listIn[1]), int(listIn[2]))
+                logOut_dt = datetime.datetime(int(listOut[0]), int(listOut[1]), int(listOut[2]))
+                booking = Booking(customerId=user, roomId=roomBooking, checkIn=logIn_dt, checkOut=logOut_dt)
+                booking.save()
+            except:
+                booking = None
 
     if flagNotRegistered == True:
         context = {'roomBooking' : roomBooking, 'formBooking': formBooking}

@@ -36,20 +36,23 @@ class registrationForm(forms.Form):
 
 
 class PaymentForm(forms.Form):
-    name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class":"form-control"}))
+    name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     surname = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    birthday = forms.DateField(required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    birthday = forms.DateField(required=True, widget=forms.DateInput(attrs={"class": "form-control"}))
     cf = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     email = forms.EmailField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     street = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     civicNumber = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     city = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     zipCode = forms.CharField(max_length=15, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    cardNumber = forms.CharField(min_length=15, max_length=15, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    month = forms.CharField(min_length=2, max_length=2, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    year = forms.CharField(min_length=4, max_length=4, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    cvv = forms.CharField(min_length=3, max_length=3, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-#    checkNewUser = forms.BooleanField(widget=forms.CheckboxInput(attrs={"class": "form-control"}))
+    cardNumber = forms.CharField(min_length=15, max_length=15, required=True,
+                                 widget=forms.TextInput(attrs={"class": "form-control"}))
+    month = forms.CharField(min_length=2, max_length=2, required=True,
+                            widget=forms.TextInput(attrs={"class": "form-control"}))
+    year = forms.CharField(min_length=4, max_length=4, required=True,
+                           widget=forms.TextInput(attrs={"class": "form-control"}))
+    cvv = forms.CharField(min_length=3, max_length=3, required=True,
+                          widget=forms.TextInput(attrs={"class": "form-control"}))
 
 
 class creditCard(forms.Form):

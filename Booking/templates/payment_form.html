@@ -37,6 +37,10 @@
                 Card number: {{creditCardUser.cardNumber}}
             </li>
         </ul>
+    <form class="container" style="width:50%;margin-top:12%;" action="" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">reserve</button>
+    </form>
     {% endif%}
     <!-- non esiste la carta -->
 
@@ -56,13 +60,6 @@
 
     <!-- l'utente deve registrarsi -->
     {% if formBooking is not None %}
-    <div class="scritta">
-        <p>
-           <a href="login.html">Sign in</a> to auto-fill your details or <a href="signUp.html">register</a>to save them for next time!
-        </p>
-
-    </div>
-
     <form class="container" style="width:50%;margin-top:12%;" action="" method="POST">
         {% csrf_token %}
         {% for field in formBooking %}
@@ -72,7 +69,8 @@
                 {{ field }}
             </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary">reserve</button>
+     <button type="submit" class="btn btn-primary">reserve</button>
     </form>
     {% endif %}
+
 {% endblock %}
