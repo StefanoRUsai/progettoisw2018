@@ -36,10 +36,12 @@ def login(request):
             for ut in RegisteredUser.objects.all():
                 if(ut.userName == userN and ut.password == passW):
                     request.session['usr'] = form.cleaned_data['username']
+                    request.session['usrType'] = 'regUser'
                     return redirect('/homeRegistered/')
             for ut in HotelKeeper.objects.all():
                 if (ut.userName == userN and ut.password == passW):
                     request.session['usr'] = form.cleaned_data['username']
+                    request.session['usrType'] = 'hotelKeeper'
                     return redirect('/home/')
 
     else:  #Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET
@@ -452,6 +454,9 @@ def bookARoom(request):
 def logout_view(request):
     if 'usr' in request.session:
         del request.session['usr']
+
+        if 'usrType' in request.session:
+            del request.session['usrType']
     else:
         print('no usr in sessione')
 

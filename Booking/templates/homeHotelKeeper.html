@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %} Home {% endblock %}
 {% block content %}
 <h1>Reservations in your hotel</h1>
 {% for item in listaPrenotazioni %}
@@ -12,11 +13,7 @@
     <li class="list-group-item">Hotel: {{item.roomId.hotelId.name}}</li>
     <li class="list-group-item">Room: {{item.roomId.roomNumber}}</li>
     <li class="list-group-item">Customer : {{item.customerId.name}}</li>
-  </ul><!--
-  <div>
-    <button href="#" class="btn-primary">Accept</button>
-     <button href="#" class="btn-danger">Reject</button>
-  </div>-->
+  </ul>
 </div>
 {%endfor%}
 
