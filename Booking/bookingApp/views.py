@@ -222,22 +222,35 @@ def registerUser(request):
 
 def viewProfileUser(request):
     userName = request.session['usr']
+    userSession = None
+    flag_user = True
     for userAtrs in RegisteredUser.objects.all():
         if(userAtrs.userName==userName):
             userSession = userAtrs
             break
 
-    flag = False
+    if(userSession==None):
+        flag_user = False
+        for userAtrs in HotelKeeper.objects.all():
+            if (userAtrs.userName == userName):
+                userSession = userAtrs
+                break
 
+        context = {'userProfile': userSession,
+                   'flag_user': flag_user,}
+
+        return render(request, 'profile.html', context)
+
+    flag_card = False
     creditCardOfUser = None
     for creditCard in CreditCard.objects.all():
         if (userSession.id == creditCard.owner.id):
             creditCardOfUser = creditCard
-            flag=True
+            flag_card=True
             break
 
     listBooking = []
-    flag2=False
+    flag_pren=False
 
     for book in Booking.objects.all():
         if (userSession.id == book.customerId.id):
@@ -246,11 +259,11 @@ def viewProfileUser(request):
                     for hotel in Hotel.objects.all():
                         if(room.hotelId.id==hotel.id):
                             listBooking.append([book, room, hotel])
-                            if (flag2==False):
-                                flag2=True
+                            if (flag_pren==False):
+                                flag_pren=True
                             break
 
-    context = {'userProfile': userAtrs, 'creditCardView': creditCardOfUser, 'flag':flag, 'listBooking': listBooking, 'flag2':flag2}
+    context = {'userProfile': userSession, 'creditCardView': creditCardOfUser, 'listBooking': listBooking, 'flag_user': flag_user,'flag_card':flag_card,'flag_pren':flag_pren}
     return render(request, 'profile.html', context)
 
 
