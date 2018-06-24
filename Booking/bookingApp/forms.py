@@ -22,6 +22,7 @@ class formLogin(forms.Form):
     password = forms.CharField(widget=forms.TextInput(attrs={"class" : "form-control"}))
 
 class registrationForm(forms.Form):
+    hotelKeeper = forms.BooleanField(widget=forms.CheckboxInput(attrs={}), required=False)
     name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     surname = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     birthday = forms.DateField(required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
@@ -29,10 +30,12 @@ class registrationForm(forms.Form):
     email = forms.EmailField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     userName = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     password = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    verifyPassword = forms.CharField(label='Verify Password',max_length=50, error_messages={'required': 'Please verify password'}, required=False, widget=forms.TextInput(attrs={"class": "form-control"}))
     street = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     civicNumber = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     city = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     zipCode = forms.CharField(max_length=15, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+
 
 
 class PaymentForm(forms.Form):

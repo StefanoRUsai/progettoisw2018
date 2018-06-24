@@ -169,27 +169,42 @@ def registerUser(request):
                 userN = form.cleaned_data['userName']
                 passW = form.cleaned_data['password']
 
+                hotelKeeper = form.cleaned_data['hotelKeeper']
 
         #creo prima l'oggetto di tipo indirizzo
         userAddr = Address(street=str(street),houseNumber=str(civicNr),city=str(userCity),zipCode=str(cap))
         userAddr.save()
 
         #creo poi l'oggetto ut di tipo RegisteredUser che comprende l'oggetto userAddr creato poco sopra
-        ut = RegisteredUser(name=str(name),surname=str(surname),
-                            birthday=str(bd),cf=str(codF),
-                            email=str(emailAddr),userName=str(userN),
-                            password=str(passW),address=userAddr)
+        if (hotelKeeper != True):
+            ut = RegisteredUser(name=str(name),surname=str(surname),
+                                birthday=str(bd),cf=str(codF),
+                                email=str(emailAddr),userName=str(userN),
 
-        ut.save()
+                                password=str(passW),address=userAddr)
+            ut.save()
+        else:
+            hk = HotelKeeper(name=str(name), surname=str(surname),
+                                birthday=str(bd), cf=str(codF),
+                                email=str(emailAddr), userName=str(userN),
+
+                                password=str(passW), address=userAddr)
+            hk.save()
 
         request.session['usr'] = userN
-        return redirect('/homeRegisteredUser/')
+
+        if hotelKeeper != True:
+            return redirect('/homeRegisteredUser/')
+        else:
+            return redirect('/home/')
 
     else:  #Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET
         form = registrationForm()
 
     context = {'form' : form}
     return render(request,'signUp.html',context)
+
+
 
 def viewProfileUser(request):
     userName = request.session['usr']
