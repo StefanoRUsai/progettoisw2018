@@ -236,8 +236,18 @@ def viewProfileUser(request):
             flag=True
             break
 
+    listBooking = []
+    flag2=False
 
-    context = {'userProfile': userAtrs, 'creditCardView': creditCardOfUser, 'flag':flag}
+    for book in Booking.objects.all():
+        if (userSession.id == book.customerId.id):
+            for room in Room.objects.all():
+                if(room.id==book.roomId.id):
+                    listBooking.append([book, room])
+                    if (flag2==False): flag2=True
+                    break
+
+    context = {'userProfile': userAtrs, 'creditCardView': creditCardOfUser, 'flag':flag, 'listBooking': listBooking, 'flag2':flag2}
     return render(request, 'profile.html', context)
 
 
