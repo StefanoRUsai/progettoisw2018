@@ -523,6 +523,7 @@ class RegistrationHotelKeeperTest(TestCase):
         request = self.request_factory.get('/login/')
         request.session['usr'] = hotelKeeper.userName
 	request.session['usrType'] = 'regUser'
+	response = self.client.get('/login/')
 	self.assertEquals(response.status_code, 302)
 
 
