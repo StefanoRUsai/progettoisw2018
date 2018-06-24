@@ -5,59 +5,59 @@
     background-repeat:no-repeat;
     background-size: cover;">
 
-<div class="container formHtCont" style="width:50%;height:auto;padding-top:6%;margin-left:12%;">
+<div class="container formHtCont" style="width:60%;height:auto;padding-top:4%;margin-left:20%;">
 <form method="POST" action="">
     {% csrf_token %}
   <div class="form-group row">
-    <label for="inputEmail3" class="col-sm-2 col-form-label forAddH" style="color:black;font-size:22px;">Name</label>
+    <label for="inputEmail3" class="col-sm-2 col-form-label forAddH" style="color:white;font-size:22px;">Name</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" name="name" id="inputEmail3" placeholder="Name...">
     </div>
   </div>
     <br>
   <div class="form-group row">
-    <label for="inputPassword3" class="col-sm-2 col-form-label forAddH" style="color:black;font-size:22px;">Description</label>
+    <label for="inputPassword3" class="col-sm-2 col-form-label forAddH" style="color:white;font-size:22px;">Description</label>
     <div class="col-sm-10">
       <input type="text" name="description" class="form-control" id="inputPassword3" placeholder="This structure...">
     </div>
   </div>
     <br>
     <div class="form-group row">
-    <label for="input4" class="col-sm-2 col-form-label forAddH" style="color:black;font-size:22px;">Street</label>
+    <label for="input4" class="col-sm-2 col-form-label forAddH" style="color:white;font-size:22px;">Street</label>
     <div class="col-sm-10">
       <input type="text" name="street" class="form-control" id="input4" placeholder="Rue Laplace">
     </div>
    </div>
     <br>
     <div class="form-group row">
-    <label for="input5" class="col-sm-2 col-form-label forAddH" style="color:black;font-size:22px;">Nº</label>
+    <label for="input5" class="col-sm-2 col-form-label forAddH" style="color:white;font-size:22px;">Nº</label>
     <div class="col-sm-10">
       <input type="number" name="houseNumber" class="form-control" id="input5" placeholder="">
     </div>
    </div>
     <br>
         <div class="form-group row">
-    <label for="input6" class="col-sm-2 col-form-label forAddH" style="color:black;font-size:22px;">City</label>
+    <label for="input6" class="col-sm-2 col-form-label forAddH" style="color:white;font-size:22px;">City</label>
     <div class="col-sm-10">
       <input type="text" name="city" class="form-control" id="input6" placeholder="Your hotel city...">
     </div>
    </div>
     <br>
         <div class="form-group row">
-    <label for="input7" class="col-sm-2 col-form-label forAddH" style="color:black;font-size:22px;">Zip code</label>
+    <label for="input7" class="col-sm-2 col-form-label forAddH" style="color:white;font-size:22px;">Zip code</label>
     <div class="col-sm-10">
       <input type="text" name="zipCode" class="form-control" id="input7" placeholder="09876">
     </div>
    </div>
     <br>
     <div class="form-group row">
-    <label for="input8" class="col-sm-2 col-form-label forAddH" style="color:black;font-size:22px;">Photo URL</label>
+    <label for="input8" class="col-sm-2 col-form-label forAddH" style="color:white;font-size:22px;">Photo URL</label>
     <div class="col-sm-10">
-      <input type="text" name="photoUrl" class="form-control" id="input8" placeholder="../static/img...">
+      <input type="file" name="photoUrl" style="width:40%;border-radius:2px;margin-top:1.2%" id="input8">
     </div>
    </div>
    <div>
-        <button type="submit" class="btn btn-primary" style="margin-top:1%;margin-left:87.5%">Add Hotel</button>
+        <button type="submit" class="btn btn-primary" style="width:20%;margin-top:-6%;margin-left:79.8%">Add Hotel</button>
    </div>
 </form>
 </div>

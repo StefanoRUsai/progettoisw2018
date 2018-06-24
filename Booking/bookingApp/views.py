@@ -106,7 +106,7 @@ def addHotel (request):
         houseNumberR = request.POST['houseNumber']
         cityR = request.POST['city']
         zipCodeR = request.POST['zipCode']
-        photoUrlR = request.POST['photoUrl']
+        photoUrlR = "static/img/" + str(request.POST['photoUrl'])
 
         adress = Address(street=str(streetR),houseNumber=int(houseNumberR),city=str(cityR),zipCode=str(zipCodeR))
         adress.save()
