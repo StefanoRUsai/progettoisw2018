@@ -168,83 +168,51 @@ def registerUser(request):
     else:
         if (request.method == 'POST'):
             form = RegistrationForm(request.POST)
-            if (form.is_valid() and\
-                    isFreeUsername(str(form.cleaned_data['userName'])) and \
+            if (form.is_valid() and isFreeUsername(str(form.cleaned_data['userName'])) and
                     form.cleaned_data['password'] == form.cleaned_data['verifyPassword']):
-                    # Setto in sessione le variabili relative all'utente loggato tranne la password
-                    name = form.cleaned_data['name']
-                    surname = form.cleaned_data['surname']
-                    bd = form.cleaned_data['birthday']
-                    codF = form.cleaned_data['cf']
-                    emailAddr = form.cleaned_data['email']
-                    street = form.cleaned_data['street']
-                    civicNr = form.cleaned_data['civicNumber']
-                    userCity = form.cleaned_data['city']
-                    cap = form.cleaned_data['zipCode']
-                    userN = form.cleaned_data['userName']
-                    passW = form.cleaned_data['password']
+                # Setto in sessione le variabili relative all'utente loggato tranne la password
+                name = form.cleaned_data['name']
+                surname = form.cleaned_data['surname']
+                bd = form.cleaned_data['birthday']
+                codF = form.cleaned_data['cf']
+                emailAddr = form.cleaned_data['email']
+                street = form.cleaned_data['street']
+                civicNr = form.cleaned_data['civicNumber']
+                userCity = form.cleaned_data['city']
+                cap = form.cleaned_data['zipCode']
+                userN = form.cleaned_data['userName']
+                passW = form.cleaned_data['password']
 
-                    hotelKeeper = form.cleaned_data['hotelKeeper']
+                hotelKeeper = form.cleaned_data['hotelKeeper']
 
-            #creo prima l'oggetto di tipo indirizzo
-            userAddr = Address(street=str(street),houseNumber=str(civicNr),city=str(userCity),zipCode=str(cap))
+            # creo prima l'oggetto di tipo indirizzo
+            userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
             userAddr.save()
 
-<<<<<<< HEAD
-            #creo poi l'oggetto ut di tipo RegisteredUser che comprende l'oggetto userAddr creato poco sopra
+            # creo poi l'oggetto ut di tipo RegisteredUser che comprende l'oggetto userAddr creato poco sopra
             if (hotelKeeper != True):
-                ut = RegisteredUser(name=str(name),surname=str(surname),
-                                    birthday=str(bd),cf=str(codF),
-                                    email=str(emailAddr),userName=str(userN),
-=======
-                hotelKeeper = form.cleaned_data['hotelKeeper']
->>>>>>> f06ba44ec983152536f4670b97e4a75e406e5902
-
-                                    password=str(passW),address=userAddr)
-                ut.save()
-            else:
-                hk = HotelKeeper(name=str(name), surname=str(surname),
+                ut = RegisteredUser(name=str(name), surname=str(surname),
                                     birthday=str(bd), cf=str(codF),
                                     email=str(emailAddr), userName=str(userN),
 
-<<<<<<< HEAD
                                     password=str(passW), address=userAddr)
+                ut.save()
+            else:
+                hk = HotelKeeper(name=str(name), surname=str(surname),
+                                 birthday=str(bd), cf=str(codF),
+                                 email=str(emailAddr), userName=str(userN),
+
+                                 password=str(passW), address=userAddr)
                 hk.save()
 
             request.session['usr'] = userN
 
             if hotelKeeper != True:
-                request.session['usrType'] = 'regUser'
                 return redirect('/homeRegisteredUser/')
             else:
-                request.session['usrType'] = 'hotelKeeper'
                 return redirect('/home/')
-=======
-        #creo poi l'oggetto ut di tipo RegisteredUser che comprende l'oggetto userAddr creato poco sopra
-        if (hotelKeeper != True):
-            ut = RegisteredUser(name=str(name),surname=str(surname),
-                                birthday=str(bd),cf=str(codF),
-                                email=str(emailAddr),userName=str(userN),
 
-                                password=str(passW),address=userAddr)
-            ut.save()
-        else:
-            hk = HotelKeeper(name=str(name), surname=str(surname),
-                                birthday=str(bd), cf=str(codF),
-                                email=str(emailAddr), userName=str(userN),
-
-                                password=str(passW), address=userAddr)
-            hk.save()
-
-        request.session['usr'] = userN
-
-        if hotelKeeper != True:
-            return redirect('/homeRegisteredUser/')
-        else:
-            return redirect('/home/')
->>>>>>> f06ba44ec983152536f4670b97e4a75e406e5902
-
-        else:  #Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET
+        else:  # Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET
             form = RegistrationForm()
 
     context = {'form' : form}
