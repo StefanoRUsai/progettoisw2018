@@ -517,11 +517,15 @@ class RegistrationHotelKeeperTest(TestCase):
         request.session['usr'] = registerUser.userName
         request.session['usrType'] = 'hotelKeeper'
         response = self.client.get('/login/')
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 302)
 
     def testHomeRegisteredUserVizualization(self):
         request = self.request_factory.get('/login/')
         request.session['usr'] = hotelKeeper.userName
-        request.session['usrType'] = 'hotelKeeper'
-        response = self.client.get('/login/')
-        self.assertEquals(response.status_code, 200)
+	request.session['usrType'] = 'regUser'
+	self.assertEquals(response.status_code, 302)
+
+
+
+
+  

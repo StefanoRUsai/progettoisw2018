@@ -21,7 +21,11 @@ class formLogin(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={"class" : "form-control"}))
     password = forms.CharField(widget=forms.TextInput(attrs={"class" : "form-control"}))
 
+<<<<<<< HEAD
 class RegistrationForm(forms.Form):
+=======
+class registrationForm(forms.Form):
+>>>>>>> f06ba44ec983152536f4670b97e4a75e406e5902
     hotelKeeper = forms.BooleanField(widget=forms.CheckboxInput(attrs={}), required=False)
     name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     surname = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
@@ -41,6 +45,7 @@ class RegistrationForm(forms.Form):
         if RegisteredUser.objects.filter(userName=userName).exists() or HotelKeeper.objects.filter(userName=userName).exists():
             raise forms.ValidationError('Username already exists')
         return userName
+
 
 
 class PaymentForm(forms.Form):

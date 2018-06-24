@@ -190,11 +190,15 @@ def registerUser(request):
             userAddr = Address(street=str(street),houseNumber=str(civicNr),city=str(userCity),zipCode=str(cap))
             userAddr.save()
 
+<<<<<<< HEAD
             #creo poi l'oggetto ut di tipo RegisteredUser che comprende l'oggetto userAddr creato poco sopra
             if (hotelKeeper != True):
                 ut = RegisteredUser(name=str(name),surname=str(surname),
                                     birthday=str(bd),cf=str(codF),
                                     email=str(emailAddr),userName=str(userN),
+=======
+                hotelKeeper = form.cleaned_data['hotelKeeper']
+>>>>>>> f06ba44ec983152536f4670b97e4a75e406e5902
 
                                     password=str(passW),address=userAddr)
                 ut.save()
@@ -203,6 +207,7 @@ def registerUser(request):
                                     birthday=str(bd), cf=str(codF),
                                     email=str(emailAddr), userName=str(userN),
 
+<<<<<<< HEAD
                                     password=str(passW), address=userAddr)
                 hk.save()
 
@@ -214,6 +219,30 @@ def registerUser(request):
             else:
                 request.session['usrType'] = 'hotelKeeper'
                 return redirect('/home/')
+=======
+        #creo poi l'oggetto ut di tipo RegisteredUser che comprende l'oggetto userAddr creato poco sopra
+        if (hotelKeeper != True):
+            ut = RegisteredUser(name=str(name),surname=str(surname),
+                                birthday=str(bd),cf=str(codF),
+                                email=str(emailAddr),userName=str(userN),
+
+                                password=str(passW),address=userAddr)
+            ut.save()
+        else:
+            hk = HotelKeeper(name=str(name), surname=str(surname),
+                                birthday=str(bd), cf=str(codF),
+                                email=str(emailAddr), userName=str(userN),
+
+                                password=str(passW), address=userAddr)
+            hk.save()
+
+        request.session['usr'] = userN
+
+        if hotelKeeper != True:
+            return redirect('/homeRegisteredUser/')
+        else:
+            return redirect('/home/')
+>>>>>>> f06ba44ec983152536f4670b97e4a75e406e5902
 
         else:  #Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET
             form = RegistrationForm()
