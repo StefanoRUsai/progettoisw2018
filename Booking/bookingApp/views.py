@@ -236,8 +236,10 @@ def registerUser(request):
             request.session['usr'] = userN
 
             if hotelKeeper != True:
-                return redirect('/homeRegisteredUser/')
+                request.session['usrType'] = 'regUser'
+                return redirect('/homeRegistered/')
             else:
+                request.session['usrType'] = 'hotelKeeper'
                 return redirect('/home/')
 
         else:  # Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET

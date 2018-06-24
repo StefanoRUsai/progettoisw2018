@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block title %} SignUp {% endblock %}
      {% block content %}
-
-    <form class="container" action="" style="width:40%;height:30%;" method="POST">
+<div class="signUp" style="margin-top: 2%">
+    <form class="container" action="" style="width:40%; height:10%;" method="POST">
         {% csrf_token %}
         {% for field in form %}
             <div class="form-group">
@@ -11,6 +11,8 @@
                 {{ field }}
             </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%">Login</button>
     </form>
+</div>
+
 {% endblock %}
