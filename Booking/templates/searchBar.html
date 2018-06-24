@@ -1,13 +1,12 @@
 {% extends "base.html" %}
      {% block content %}
-
-            <div style="margin:auto; text-align: center">
+            <div style="margin-top: 2%; text-align: center">
                 <h2>What would you like to book?</h2>
             </div>
-                <nav class="navbar navbar-light bg-ligh searchBar">
+                <nav class="navbar navbar-light bg-ligh searchBar" style="margin-left: 16%; margin-right: 10%">
                         <form class="form-inline" method="GET" action="/search/">
                         {% csrf_token %}
-                    <input class="form-control mr-sm-2"  id="search_box" type="text" name="search_city" placeholder="What city do you want to go to?">
+                    <input class="form-control mr-sm-2"  id="search_box" type="text" name="search_city" placeholder="What city do you want to go to?" style="width:rem">
                             <select name="search_number"  placeholder="Numero posti letto" class="searchBar searchDropDown">
                                 <option value=0 selected="selected">Beds number</option>
                                 <option value=1>1</option>
@@ -23,7 +22,7 @@
                             </select>
                         <input class="form-control mr-sm-2" type = date name="search_checkin" value = "CheckIn" placeholder="check In?">
                         <input class="form-control mr-sm-2" type = date name="search_checkout" value = "CheckOut" placeholder="check Out?">
-                      <button class="btn btn-outline-success my-2 my-sm-0" id="search_submit" type="submit" >Search</button>
+                      <button class="btn btn-outline-success my-2 my-sm-0" id="search_submit" type="submit">Search</button>
                     </form>
                 </nav>
 

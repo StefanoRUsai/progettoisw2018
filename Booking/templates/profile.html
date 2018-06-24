@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %} Profile {% endblock %}
 {% block content %}
+{% if flag_user == True %}
 <div class="profile">
         <div class="information" style="width:30rem; margin-left:10%; margin-right:5%; float:left">
             <br>
@@ -37,5 +38,19 @@
             {% endif %}
         </div>
 </div>
+{% else %}
+<div class="information" style="width:30rem; margin-left:10%; margin-right:5%; float:left">
+            <br>
+            <h4>Your information:</h4>
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-primary">Name: {{userProfile.name}}</li>
+                    <li class="list-group-item list-group-item-primary">Surname: {{userProfile.surname}}</li>
+                    <li class="list-group-item list-group-item-primary">Domicile: {{userProfile.address.city}} {{userProfile.address.street}} {{userProfile.address.houseNumber}}</li>
+                    <li class="list-group-item list-group-item-primary">Email: {{userProfile.email}}</li>
+                    <li class="list-group-item list-group-item-primary">Birthday: {{userProfile.birthday}}</li>
+                </ul>
+        </div>
+
+{% endif %}
 {% endblock %}
 

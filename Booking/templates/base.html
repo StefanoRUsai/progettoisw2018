@@ -8,30 +8,30 @@
           <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
     </head>
     <body style="background-color:#edf3ff">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-primary bg-primary" >
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-                <a class="navbar-brand" href="#">Booking.ISW</a>
+                <a class="navbar-brand text-white" href="#">Booking.ISW</a>
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     {% if request.path == '/home/' and request.session.usrType is not None and request.session.usrType == 'hotelKeeper' %}
                         <li class="nav-item">
-                               <a href="/hotels/">My hotels</a>
+                               <a href="/hotels/" style="color:white">My hotels</a>
                        </li>
                     {% endif %}
                     {% if request.path == '/hotel/' and request.session.usrType is not None and request.session.usrType == 'hotelKeeper' %}
                         <li class="nav-item">
-                               <a href="/addRoom/">Add room</a>
+                               <a href="/addRoom/" style="color:white" >Add room</a>
                        </li>
                     {% endif %}
                 </ul>
                 {% if request.session.usr is not None %}
-                    <a href="/logout/" style="margin-right:2%">log out</a>
-                    <a href="/profile/">{{request.session.usr}}</a>
+                    <a href="/logout/" style="margin-right:2%; color:white">Logout</a>
+                    <a href="/profile/" style="margin-right:2%; color:white">{{request.session.usr}}</a>
                 {% else %}
-                    <a href="/signUp/" style="margin-right:2%">sign up</a>
-                    <a href="/login/">login</a>
+                    <a href="/signUp/" style="margin-right:2%; color:white; ">Sign up</a>
+                    <a href="/login/"  style="margin-right:2%; color:white " >Login</a>
                 {% endif %}
             </div>
         </nav>
