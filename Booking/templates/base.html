@@ -25,6 +25,11 @@
                                <a href="/addRoom/" style="color:white" >Add room</a>
                        </li>
                     {% endif %}
+                    {% if request.path == '/hotels/' and request.session.usrType is not None and request.session.usrType == 'hotelKeeper' %}
+                        <li class="nav-item">
+                               <a href="/addHotel/" style="color:white">Add an hotel</a>
+                       </li>
+                    {% endif %}
                 </ul>
                 {% if request.session.usr is not None %}
                     <a href="/logout/" style="margin-right:2%; color:white">Logout</a>
