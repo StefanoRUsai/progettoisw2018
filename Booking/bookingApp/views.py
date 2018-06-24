@@ -10,14 +10,18 @@ def notRegisteredHome(request):
     contatore = 0
     lista = []
 
-
     for ht in Hotel.objects.all():
         if(contatore < 3):
             lista.append(ht)
             contatore = contatore + 1
 
+    if(len(lista) >= 3):
+        context = { 'hotel1' : lista[0] , 'hotel2' : lista[1] , 'hotel3' : lista[2]}
+    elif(len(lista) == 2):
+        context = { 'hotel1' : lista[0] , 'hotel2' : lista[1] , 'hotel3' : lista[0]}
+    else:
+        return HttpResponse("<h1>Servono almeno due alberghi</h1>")
 
-    context = { 'hotel1' : lista[0] , 'hotel2' : lista[1] , 'hotel3' : lista[2]}
     return render(request,'homeNotRegisteredUser.html',context)
 
 
@@ -32,7 +36,7 @@ def login(request):
         if(request.method == 'POST'):
             form = formLogin(request.POST)
             if(form.is_valid()):
-                #Setto in sessione le variabili relative all'utente loggato tranne la password
+
                 userN = form.cleaned_data['username']
                 passW = form.cleaned_data['password']
 
@@ -47,7 +51,7 @@ def login(request):
                         request.session['usrType'] = 'hotelKeeper'
                         return redirect('/home/')
 
-        else:  #Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET
+        else:  #Qui ci si entra in caso di prima visualizzazione o richiesta GET
             form = formLogin()
 
 
@@ -66,7 +70,13 @@ def registeredUserHome(request):
             contatore = contatore + 1
 
 
-    context = { 'hotel1' : lista[0] , 'hotel2' : lista[1] , 'hotel3' : lista[2]}
+    if(len(lista) >= 3):
+        context = { 'hotel1' : lista[0] , 'hotel2' : lista[1] , 'hotel3' : lista[2]}
+    elif(len(lista) == 2):
+        context = { 'hotel1' : lista[0] , 'hotel2' : lista[1] , 'hotel3' : lista[0]}
+    else:
+        return HttpResponse("<h1>Servono almeno due alberghi</h1>")
+
     return render(request, 'homeRegisteredUser.html', context)
 
 
@@ -79,11 +89,10 @@ def hotelKeeperHome(request):
         hotelKeeperUsr = None
 
     if hotelKeeperUsr != None:
-
         for pr in Booking.objects.all():
-
             if (hotelKeeperUsr == pr.roomId.hotelId.hotelKeeperId.userName):
                 listPr.append(pr)
+
     context = {'listaPrenotazioni': listPr}
     return render(request,'homeHotelKeeper.html', context)
 
@@ -131,6 +140,7 @@ def addRoomToHotel(request):
         roomListWhereAdd = []
         servicesListToAdd = []
 
+        #recupero i dati utili da sessione
         hotelWhereAddName = request.session['htName']
         hotelWhereAddCivN = request.session['htCivN']
 
@@ -138,11 +148,7 @@ def addRoomToHotel(request):
         roomNumber = request.POST['roomNumber']
         bedsNumber = request.POST['bedsNumber']
         services = request.POST.getlist('services')
-
         priceR = float(request.POST['price'])
-
-        #debbugging print
-        print("jwdcn ejirc erc jier" + str(priceR) + " " + str(type(priceR)))
 
 
         for ht in Hotel.objects.all():
@@ -164,8 +170,9 @@ def addRoomToHotel(request):
             print("anche")
             tmpRoom = Room(roomNumber=int(roomNumber),capacity=int(bedsNumber),price=priceR,hotelId=hotelWhereAdd) #aggiungere il servizio sennò l'oggetto non viene creato
             tmpRoom.save()
-            print("Dopo salvataggio --> " + str(tmpRoom.roomNumber) + " " + str(tmpRoom.capacity) + " " + str(tmpRoom.price) + " " + str(tmpRoom.services))
 
+
+        #elimino permanentemente dalla sessione le variabili che non sono più utili
         del request.session['htName']
         del request.session['htCivN']
 
@@ -254,6 +261,7 @@ def viewProfileUser(request):
     userName = request.session['usr']
     userSession = None
     flag_user = True
+
     for userAtrs in RegisteredUser.objects.all():
         if(userAtrs.userName==userName):
             userSession = userAtrs
@@ -266,9 +274,7 @@ def viewProfileUser(request):
                 userSession = userAtrs
                 break
 
-        context = {'userProfile': userSession,
-                   'flag_user': flag_user,}
-
+        context = {'userProfile': userSession,'flag_user': flag_user,}
         return render(request, 'profile.html', context)
 
     flag_card = False
@@ -276,11 +282,11 @@ def viewProfileUser(request):
     for creditCard in CreditCard.objects.all():
         if (userSession.id == creditCard.owner.id):
             creditCardOfUser = creditCard
-            flag_card=True
+            flag_card = True
             break
 
     listBooking = []
-    flag_pren=False
+    flag_pren = False
 
     for book in Booking.objects.all():
         if (userSession.id == book.customerId.id):
@@ -328,7 +334,7 @@ def searchResults(request):
                                 listResult.append(tmp)
 
     if len(listResult) > 0:
-        context = {'listResult': listResult}  # è  buona norma passare context a render
+        context = {'listResult': listResult}
     else:
         context = {'listaVuota': '1'}
 
@@ -338,6 +344,8 @@ def searchResults(request):
 
 def searchBar(request):
     return render(request, "searchBar.html")
+
+
 
 def verificationTypeUser(request):
     """<Booking a Room>
@@ -368,6 +376,8 @@ def hotelsList(request):
     context = {'hotelList': listHt}
     return render(request, 'viewListOfHotels.html', context)
 
+
+
 def hotelDetail(request):
     listaCamereHotel = []
     hotel = None
@@ -394,9 +404,10 @@ def hotelDetail(request):
 
     return render(request,"manageHotel.html",context)
 
-""" check su bookin not registered ora funziona"""
-def bookingNotRegistered(request, roomBoking):
 
+
+""" check su bookin not registered NON È una view ma una funzione di appoggio"""
+def bookingNotRegistered(request, roomBoking):
     if (request.method == 'POST'):
         formBooking = PaymentForm(request.POST)
         if (formBooking.is_valid()):
@@ -413,17 +424,14 @@ def bookingNotRegistered(request, roomBoking):
             month = formBooking.cleaned_data['month']
             year = formBooking.cleaned_data['year']
             cvv = formBooking.cleaned_data['cvv']
-            #if int(month) < 0 or int(month) > 12 or int(year < 2018 or (int(month) < 6 and int(year) <= 2018)):
-            print('arrivo qui carta? ')
+
             userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
             userAddr.save()
-            ut = User(name=str(name), surname=str(surname), birthday=bd, cf=str(codF),
-                                email=str(emailAddr), address=userAddr)
-            print('arrivo qui persona?')
+
+            ut = User(name=str(name), surname=str(surname), birthday=bd, cf=str(codF),email=str(emailAddr), address=userAddr)
             ut.save()
 
-            card = CreditCard(owner=ut, cardNumber=cardNumber, expirationYear=year,
-                              expirationMonth=month, cvvCode = cvv)
+            card = CreditCard(owner=ut, cardNumber=cardNumber, expirationYear=year,expirationMonth=month, cvvCode = cvv)
             card.save()
 
             try:
@@ -438,10 +446,7 @@ def bookingNotRegistered(request, roomBoking):
             except:
                 booking = None
 
-
-
             return redirect('/booking/')
-
     else:
         formBooking = PaymentForm()
 
@@ -456,10 +461,9 @@ def bookingRegisteredUserWithoutCard(request, user, roomBooking):
             month = formBooking.cleaned_data['month']
             year = formBooking.cleaned_data['year']
             cvv = formBooking.cleaned_data['cvv']
-            card = CreditCard(owner=user, cardNumber=cardNumber, expirationYear=year,
-                              expirationMonth=month, cvvCode=cvv)
-            card.save()
 
+            card = CreditCard(owner=user, cardNumber=cardNumber, expirationYear=year,expirationMonth=month,cvvCode=cvv)
+            card.save()
 
             try:
                 searchPatternCheckIn = request.session['logIn_dt']
@@ -483,19 +487,17 @@ def bookingRegisteredUserWithoutCard(request, user, roomBooking):
 
 
 def bookARoom(request):
-
     try:
         roomid = request.GET.get('roomid', None)
     except:
         roomid = None
 
     username = verificationTypeUser(request)
-
     roomBooking = Room.objects.get(id=roomid)
 
     flagRegistered = False
     flagNotRegistered = False
-    flagRegisteredWithoutCard =False
+    flagRegisteredWithoutCard = False
     try:
         user = RegisteredUser.objects.get(userName = str(username))
     except ObjectDoesNotExist:
