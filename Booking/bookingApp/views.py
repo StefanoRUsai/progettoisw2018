@@ -85,62 +85,90 @@ def hotelKeeperHome(request):
 
 def addHotel (request):
     if request.method == 'POST':
-        form = AddHotelForm(request.POST)
-        if form.is_valid():
-            form.save()
-            name = form.cleaned_data['name']
-            description = form.cleaned_data['description']
-            street = form.cleaned_data['street']
-            houseNumber = form.cleaned_data['houseNumber']
-            city = form.cleaned_data['city']
-            zipCode = form.cleaned_data['zipCode']
-            photoUrl = form.cleaned_data['photoUrl']
 
-            adress = Address(street, houseNumber, city, zipCode)
+        nameR = request.POST['name']
+        descriptionR = request.POST['description']
+        streetR = request.POST['street']
+        houseNumberR = request.POST['houseNumber']
+        cityR = request.POST['city']
+        zipCodeR = request.POST['zipCode']
+        photoUrlR = request.POST['photoUrl']
 
-            adress.save()
+        adress = Address(street=str(streetR),houseNumber=int(houseNumberR),city=str(cityR),zipCode=str(zipCodeR))
+        adress.save()
 
-            hotel = Hotel(name, description, adress, photoUrl)
+        for ht in Hotel.objects.all():
+            if(ht.address == adress):
+                return HttpResponse("<h1>È già presente un hotel a questo indirizzo</h1>")
 
-            hotel.save()
+        for r in RegisteredUser.objects.all():
+            if(r.address == adress):
+                return HttpResponse("<h1>Vive già qualcuno a questo indirizzo</h1>")
 
-            return redirect('manageHotel')
+        username = request.session['usr']
+
+        for hk in HotelKeeper.objects.all():
+            if(hk.userName == str(username)):
+                htFK = hk #hotelKeeper Foreign Key
+                hotel = Hotel(name=str(nameR),description=str(descriptionR),hotelKeeperId=htFK,address=adress,photoUrl=str(photoUrlR))
+                hotel.save()
+                break
+
+        return redirect('/hotels/')
     else:
         form = AddHotelForm()
 
-    context = {'formAddHotel': form}
-    return render(request, 'addHotel.html', context)
+    return render(request, 'addHotel.html')
 
 
 def addRoomToHotel(request):
     if request.method == 'POST':
-        form = AddRoomForm(request.POST)
-        if form.is_valid():
-            form.save()
+        roomListWhereAdd = []
+        servicesListToAdd = []
 
-            roomNumber = form.cleaned_data['roomNumber']
-            bedsNumber = form.cleaned_data['bedsNumber']
+        hotelWhereAddName = request.session['htName']
+        hotelWhereAddCivN = request.session['htCivN']
 
-            hotel = Hotel.objects.all().filter(pk=request.getAttribute('hotelId'))
+        #recupero i dati dal form e li salvo nelle variabili
+        roomNumber = request.POST['roomNumber']
+        bedsNumber = request.POST['bedsNumber']
+        services = request.POST.getlist('services')
 
-            services = [label for value, label in form.fields['services'].choices if value in form['services'].value()]
+        priceR = float(request.POST['price'])
 
-            price = form.cleaned_data['price']
+        #debbugging print
+        print("jwdcn ejirc erc jier" + str(priceR) + " " + str(type(priceR)))
 
-            tmpRoom = Room(roomNumber, bedsNumber, price, hotel)
+
+        for ht in Hotel.objects.all():
+            if(ht.name == str(hotelWhereAddName) and ht.address.houseNumber == int(hotelWhereAddCivN)):
+                hotelWhereAdd = ht
+                break
+
+        for rm in Room.objects.all():
+            if (rm.hotelId == hotelWhereAdd):
+                roomListWhereAdd.append(rm)
+
+        if (len(roomListWhereAdd) == 0):
+            tmpRoom = Room(roomNumber=int(roomNumber), capacity=int(bedsNumber), price=priceR, hotelId=hotelWhereAdd)
             tmpRoom.save()
+        else:
+            for r in roomListWhereAdd:
+                if (r.roomNumber == int(roomNumber)):
+                    return HttpResponse("<h1>Numero camera già prensente nella struttura " + str(hotelWhereAdd.name) + "</h1>")
+            print("anche")
+            tmpRoom = Room(roomNumber=int(roomNumber),capacity=int(bedsNumber),price=priceR,hotelId=hotelWhereAdd) #aggiungere il servizio sennò l'oggetto non viene creato
+            tmpRoom.save()
+            print("Dopo salvataggio --> " + str(tmpRoom.roomNumber) + " " + str(tmpRoom.capacity) + " " + str(tmpRoom.price) + " " + str(tmpRoom.services))
 
-            for s in services:
-                temp = IncludedService(service=s,room=tmpRoom)
-                temp.save()
+        del request.session['htName']
+        del request.session['htCivN']
 
-            context = {'form': form}
-            return render(request,"addRoom.html",context)
+        return redirect('/hotels/')
     else:
-        form = AddRoomForm()
+        return render(request, 'addRoom.html')
 
-    context = {'formAddRoom': form}
-    return render(request, 'addRoom.html', context)
+
 
 
 def isFreeUsername(toBeChecked):
@@ -291,11 +319,13 @@ def hotelDetail(request):
 
     for ht in Hotel.objects.all():
         if(ht.name == hotelName and ht.address.houseNumber == int(hotelNumber) and ht.address.city == hotelCity):
-            print("qua arrivo")
             hotel = ht
             for rm in Room.objects.all():
                 if(rm.hotelId == hotel):
                     listaCamereHotel.append(rm)
+
+    request.session['htName'] = hotel.name
+    request.session['htCivN'] = hotel.address.houseNumber
 
     if(hotel != None):
         context = {'hotel': hotel,'roomList': listaCamereHotel}

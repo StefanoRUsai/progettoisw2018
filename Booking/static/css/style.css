@@ -99,3 +99,23 @@ input[type="date"]:before {
 input[type=date] {
   text-align: right;
 }
+
+/* INIZIO CLASSI addHotel.html*/
+
+.bac{
+    width:100%;
+    height:758px;
+    background-image:url('../img/addHotel.jpg');
+    background-repeat:no-repeat;
+    background-size: cover;
+}
+
+.formHtCont{
+    width:40%;
+    height:auto;
+    padding-top:6%;
+    margin-left:35%;
+}
+
+
+/* FINE CLASSI addHotel.html*/

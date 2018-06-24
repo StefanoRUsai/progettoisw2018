@@ -3,109 +3,83 @@
 <div class="container-fluid bkgrd">
 
 <div class="container formCont">
-<form>
+<form method="POST" action="">
+    {% csrf_token %}
   <div class="form-group row">
     <label for="inputEmail3" class="col-sm-2 col-form-label forAddR">Room number</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputEmail3" placeholder="21">
+      <input type="text" class="form-control" name="roomNumber" id="inputEmail3" placeholder="21">
     </div>
   </div>
   <div class="form-group row">
     <label for="inputPassword3" class="col-sm-2 col-form-label forAddR">Capacity</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputPassword3" placeholder="3">
+      <input type="text" name="bedsNumber" class="form-control" id="inputPassword3" placeholder="3">
     </div>
   </div>
-  <fieldset class="form-group">
-  <div class="form-group row">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-10">
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="gridCheck1">
+        <input name="services" class="form-check-input" type="checkbox" id="gridCheck1" value="TELEPHONE">
         <label class="form-check-label forAddR" for="gridCheck1">
           Telephone
         </label>
       </div>
-    </div>
-  </div>
-    <div class="form-group row">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-10">
+
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="gridCheck2">
+        <input name="services" class="form-check-input" type="checkbox" id="gridCheck2" value="GARAGE">
         <label class="form-check-label forAddR" for="gridCheck2">
           Garage
         </label>
       </div>
-    </div>
-    </div>
-    <div class="form-group row">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-10">
+
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="gridCheck3">
+        <input name="services" class="form-check-input" type="checkbox" id="gridCheck3" value="WIFI">
         <label class="form-check-label forAddR" for="gridCheck3">
           WiFi
         </label>
       </div>
-    </div>
-    </div>
-     <div class="form-group row">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-10">
+
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="gridCheck4">
+        <input name="services" class="form-check-input" type="checkbox" id="gridCheck4" value="BREAKFAST">
         <label class="form-check-label forAddR" for="gridCheck4">
           Breakfast
         </label>
       </div>
-    </div>
-     </div>
-     <div class="form-group row">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-10">
+
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="gridCheck5">
+        <input name="services" class="form-check-input" type="checkbox" id="gridCheck5" value="LUNCH">
         <label class="form-check-label forAddR" for="gridCheck5">
           Lunch
         </label>
       </div>
-    </div>
-     </div>
-     <div class="form-group row">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-10">
+
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="gridCheck6">
+        <input name="services" class="form-check-input" type="checkbox" id="gridCheck6" value="DINNER">
         <label class="form-check-label forAddR" for="gridCheck6">
           Dinner
         </label>
       </div>
-    </div>
-     </div>
-     <div class="form-group row">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-10">
+
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="gridCheck7">
+        <input name="services" class="form-check-input" type="checkbox" id="gridCheck7" value="BRUNCH">
         <label class="form-check-label forAddR" for="gridCheck7">
           Brunch
         </label>
       </div>
-    </div>
-      </div>
-  </fieldset>
+
     <div class="form-group row">
         <label for="inputprice" class="col-sm-2 col-form-label forAddR">Price</label>
         <div class="col-sm-10">
-        <input type="number" class="form-control" id="inputprice" placeholder="€ 45">
+        <input name="price" type="number" class="form-control" id="inputprice" placeholder="€ 45">
      </div>
     </div>
-</form>
-    <div>
+        <div>
         <button type="submit" class="btn btn-success addRoomBtn">Add room</button>
     </div>
+</form>
+
 </div>
 
 </div>
+
+
 {% endblock %}
