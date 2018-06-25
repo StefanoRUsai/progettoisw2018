@@ -40,24 +40,24 @@ class RegistrationForm(forms.Form):
     email = forms.EmailField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     userName = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     password = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    verifyPassword = forms.CharField(label='Verify Password',max_length=50, error_messages={'required': 'Please verify password'}, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    verificapassword = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     street = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     civicNumber = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     city = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     zipCode = forms.CharField(max_length=15, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 
     def clean_userName(self):
-        userName = self.cleaned_data["userName"]
-        if RegisteredUser.objects.filter(userName=userName).exists() or HotelKeeper.objects.filter(userName=userName).exists():
-            raise forms.ValidationError('Username already exists')
-        return userName
+        username = self.cleaned_data["userName"]
+        if (RegisteredUser.objects.filter(userName=username).exists()) or (
+        HotelKeeper.objects.filter(userName=username).exists()):
+            raise forms.ValidationError('Username exists')
+        else:
+            return username
 
-    def clean_password(self):
-        password = self.cleaned_data["password"]
-        verifyPassword =  self.cleaned_data["verifyPassword"]
-        if password == verifyPassword:
-            raise forms.ValidationError('Verify password wrong')
-        return password
+    def clean_verificapassword(self):
+        if self.cleaned_data["verificapassword"] != self.cleaned_data["password"]:
+             raise forms.ValidationError('Verify password wrong')
+        return self.cleaned_data["verificapassword"]
 
 
 
