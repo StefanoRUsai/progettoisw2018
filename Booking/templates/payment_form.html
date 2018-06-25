@@ -66,7 +66,11 @@
 
     <!-- l'utente deve registrarsi -->
     {% if formBooking is not None %}
-    <form class="container" style="width:50%;margin-top:12%;" action="" method="POST">
+        <div style="width:100rem; margin-top: 11%; text-align: center">
+            <p>If you want to autocompile the fields get <a href="/login/">login</a> or if you want to save yours get <a href="/signUp/">sign up</a>   </p>
+        </div>
+        <div class="container-fluid" style="float:right;width:100%;margin-right:-70%;margin-top:-15%">
+    <form class="c3" style="width:100%; margin-top:12%; height: 40%; float: right" action="" method="POST">
         {% csrf_token %}
         {% for field in formBooking %}
             <div class="form-group">
@@ -77,6 +81,7 @@
         {% endfor %}
      <button type="submit" class="btn btn-primary">reserve</button>
     </form>
+            </div>
     {% endif %}
 
 {% endblock %}

@@ -1,5 +1,7 @@
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import TestCase, Client, RequestFactory
+from django.core.files.uploadedfile import SimpleUploadedFile
+import os
 import enum
 import unittest
 import datetime
@@ -308,6 +310,93 @@ class RegistrationHotelKeeperTest(TestCase):
         print(response.status_code)
 
         self.assertEquals(response.status_code, 302)
+
+
+class AddHotelInTheList(TestCase):
+
+    def setUp(self):
+        hkAddress = Address(
+            street='via del guasto',
+            houseNumber=28,
+            city='Bologna',
+            zipCode='09888')
+        hkAddress.save()
+
+        hotelKeeper = HotelKeeper(
+            name='Gianna',
+            surname='Poho',
+            birthday=datetime.date(1992, 1, 12),
+            cf='phognn92t21b354ta',
+            email='g.poho@gmail.com',
+            address=hkAddress,
+            userName='giannina',
+            password='isw'
+        )
+        hotelKeeper.save()
+
+        h1Address = Address(
+            street='via da qui',
+            houseNumber=40,
+            city='Bologna',
+            zipCode='09888')
+        h1Address.save()
+
+        hotel1 = Hotel(
+            name='Hotel Bacco',
+            description="Nell'affascinante Bologna...",
+            hotelKeeperId=hotelKeeper,
+            address=h1Address,
+            photoUrl='/static/img/bedAndBreakfastLondon.jpg'
+        )
+        hotel1.save()
+
+        h2Address = Address(
+            street='via Quadrilatero',
+            houseNumber=90,
+            city='Bologna',
+            zipCode='09888')
+        h2Address.save()
+
+        hotel2 = Hotel(
+            name='Hotel Tarallucci',
+            description="Tanti biscotti a colazione",
+            hotelKeeperId=hotelKeeper,
+            address=h2Address,
+            photoUrl='/static/img/cortina.jpg'
+        )
+        hotel2.save()
+
+        newAddress = Address(
+            street='via Holita',
+            houseNumber=30,
+            city='Bologna',
+            zipCode='09888')
+        newAddress.save()
+
+        self.newAd = newAddress
+        self.userhotelkeeper = hotelKeeper
+        self.request_factory = RequestFactory()
+        self.middleware = SessionMiddleware()
+
+    def testAddHotelInTheList(self):
+        request = self.request_factory.get('/addHotel/', follow=True)
+        self.middleware.process_request(request)
+        request.session.save()
+        request.session['usr'] = self.userhotelkeeper.userName
+        request.session['usrType'] = 'hotelKeeper'
+
+        photo_file = open(os.path.dirname(__file__) + '\..\static\img\cortina.jpg', 'rb')
+        form_data = {'name': "hotel Trinciapollo",
+                     'description': "Poulet e besciamel",
+                     'street': self.newAd.street,
+                     'houseNumber': self.newAd.houseNumber,
+                     'city': self.newAd.city,
+                     'zipCode': self.newAd.zipCode,
+                     'photoUrl': SimpleUploadedFile(photo_file.name, photo_file.read())}
+
+        form = AddHotelForm(data=form_data)
+        self.assertTrue(form.is_valid(), msg=form.errors)
+
 
 
 
