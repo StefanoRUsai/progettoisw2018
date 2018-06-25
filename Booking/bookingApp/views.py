@@ -105,40 +105,42 @@ def hotelKeeperHome(request):
 
 def addHotel (request):
     if request.method == 'POST':
+        form = AddHotelForm(request.POST)
 
-        nameR = request.POST['name']
-        descriptionR = request.POST['description']
-        streetR = request.POST['street']
-        houseNumberR = request.POST['houseNumber']
-        cityR = request.POST['city']
-        zipCodeR = request.POST['zipCode']
-        photoUrlR = "static/img/" + str(request.POST['photoUrl'])
+        if form.is_valid():
+            nameR = request.POST['name']
+            descriptionR = request.POST['description']
+            streetR = request.POST['street']
+            houseNumberR = request.POST['houseNumber']
+            cityR = request.POST['city']
+            zipCodeR = request.POST['zipCode']
+            photoUrlR = "static/img/" + str(request.POST['photoUrl'])
 
-        adress = Address(street=str(streetR),houseNumber=int(houseNumberR),city=str(cityR),zipCode=str(zipCodeR))
-        adress.save()
+            adress = Address(street=str(streetR),houseNumber=int(houseNumberR),city=str(cityR),zipCode=str(zipCodeR))
+            adress.save()
 
-        for ht in Hotel.objects.all():
-            if(ht.address == adress):
-                return HttpResponse("<h1>È già presente un hotel a questo indirizzo</h1>")
+            for ht in Hotel.objects.all():
+                if(ht.address == adress):
+                    return HttpResponse("<h1>È già presente un hotel a questo indirizzo</h1>")
 
-        for r in RegisteredUser.objects.all():
-            if(r.address == adress):
-                return HttpResponse("<h1>Vive già qualcuno a questo indirizzo</h1>")
+            for r in RegisteredUser.objects.all():
+                if(r.address == adress):
+                    return HttpResponse("<h1>Vive già qualcuno a questo indirizzo</h1>")
 
-        username = request.session['usr']
+            username = request.session['usr']
 
-        for hk in HotelKeeper.objects.all():
-            if(hk.userName == str(username)):
-                htFK = hk #hotelKeeper Foreign Key
-                hotel = Hotel(name=str(nameR),description=str(descriptionR),hotelKeeperId=htFK,address=adress,photoUrl=str(photoUrlR))
-                hotel.save()
-                break
+            for hk in HotelKeeper.objects.all():
+                if(hk.userName == str(username)):
+                    htFK = hk #hotelKeeper Foreign Key
+                    hotel = Hotel(name=str(nameR),description=str(descriptionR),hotelKeeperId=htFK,address=adress,photoUrl=str(photoUrlR))
+                    hotel.save()
+                    break
 
-        return redirect('/hotels/')
+            return redirect('/hotels/')
     else:
         form = AddHotelForm()
-
-    return render(request, 'addHotel.html')
+        context = {"form" : form}
+        return render(request, 'addHotel.html',context)
 
 
 def addRoomToHotel(request):
