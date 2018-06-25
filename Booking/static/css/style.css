@@ -70,7 +70,7 @@ input[type=date] {
 }
 
 .formCont{
-    width:90%;
+    width:60%;
     height:auto;
     padding-top:6%;
     margin-left:35%;
@@ -78,11 +78,7 @@ input[type=date] {
 
 .forAddR{
     color:white;
-    font-size:19px;
-}
-
-.corr{
-    margin-top:2%;
+    font-size:20px;
 }
 
 .addRoomBtn{
