@@ -1,5 +1,7 @@
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import TestCase, Client, RequestFactory
+from django.core.files.uploadedfile import SimpleUploadedFile
+import os
 import enum
 import unittest
 import datetime
@@ -377,39 +379,23 @@ class AddHotelInTheList(TestCase):
         self.middleware = SessionMiddleware()
 
     def testAddHotelInTheList(self):
-
         request = self.request_factory.get('/addHotel/', follow=True)
         self.middleware.process_request(request)
         request.session.save()
         request.session['usr'] = self.userhotelkeeper.userName
         request.session['usrType'] = 'hotelKeeper'
 
-        AddHotelForm.name = "hotel Trinciapollo"
-        AddHotelForm.description = "Poulet e besciamel"
-        AddHotelForm.street = self.newAd.street
-        AddHotelForm.houseNumber = self.newAd.houseNumber
-        AddHotelForm.city = self.newAd.city
-        AddHotelForm.zipCode = self.newAd.zipCode
-        AddHotelForm.photoUrl = "cortina.jpg"
+        photo_file = open(os.path.dirname(__file__) + '\..\static\img\cortina.jpg', 'rb')
+        form_data = {'name': "hotel Trinciapollo",
+                     'description': "Poulet e besciamel",
+                     'street': self.newAd.street,
+                     'houseNumber': self.newAd.houseNumber,
+                     'city': self.newAd.city,
+                     'zipCode': self.newAd.zipCode,
+                     'photoUrl': SimpleUploadedFile(photo_file.name, photo_file.read())}
 
-        form_data ={'name': "hotel Trinciapollo",
-                                  'description': "Poulet e besciamel",
-                                  'street': self.newAd.street,
-                                  'houseNumber': self.newAd.houseNumber,
-                                  'city': self.newAd.city,
-                                  'zipCode': self.newAd.zipCode,
-                                  'photoUrl': "cortina.jpg"
-
-                   }
         form = AddHotelForm(data=form_data)
-
-        self.assertEqual(form.name, "hotel Trinciapollo")
-        self.assertEqual(form.description, "Poulet e besciamel")
-        self.assertEqual(form.street, "via Holita")
-        self.assertEqual(form.houseNumber, self.newAd.houseNumber)
-        self.assertEqual(form.city, self.newAd.city)
-        self.assertEqual(form.zipCode, self.newAd.zipCode)
-        self.assertEqual(form.photoUrl, "cortina.jpg")
+        self.assertTrue(form.is_valid(), msg=form.errors)
 
 
 
