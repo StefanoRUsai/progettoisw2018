@@ -21,14 +21,13 @@ class formLogin(forms.Form):
     username = forms.CharField( required=True, widget=forms.TextInput(attrs={"class" : "form-control"}))
     password = forms.CharField( widget=forms.TextInput(attrs={'required': 'Please verify password', "class" : "form-control"}))
 
-
     def clean_username(self):
         username = self.cleaned_data["username"]
-        if not(RegisteredUser.objects.filter(userName=username).exists()):
+        if (RegisteredUser.objects.filter(userName=username).exists()) or (
+        HotelKeeper.objects.filter(userName=username).exists()):
+            return username
+        else:
             raise forms.ValidationError('Username not exists')
-        #if not(HotelKeeper.objects.filter(userName=username).exists()):
-        #    raise forms.ValidationError('Username not exists')
-        return username
 
 
 class RegistrationForm(forms.Form):
