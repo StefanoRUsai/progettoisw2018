@@ -33,10 +33,6 @@ def notRegisteredHome(request):
     return render(request,'homeNotRegisteredUser.html',context)
 
 
-
-
-
-
 def login(request):
     if 'usr' in request.session:
         if 'usrType' in request.session and request.session['usrType'] == 'regUser':
@@ -68,7 +64,6 @@ def login(request):
 
     context = {'form' : form}
     return render(request,'login.html',context)
-
 
 
 def registeredUserHome(request):
@@ -192,8 +187,6 @@ def addRoomToHotel(request):
         return render(request, 'addRoom.html')
 
 
-
-
 def isFreeUsername(toBeChecked):
     flag = True
     for ut in RegisteredUser.objects.all():
@@ -265,7 +258,6 @@ def registerUser(request):
 
     context = {'form' : form}
     return render(request,'signUp.html',context)
-
 
 
 def viewProfileUser(request):
@@ -341,7 +333,7 @@ def searchResults(request):
                             if between.exists():
                                 return render(request, "search.html")
                             else:
-                                tmp = [r.hotelId.name, r.roomNumber, r.price, "DEFAULT", r.hotelId.photoUrl, r.id]
+                                tmp = [r.hotelId.name, r.roomNumber, r.price, r.services, r.hotelId.photoUrl, r.id]
                                 listResult.append(tmp)
 
     if len(listResult) > 0:
@@ -495,8 +487,6 @@ def bookingRegisteredUserWithoutCard(request, user, roomBooking):
     return formBooking
 
 
-
-
 def bookARoom(request):
     try:
         roomid = request.GET.get('roomid', None)
@@ -548,7 +538,6 @@ def bookARoom(request):
         context = {'roomBooking' : roomBooking, 'bookingUser': user, 'creditCardUser': creditCardUser}
 
     return render(request, 'payment_form.html', context)
-
 
 
 def logoutView(request):
