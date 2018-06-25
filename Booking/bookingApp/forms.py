@@ -3,13 +3,13 @@ from .models import *
 
 class AddHotelForm (forms.Form):
     #maxdimensione, requisito necessario, adattamento html ni
-    name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    description = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    street = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    houseNumber = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    city = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    zipCode = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    photoUrl = forms.ImageField(required=False, widget=forms.TextInput(attrs={"class": "form-control"}))
+    name = forms.CharField(label="Name",widget=forms.TextInput(attrs={"class": "form-control"}))
+    description = forms.CharField(label="Description",widget=forms.TextInput(attrs={"class": "form-control"}))
+    street = forms.CharField(label="Street",widget=forms.TextInput(attrs={"class": "form-control"}))
+    houseNumber = forms.CharField(label="N",widget=forms.TextInput(attrs={"class": "form-control"}))
+    city = forms.CharField(label="City",widget=forms.TextInput(attrs={"class": "form-control"}))
+    zipCode = forms.CharField(label="Zip code",widget=forms.TextInput(attrs={"class": "form-control"}))
+    photoUrl = forms.ImageField(label="Photo",required=False, widget=forms.TextInput(attrs={"class": "form-control"}))
 
 class AddRoomForm (forms.Form):
     roomNumber = forms.CharField(label="Room number",widget=forms.TextInput(attrs={"class": "form-control"}))
