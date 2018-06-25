@@ -9,7 +9,12 @@
   <ul class="list-group list-group-flush">
     <li class="list-group-item">Stanza: {{roomBooking.roomNumber}}</li>
     <li class="list-group-item">Total price: € {{roomBooking.price}}</li>
-    <li class="list-group-item">Services: {{item.3}}</li>
+    <li class="list-group-item">Services:</li>
+      <ul >
+      {% for i in roomBooking.services.all %}
+      <li class="list-group-item">{{i}}</li>
+    {%endfor%}
+       </ul>
   </ul>
     </div>
     <!-- Utente esistente -->

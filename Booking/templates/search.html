@@ -2,8 +2,8 @@
 {% extends "searchBar.html" %}
 {% block title %} Search results {% endblock %}
     {% block container %}
-            <div>
-                <h2>Results</h2>
+            <div style="margin-left: 12%">
+                <h1>Results:</h1>
             </div>
 {% for item in listResult %}
   <img class="card-img-top" src="/{{item.4}}" alt="Card image cap">
@@ -13,7 +13,12 @@
   <ul class="list-group list-group-flush">
     <li class="list-group-item">Room: {{item.1}}</li>
     <li class="list-group-item">Total price: € {{item.2}}</li>
-    <li class="list-group-item">Services: {{item.3}}</li>
+    <li class="list-group-item">Services:</li>
+      <ul >
+      {% for i in item.3.all %}
+      <li class="list-group-item">{{i}}</li>
+    {%endfor%}
+       </ul>
   </ul>
   <div class="card-body">
     <a href="" class="btn btn-primary">Go to details</a>
@@ -21,8 +26,9 @@
   </div>
 {%endfor%}
 {% for item in listaVuota %}
-    <div>
-        <h3>There are no rooms available with these requirements</h3>
+    <div class="p-3 mb-2 bg-danger text-white" style="margin-left:30%; margin-right:30%; border: 3px solid; border-radius: 15px">
+        <br><br>
+        <h4 style="text-align: center; height: 90px">There are no rooms available with these requirements</h4>
     </div>
 {%endfor%}
     {% endblock %}

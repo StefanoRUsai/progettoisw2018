@@ -2,11 +2,12 @@
 {% load static %}
 {% block title %} Welcome to Booking-ISW {% endblock %}
 {% block container %}
+<div class="container">
     <table style="margin-top:3%; margin-left: 10%; margin-right: 10%">
     <tr>
         <td style="width:350px;height:80px">
             <div class="card" style="height:100%">
-              <img class="card-img-top" style="height:240px" src={{hotel1.photoUrl}} alt="Card image cap">
+              <img class="card-img-top" style="height:240px" src=/{{hotel1.photoUrl}} alt="Card image cap">
               <div class="card-body">
                 <h4 class="card-title"><a>{{ hotel1.name }}</a></h4>
                 <p class="card-text">{{ hotel1.description }}</p>
@@ -16,7 +17,7 @@
         </td>
         <td style="width:350px;height:80px">
             <div class="card" style="height:100%">
-              <img class="card-img-top" style="height:240px" src={{hotel2.photoUrl}} alt="Card image cap">
+              <img class="card-img-top" style="height:240px" src=/{{hotel2.photoUrl}} alt="Card image cap">
               <div class="card-body">
                 <h4 class="card-title"><a>{{hotel2.name}}</a></h4>
                 <p class="card-text">{{hotel2.description}}</p>
@@ -26,7 +27,7 @@
         </td>
         <td style="width:350px;height:80px">
             <div class="card" style="height:100%">
-              <img class="card-img-top" style="height:240px" src={{hotel3.photoUrl}} alt="Card image cap">
+              <img class="card-img-top" style="height:240px" src=/{{hotel3.photoUrl}} alt="Card image cap">
               <div class="card-body">
                 <h4 class="card-title"><a>{{hotel3.name}}</a></h4>
                 <p class="card-text">{{hotel3.description}}</p>
@@ -36,4 +37,5 @@
         </td>
     </tr>
     </table>
+</div>
 {% endblock %}
