@@ -106,8 +106,7 @@ def hotelKeeperHome(request):
 def addHotel (request):
     if request.method == 'POST':
         form = AddHotelForm(request.POST)
-
-        if form.is_valid():
+        if(form.is_valid()):
             nameR = request.POST['name']
             descriptionR = request.POST['description']
             streetR = request.POST['street']
@@ -145,48 +144,52 @@ def addHotel (request):
 
 def addRoomToHotel(request):
     if request.method == 'POST':
-        roomListWhereAdd = []
-        servicesListToAdd = []
+        form = AddRoomForm(request.POST)
+        if(form.is_valid()):
+            roomListWhereAdd = []
+            servicesListToAdd = []
 
-        #recupero i dati utili da sessione
-        hotelWhereAddName = request.session['htName']
-        hotelWhereAddCivN = request.session['htCivN']
+            #recupero i dati utili da sessione
+            hotelWhereAddName = request.session['htName']
+            hotelWhereAddCivN = request.session['htCivN']
 
-        #recupero i dati dal form e li salvo nelle variabili
-        roomNumber = request.POST['roomNumber']
-        bedsNumber = request.POST['bedsNumber']
-        services = request.POST.getlist('services')
-        priceR = float(request.POST['price'])
-
-
-        for ht in Hotel.objects.all():
-            if(ht.name == str(hotelWhereAddName) and ht.address.houseNumber == int(hotelWhereAddCivN)):
-                hotelWhereAdd = ht
-                break
-
-        for rm in Room.objects.all():
-            if (rm.hotelId == hotelWhereAdd):
-                roomListWhereAdd.append(rm)
-
-        if (len(roomListWhereAdd) == 0):
-            tmpRoom = Room(roomNumber=int(roomNumber), capacity=int(bedsNumber), price=priceR, hotelId=hotelWhereAdd)
-            tmpRoom.save()
-        else:
-            for r in roomListWhereAdd:
-                if (r.roomNumber == int(roomNumber)):
-                    return HttpResponse("<h1>Numero camera già prensente nella struttura " + str(hotelWhereAdd.name) + "</h1>")
-            print("anche")
-            tmpRoom = Room(roomNumber=int(roomNumber),capacity=int(bedsNumber),price=priceR,hotelId=hotelWhereAdd) #aggiungere il servizio sennò l'oggetto non viene creato
-            tmpRoom.save()
+            #recupero i dati dal form e li salvo nelle variabili
+            roomNumber = request.POST['roomNumber']
+            bedsNumber = request.POST['bedsNumber']
+            services = request.POST.getlist('services')
+            priceR = float(request.POST['price'])
 
 
-        #elimino permanentemente dalla sessione le variabili che non sono più utili
-        del request.session['htName']
-        del request.session['htCivN']
+            for ht in Hotel.objects.all():
+                if(ht.name == str(hotelWhereAddName) and ht.address.houseNumber == int(hotelWhereAddCivN)):
+                    hotelWhereAdd = ht
+                    break
 
-        return redirect('/hotels/')
+            for rm in Room.objects.all():
+                if (rm.hotelId == hotelWhereAdd):
+                    roomListWhereAdd.append(rm)
+
+            if (len(roomListWhereAdd) == 0):
+                tmpRoom = Room(roomNumber=int(roomNumber), capacity=int(bedsNumber), price=priceR, hotelId=hotelWhereAdd)
+                tmpRoom.save()
+            else:
+                for r in roomListWhereAdd:
+                    if (r.roomNumber == int(roomNumber)):
+                        return HttpResponse("<h1>Numero camera già prensente nella struttura " + str(hotelWhereAdd.name) + "</h1>")
+                print("anche")
+                tmpRoom = Room(roomNumber=int(roomNumber),capacity=int(bedsNumber),price=priceR,hotelId=hotelWhereAdd) #aggiungere il servizio sennò l'oggetto non viene creato
+                tmpRoom.save()
+
+                #elimino permanentemente dalla sessione le variabili che non sono più utili
+                del request.session['htName']
+                del request.session['htCivN']
+
+                return redirect('/hotels/')
     else:
-        return render(request, 'addRoom.html')
+        form = AddRoomForm()
+        context = {"form" : form}
+        return render(request,'addRoom.html',context)
+
 
 
 def isFreeUsername(toBeChecked):
@@ -209,7 +212,8 @@ def registerUser(request):
 
     if (request.method == 'POST'):
         form = RegistrationForm(request.POST)
-        if (form.is_valid() ):
+        if (form.is_valid() and isFreeUsername(str(form.cleaned_data['userName'])) and
+                form.cleaned_data['password'] == form.cleaned_data['verifyPassword']):
             # Setto in sessione le variabili relative all'utente loggato tranne la password
             name = form.cleaned_data['name']
             surname = form.cleaned_data['surname']
@@ -222,39 +226,37 @@ def registerUser(request):
             cap = form.cleaned_data['zipCode']
             userN = form.cleaned_data['userName']
             passW = form.cleaned_data['password']
-            verify = form.cleaned_data['verificapassword']
-
 
             hotelKeeper = form.cleaned_data['hotelKeeper']
 
-            # creo prima l'oggetto di tipo indirizzo
-            userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
-            userAddr.save()
+        # creo prima l'oggetto di tipo indirizzo
+        userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
+        userAddr.save()
 
-            # creo poi l'oggetto ut di tipo RegisteredUser che comprende l'oggetto userAddr creato poco sopra
-            if (hotelKeeper != True):
-                ut = RegisteredUser(name=str(name), surname=str(surname),
-                                    birthday=str(bd), cf=str(codF),
-                                    email=str(emailAddr), userName=str(userN),
+        # creo poi l'oggetto ut di tipo RegisteredUser che comprende l'oggetto userAddr creato poco sopra
+        if (hotelKeeper != True):
+            ut = RegisteredUser(name=str(name), surname=str(surname),
+                                birthday=str(bd), cf=str(codF),
+                                email=str(emailAddr), userName=str(userN),
 
-                                    password=str(passW), address=userAddr)
-                ut.save()
-            else:
-                hk = HotelKeeper(name=str(name), surname=str(surname),
-                                 birthday=str(bd), cf=str(codF),
-                                 email=str(emailAddr), userName=str(userN),
+                                password=str(passW), address=userAddr)
+            ut.save()
+        else:
+            hk = HotelKeeper(name=str(name), surname=str(surname),
+                             birthday=str(bd), cf=str(codF),
+                             email=str(emailAddr), userName=str(userN),
 
-                                 password=str(passW), address=userAddr)
-                hk.save()
+                             password=str(passW), address=userAddr)
+            hk.save()
 
-            request.session['usr'] = userN
+        request.session['usr'] = userN
 
-            if hotelKeeper != True:
-                request.session['usrType'] = 'regUser'
-                return redirect('/homeRegistered/')
-            else:
-                request.session['usrType'] = 'hotelKeeper'
-                return redirect('/home/')
+        if hotelKeeper != True:
+            request.session['usrType'] = 'regUser'
+            return redirect('/homeRegistered/')
+        else:
+            request.session['usrType'] = 'hotelKeeper'
+            return redirect('/home/')
 
     else:  # Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET
         form = RegistrationForm()

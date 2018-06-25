@@ -12,10 +12,19 @@ class AddHotelForm (forms.Form):
     photoUrl = forms.ImageField(required=False, widget=forms.TextInput(attrs={"class": "form-control"}))
 
 class AddRoomForm (forms.Form):
-    roomNumber = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    bedsNumber = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
-    services = forms.MultipleChoiceField()
-    price = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+    roomNumber = forms.CharField(label="Room number",widget=forms.TextInput(attrs={"class": "form-control"}))
+    bedsNumber = forms.CharField(label="Capacity",widget=forms.TextInput(attrs={"class": "form-control"}))
+    OPTIONS = (
+                  ("TELEPHONE",'TELEPHONE'),
+                  ("GARAGE",'GARAGE'),
+                  ("WIFI",'WIFI'),
+                  ("BREAKFAST",'BREAKFAST'),
+                  ("LUNCH",'LUNCH'),
+                  ("DINNER",'DINNER'),
+                  ("BRUNCH",'BRUNCH')
+    )
+    services = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(attrs={"name": "select_0","class": "fff"}),choices=OPTIONS)
+    price = forms.CharField(label="Price",widget=forms.TextInput(attrs={"class": "form-control"}))
 
 class formLogin(forms.Form):
     username = forms.CharField( required=True, widget=forms.TextInput(attrs={"class" : "form-control"}))
@@ -40,24 +49,24 @@ class RegistrationForm(forms.Form):
     email = forms.EmailField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     userName = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     password = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    verificapassword = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    verifyPassword = forms.CharField(label='Verify Password',max_length=50, error_messages={'required': 'Please verify password'}, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     street = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     civicNumber = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     city = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     zipCode = forms.CharField(max_length=15, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 
     def clean_userName(self):
-        username = self.cleaned_data["userName"]
-        if (RegisteredUser.objects.filter(userName=username).exists()) or (
-        HotelKeeper.objects.filter(userName=username).exists()):
-            raise forms.ValidationError('Username exists')
-        else:
-            return username
+        userName = self.cleaned_data["userName"]
+        if RegisteredUser.objects.filter(userName=userName).exists() or HotelKeeper.objects.filter(userName=userName).exists():
+            raise forms.ValidationError('Username already exists')
+        return userName
 
-    def clean_verificapassword(self):
-        if self.cleaned_data["verificapassword"] != self.cleaned_data["password"]:
-             raise forms.ValidationError('Verify password wrong')
-        return self.cleaned_data["verificapassword"]
+    def clean_password(self):
+        password = self.cleaned_data["password"]
+        verifyPassword =  self.cleaned_data["verifyPassword"]
+        if password == verifyPassword:
+            raise forms.ValidationError('Verify password wrong')
+        return password
 
 
 

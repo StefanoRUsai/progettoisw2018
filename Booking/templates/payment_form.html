@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} Book a room {% endblock %}
      {% block content %}
-    <div class="card liste" style="width: 20rem; float:left; margin-left: 5%">
+    <div class="card liste" style="width: 30rem;">
   <img class="card-img-top" src="/{{roomBooking.hotelId.photoUrl}}" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">{{roomBooking.hotelId.name}}</h5>
@@ -16,8 +16,7 @@
     {%endfor%}
        </ul>
   </ul>
-</div>
-    <div class="compileded" style="margin-left: 5%; width: 40%">
+    </div>
     <!-- Utente esistente -->
     {% if bookingUser is not None and creditCardUser is not None %}
         <ul>
@@ -37,23 +36,25 @@
     {% endif %}
 
     <!-- esiste pure la carta esistente -->
+
     {% if creditCardUser is not None %}
         <ul>
             <li>
                 Card number: {{creditCardUser.cardNumber}}
             </li>
         </ul>
-    <form class="c1" style="width:100%; margin-top:12%;" action="" method="POST">
+    <form class="container" style="width:50%;margin-top:12%;" action="" method="POST">
         {% csrf_token %}
         <button type="submit" class="btn btn-primary">reserve</button>
     </form>
     {% endif%}
     <!-- non esiste la carta -->
+
     {% if formBookingwithout is not None %}
-    <form class="c2" style="width:100%; margin-top:12%;" action="" method="POST">
+    <form class="container" style="width:50%;margin-top:12%;" action="" method="POST">
         {% csrf_token %}
         {% for field in formBookingwithout %}
-            <div class="form-group" style="height: 40%; float: right">
+            <div class="form-group">
                 {{ filed.error }}
                 <a>{{ field.label_tag }}</a>
                 {{ field }}
@@ -65,10 +66,7 @@
 
     <!-- l'utente deve registrarsi -->
     {% if formBooking is not None %}
-        <div>
-            <p>If you want to autocompile the fields get <a href="/login/">login</a> or if you want to save your get <a href="/signUp/">sign up</a>   </p>
-        </div>
-    <form class="c3" style="width:100%; margin-top:12%; height: 40%; float: right" action="" method="POST">
+    <form class="container" style="width:50%;margin-top:12%;" action="" method="POST">
         {% csrf_token %}
         {% for field in formBooking %}
             <div class="form-group">
@@ -77,8 +75,8 @@
                 {{ field }}
             </div>
         {% endfor %}
-     <button type="submit" class="btn btn-primary" style="width: 100%">reserve</button>
+     <button type="submit" class="btn btn-primary">reserve</button>
     </form>
     {% endif %}
-</div>
+
 {% endblock %}

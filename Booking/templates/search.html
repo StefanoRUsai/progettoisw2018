@@ -6,29 +6,24 @@
                 <h1>Results:</h1>
             </div>
 {% for item in listResult %}
-<div class="p-3 mb-2 bg-primary text-white" style="margin-top: 1%; width: 60%; height: 1.1%; border: 3px solid; border-radius: 15px; margin-right: 5%; margin-left: 20%">
-    <div class="card-body">
-    <img class="card-img-top" src="/{{item.4}}" alt="Card image cap" style="margin-top:2%; margin-left: 5%; margin-right: 4%; height: auto; width: 40%; border-radius: 15px; float:left">
-
+  <img class="card-img-top" src="/{{item.4}}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{item.0}}</h5>
   </div>
-    <div class="Date" style="width: 100%; height:50%">
-        <ul class="list-group list-group-flush" style="border-radius: 15px">
-            <li class="list-group-item list-group-item-action list-group-item-primary" style="text-align: center"> <h5 class="card-title">{{item.0}}</h5></li>
-            <li class="list-group-item list-group-item-action list-group-item-primary">Room:{{item.1}}</li>
-            <li class="list-group-item list-group-item-action list-group-item-primary">Total price: € {{item.2}}</li>
-            <li class="list-group-item list-group-item-action list-group-item-primary">Services:
-                <ul>
-                    {% for i in item.3.all %}
-                 <li class="list-group-item list-group-item-action list-group-item-primary">{{i}}</li>
-                    {%endfor%}
-                </ul>
-            </li>
-             <!-- <a href="" class="p-3 mb-2 bg-warning text-dark">Go to details</a> -->
-            <a href="/booking/?roomid={{item.5}}" class="p-3 mb-2 bg-warning text-dark" style="margin-top: 1%; border-radius: 15px; width: 100%; float:left; text-align: center">Book</a>
-        </ul>
-    </div>
-</div>
-
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Room: {{item.1}}</li>
+    <li class="list-group-item">Total price: € {{item.2}}</li>
+    <li class="list-group-item">Services:</li>
+      <ul >
+      {% for i in item.3.all %}
+      <li class="list-group-item">{{i}}</li>
+    {%endfor%}
+       </ul>
+  </ul>
+  <div class="card-body">
+    <a href="" class="btn btn-primary">Go to details</a>
+    <a href="/booking/?roomid={{item.5}}" class="btn btn-primary">book</a>
+  </div>
 {%endfor%}
 {% for item in listaVuota %}
     <div class="p-3 mb-2 bg-danger text-white" style="margin-left:30%; margin-right:30%; border: 3px solid; border-radius: 15px">
