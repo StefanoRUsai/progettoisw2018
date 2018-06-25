@@ -306,6 +306,8 @@ def viewProfileUser(request):
     return render(request, 'profile.html', context)
 
 
+
+
 def searchResults(request):
     listResult = []
 
@@ -325,12 +327,14 @@ def searchResults(request):
                         if (r.id not in Booking.objects.filter()):
                             listIn = searchPatternCheckIn.split("-")
                             listOut = searchPatternCheckOut.split("-")
-                            logIn_dt = datetime.datetime(int(listIn[0]), int(listIn[1]), int(listIn[2]))
-                            logOut_dt = datetime.datetime(int(listOut[0]), int(listOut[1]), int(listOut[2]))
+                            logIn_dt = datetime.date(int(listIn[0]), int(listIn[1]), int(listIn[2]))
+                            logOut_dt = datetime.date(int(listOut[0]), int(listOut[1]), int(listOut[2]))
                             request.session['logIn_dt'] = searchPatternCheckIn
                             request.session['logOut_dt'] = searchPatternCheckOut
                             between = Booking.objects.filter(checkIn=logIn_dt, checkOut=logOut_dt)
-                            if between.exists():
+                            if(logOut_dt < logIn_dt):
+                                return HttpResponse("<h2>La data di check-out non può essere precedente alla data di check-in</h2>")
+                            if(between.exists()):
                                 return render(request, "search.html")
                             else:
                                 tmp = [r.hotelId.name, r.roomNumber, r.price, r.services, r.hotelId.photoUrl, r.id]
