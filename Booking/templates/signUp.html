@@ -5,8 +5,8 @@
     <form class="container" action="" style="width:40%; height:10%;" method="POST">
         {% csrf_token %}
         {% for field in form %}
-            <div class="form-group">
-                {{ filed.error }}
+            <div class="form-group" style="color:white;font-size:25px">
+                {{ field.errors }}
                 <a>{{ field.label_tag }}</a>
                 {{ field }}
             </div>

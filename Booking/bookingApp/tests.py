@@ -7,9 +7,9 @@ from .models import *
 from .forms import *
 from .views import *
 
+
 class ModelTest(TestCase):
     def setUp(self):
-
         addressGlobal = Address(
             street='via Piave',
             houseNumber=60,
@@ -27,29 +27,29 @@ class ModelTest(TestCase):
         creditCardGlobal.save()
 
         creditCard = CreditCard(
-            cardNumber = 788888999987900,
-            expirationMonth = 10,
-            expirationYear = 2019,
-            cvvCode = 555)
+            cardNumber=788888999987900,
+            expirationMonth=10,
+            expirationYear=2019,
+            cvvCode=555)
 
         creditCard.save()
 
         person = Person(
-            name = 'Stefano',
-            surname = 'Marcello',
-            email = 'smarcello@gmail.com',
-            birthday = datetime.date(1987,10,11),
-            cf = 'MRCSTN84S13A355X',
-            address = addressGlobal)
+            name='Stefano',
+            surname='Marcello',
+            email='smarcello@gmail.com',
+            birthday=datetime.date(1987, 10, 11),
+            cf='MRCSTN84S13A355X',
+            address=addressGlobal)
 
         person.save()
 
         hotelKeeper = HotelKeeper(
-            name = 'Giorgia',
-            surname = 'Congiu',
-            email = 'giogio.com',
-            birthday = datetime.date(1996,10,20),
-            cf = 'CNGGRG96R60A355U',
+            name='Giorgia',
+            surname='Congiu',
+            email='giogio.com',
+            birthday=datetime.date(1996, 10, 20),
+            cf='CNGGRG96R60A355U',
             userName='giogioCong96',
             password='palazzodellescienze',
             address=addressGlobal)
@@ -57,17 +57,17 @@ class ModelTest(TestCase):
         hotelKeeper.save()
 
         hotel = Hotel(
-            name = 'T Hotel',
-            description = 'Nel cuore di Cagliari...',
-            hotelKeeperId = hotelKeeper,
-            address = addressGlobal)
+            name='T Hotel',
+            description='Nel cuore di Cagliari...',
+            hotelKeeperId=hotelKeeper,
+            address=addressGlobal)
 
         hotel.save()
 
         room1 = Room(
             capacity=3,
             price='120.00',
-            hotelId = hotel)
+            hotelId=hotel)
 
         room1.save()
 
@@ -75,27 +75,25 @@ class ModelTest(TestCase):
 
         service.save()
 
-
-
         user = User(
-            name = 'Carlo',
-            surname = 'Puddu',
-            email = 'cpuddu@gmail.com',
-            birthday = datetime.date(1990,10,6),
-            cf = 'PDDCRL90F06F979T',
-            address = addressGlobal,
-            creditCard = creditCardGlobal)
+            name='Carlo',
+            surname='Puddu',
+            email='cpuddu@gmail.com',
+            birthday=datetime.date(1990, 10, 6),
+            cf='PDDCRL90F06F979T',
+            address=addressGlobal,
+            creditCard=creditCardGlobal)
 
         user.save()
 
         registeredUser = RegisteredUser(
-            name = 'Mario',
-            surname = 'Cittadini',
+            name='Mario',
+            surname='Cittadini',
             email='marcit@gmail.com',
-            birthday=datetime.date(1987,10,11),
-            cf = 'CTTMRA76T607T',
-            userName = 'marcittttt2018',
-            password = 'gitPullFailed',
+            birthday=datetime.date(1987, 10, 11),
+            cf='CTTMRA76T607T',
+            userName='marcittttt2018',
+            password='gitPullFailed',
             address=addressGlobal,
             creditCard=creditCardGlobal)
 
@@ -105,14 +103,16 @@ class ModelTest(TestCase):
             customerId=user,
             roomId=room1,
             checkIn=datetime.date(2018, 11, 12),
-            checkOut = datetime.date(2018, 11, 18))
+            checkOut=datetime.date(2018, 11, 18))
 
         booking.save()
 
+
 ''''User story 4. (req. ViewHotelList)'''
+
+
 class HotelsListTest(TestCase):
     def setUp(self):
-
         hkAddress = Address(
             street='via francesco',
             houseNumber=12,
@@ -123,7 +123,7 @@ class HotelsListTest(TestCase):
         hotelKeeper = HotelKeeper(
             name='francesco',
             surname='fadda',
-            birthday= datetime.date(1996,10,20),
+            birthday=datetime.date(1996, 10, 20),
             cf='dasf12r1324',
             email='francesco@fadda.net',
             address=hkAddress,
@@ -148,13 +148,13 @@ class HotelsListTest(TestCase):
         hotel.save()
 
         service1 = IncludedService(
-            service = IncludedService.GARAGE
+            service=IncludedService.GARAGE
         )
 
         service1.save()
 
         service2 = IncludedService(
-            service = IncludedService.TELEPHONE
+            service=IncludedService.TELEPHONE
         )
         service2.save()
 
@@ -189,7 +189,7 @@ class HotelsListTest(TestCase):
         hotelKeeperNoHotels = HotelKeeper(
             name='fabrizio',
             surname='secci',
-            birthday= datetime.date(1996,10,20),
+            birthday=datetime.date(1996, 10, 20),
             cf='dasf12r1324',
             email='fabrizio@secci.net',
             address=hkAddress,
@@ -197,7 +197,6 @@ class HotelsListTest(TestCase):
             password='isw'
         )
         hotelKeeperNoHotels.save()
-
 
         self.userWithHotels = hotelKeeper
         self.userWithoutHotels = hotelKeeperNoHotels
@@ -228,14 +227,15 @@ class HotelsListTest(TestCase):
         response = hotelsList(request)
 
         # print(response.status_code)
-     #   self.assertContains(response, "You didn't register an hotel yet")
+    #   self.assertContains(response, "You didn't register an hotel yet")
 
 
 ''''User story 1. (req. account hotelkeeper)'''
 """ simulazione in black box mode """
+
+
 class RegistrationHotelKeeperTest(TestCase):
     def setUp(self):
-
         address = Address(
             street='via lanusei',
             houseNumber=12,
@@ -246,7 +246,7 @@ class RegistrationHotelKeeperTest(TestCase):
         hotelKeeper = HotelKeeper(
             name='Elena',
             surname='Puddu',
-            birthday= datetime.date(1980,1,1),
+            birthday=datetime.date(1980, 1, 1),
             cf='pdueln80a21b354a',
             email='e.puddu@gmail.com',
             address=address,
@@ -286,23 +286,34 @@ class RegistrationHotelKeeperTest(TestCase):
 
         request.session['usr'] = self.userregistered.userName
         request.session['usrType'] = 'regUser'
-        response = self.client.get('/login/')
+
+        response = login(request)
+
+        print(request.get_full_path())
+        print(response.status_code)
+
         self.assertEquals(response.status_code, 302)
 
-    # def testHomeHotelKeeperVizualization(self):
-    #     request = self.request_factory.get('/login/')
-    #     self.middleware.process_request(request)
-    #     request.session.save()
-    #
-    #     request.session['usr'] = self.userhotelkeeper.userName
-    #     request.session['usrType'] = 'hotelKeeper'
-    #     response = self.client.get('/login/')
-    #     self.assertEquals(response.status_code, 302)
-    #
+    def testHomeHotelKeeperVizualization(self):
+        request = self.request_factory.get('/login/', follow=True)
+        self.middleware.process_request(request)
+        request.session.save()
+
+        request.session['usr'] = self.userhotelkeeper.userName
+        request.session['usrType'] = 'hotelKeeper'
+
+        response = login(request)
+
+        print(request.get_full_path())
+        print(response.status_code)
+
+        self.assertEquals(response.status_code, 302)
 
 
 
 
 
-  
+
+
+
 
