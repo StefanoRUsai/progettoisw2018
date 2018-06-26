@@ -25,5 +25,11 @@
     </div>
 </div>
 {%endfor%}
+{% if listaPrenotazioni|length == 0 %}
+            <div class="p-3 mb-2 bg-danger text-white" style="margin-left:30%; margin-right:30%; border: 3px solid; border-radius: 15px">
+                <br><br>
+                <h4 style="text-align: center; height: 90px">You have not reservations in your hotels!</h4>
+             </div>
+{% endif %}
 
 {% endblock %}
