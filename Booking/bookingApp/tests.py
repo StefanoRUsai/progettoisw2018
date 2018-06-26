@@ -375,10 +375,9 @@ class AddRoomToHotelTest(TestCase):
         self.assertFalse(form.is_valid(), msg=form.errors)
 
 
-"""user story 8"""
+"""user story 8. search"""
 class SearchResultTest(TestCase):
     def setUp(self):
-
         hkAddress = Address(street='via francesco',houseNumber=12,city='savona',zipCode='00989')
         hkAddress.save()
         bookedUser = User(name='gianni', surname='deGasperi',birthday=datetime.date(1996,10,20),cf='fsaf34f32', email='gianni@gmail.com',address=hkAddress)
@@ -403,11 +402,11 @@ class SearchResultTest(TestCase):
         self.request_factory = RequestFactory()
         self.middleware = SessionMiddleware()
 
-    def testSearchResult(self):
+    def test_SearchResult(self):
      #   request = self.request_factory.get('/search/?search_city=savona&search_number=3&search_checkin=2018-06-15&search_checkout=2018-06-24', follow=True)
         request = self.request_factory.get('/search/',follow=True)
 
-        request.GET.__init__(mutable=True)
+        request.GET.init(mutable=True)
 
         request.GET['search_city']='savona'
         request.GET['search_number'] = '3'
@@ -427,7 +426,7 @@ class SearchResultTest(TestCase):
 
         self.assertContains(response, 'Hotel Acquaragia')
 
-    def testSearchError(self):
+    def test_SearchError(self):
         #   request = self.request_factory.get('/search/?search_city=savona&search_number=3&search_checkin=2018-06-15&search_checkout=2018-06-24', follow=True)
         request = self.request_factory.get('/search/', follow=True)
 
@@ -446,6 +445,10 @@ class SearchResultTest(TestCase):
         print(response.content.decode())
 
         self.assertContains(response, 'There are no rooms available with these requirements')
+
+
+
+
 '''User story 9. book a room'''
 class reserveRoom(TestCase):
     def setUp(self):
@@ -507,61 +510,58 @@ class reserveRoom(TestCase):
         })
         self.assertFalse(form.is_valid(), msg=form.errors)
 
-    """
-        def test_bookingRoomSuccessfull(self):
-        request = self.request_factory.get('/booking/', follow=True)
-        self.middleware.process_request(request)
-        request.session.save()
 
-        response = bookARoom(request)
-
-        form = PaymentForm(data={
-            'name': 'Giorgio',
-            'surname': 'Imola',
-            'birthday': '2018-10-21',
-            'cf': '90913829011',
-            'email': 'giogioImola@gmail.com',
-            'userName': 'giorgio',
-            'password': 'isw',
-            'verificapassword': 'isw',
-            'street': 'via dalle scatole',
-            'civicNumber': '777',
-            'city': 'Marius',
-            'zipCode': '02131',
-            'cardNumber': '123456789012345',
-            'month': '10',
-            'year': '2019',
-            'cvv': '908'
-        })
-        self.assertTrue(form.is_valid(), msg=form.true)
-        pass
-    """
-
-""""
-Titolo: Salvataggio dati da prenotazione
-10.     Requisito: Il Sistema deve dare la possibilità di salvare i dati di pagamento per prenotazioni future.
-
-
-class saveDateForFuture (TestCase):
+"""User story 10. data save when booking"""
+class TestDatasave(TestCase):
     def setUp(self):
+        hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
+        hkAddress.save()
+        bookedUser = User(name='gianni', surname='deGasperi', birthday=datetime.date(1996, 10, 20), cf='fsaf34f32',
+                          email='gianni@gmail.com', address=hkAddress)
+        bookedUser.save()
+        userCreditCard = CreditCard(cardNumber='124563455436', expirationYear='2022', expirationMonth='03',
+                                    cvvCode='007',
+                                    owner=bookedUser)
+        userCreditCard.save()
+        hotelKeeper = HotelKeeper(name='francesco', surname='fadda', birthday=datetime.date(1996, 10, 20),
+                                  cf='dasf12r1324',
+                                  email='francesco@fadda.net', address=hkAddress, userName='francesco',
+                                  password='isw')
+        hotelKeeper.save()
+        hotelAddress = Address(street='via hotel bellissimo', houseNumber=12, city='savona', zipCode='00929')
+        hotelAddress.save()
+        hotel = Hotel(name='Hotel Acquaragia', description='Hotel bellissimo', hotelKeeperId=hotelKeeper,
+                      address=hotelAddress, photoUrl='/static/img/amsterdamHotel.jpg')
+        hotel.save()
+        bookedRoom = Room(roomNumber=12, capacity=3, price=40.0, hotelId=hotel)
+        bookedRoom.save()
+        hotelKeeperNoBookings = HotelKeeper(name='filippo', surname='podddesu',
+                                            birthday=datetime.date(1996, 10, 20),
+                                            cf='dasf12r1324', email='filippo@poddesu.net', address=hkAddress,
+                                            userName='filippo', password='isw')
+        hotelKeeperNoBookings.save()
+        booking = Booking(customerId=bookedUser, roomId=bookedRoom, checkIn=datetime.date(2018, 11, 28),
+                          checkOut=datetime.date(2018, 11, 20))
+        booking.save()
+
+        self.userWithHotels = hotelKeeper
+
         self.request_factory = RequestFactory()
         self.middleware = SessionMiddleware()
 
-    def test_redirectToRegistration(self):
-        bookingPage = '/booking/?roomid=' + str(self.room.id)
-        request = self.request_factory.get(bookingPage, follow=True)
-        self.middleware.process_request(request)
-        request.session.save()
+    def testSearchResult(self):
+        form_data = {'name': 'Marco', 'surname': 'cognome',
+                     'birthday': datetime.date(1996, 10, 20),
+                     'cf': '23132123321', 'email': 'mail@ciao.com',
+                     'street': 'via', 'civicNumber': 12, 'city': 'cagliari',
+                     'zipCode': '09100', 'cardNumber': 788888999987900,
+                     'month': 12, 'year': 2019, 'cvv': 321,
+                     'userName': 'miao', 'password': 'isw',
+                     'verificapassword': 'isw'}
 
-        response = bookARoom(request)
+        self.client.post('/booking/?roomid=1', form_data)
 
-        response = c.get('/customer/details/')
-"""
-
-
-
-
-
-
+        app_count = RegisteredUser.objects.filter(userName='miao').count()
+        self.assertEqual(app_count, 1)
 
 
