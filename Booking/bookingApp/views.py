@@ -166,11 +166,10 @@ def addRoomToHotel(request):
             hotelWhereAddCivN = request.session['htCivN']
 
             #recupero i dati dal form e li salvo nelle variabili
-            roomNumber = request.POST['roomNumber']
-            bedsNumber = request.POST['bedsNumber']
-            services = request.POST.getlist('services')
-            priceR = float(request.POST['price'])
-
+            roomNumber = form.cleaned_data['roomNumber']
+            bedsNumber = form.cleaned_data['bedsNumber']
+            services = form.cleaned_data['services']
+            priceR = float(form.cleaned_data['price'])
 
             for ht in Hotel.objects.all():
                 if(ht.name == str(hotelWhereAddName) and ht.address.houseNumber == int(hotelWhereAddCivN)):
@@ -191,6 +190,12 @@ def addRoomToHotel(request):
                 print("anche")
                 tmpRoom = Room(roomNumber=int(roomNumber),capacity=int(bedsNumber),price=priceR,hotelId=hotelWhereAdd) #aggiungere il servizio sennò l'oggetto non viene creato
                 tmpRoom.save()
+
+                for s in services:
+                    s = IncludedService(service = str(s))
+                    s.save()
+                    print("waaaa")
+                    tmpRoom.services.add(s)
 
                 #elimino permanentemente dalla sessione le variabili che non sono più utili
                 del request.session['htName']

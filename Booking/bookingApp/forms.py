@@ -23,7 +23,7 @@ class AddRoomForm (forms.Form):
                   ("DINNER",'DINNER'),
                   ("BRUNCH",'BRUNCH')
     )
-    services = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(attrs={"name": "select_0","class": "fff"}),choices=OPTIONS)
+    services = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple,choices=OPTIONS)
     price = forms.CharField(label="Price",widget=forms.TextInput(attrs={"class": "form-control"}))
 
 class formLogin(forms.Form):
