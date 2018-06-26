@@ -470,14 +470,36 @@ def bookingNotRegistered(request, roomBoking):
             year = formBooking.cleaned_data['year']
             cvv = formBooking.cleaned_data['cvv']
 
-            userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
-            userAddr.save()
+            userN = formBooking.cleaned_data['userName']
+            passW = formBooking.cleaned_data['password']
+            verificapassword = formBooking.cleaned_data['verificapassword']
 
-            ut = User(name=str(name), surname=str(surname), birthday=bd, cf=str(codF),email=str(emailAddr), address=userAddr)
-            ut.save()
+            if (userN != None and passW != None and verificapassword != None):
 
-            card = CreditCard(owner=ut, cardNumber=cardNumber, expirationYear=year,expirationMonth=month, cvvCode = cvv)
-            card.save()
+                userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
+                userAddr.save()
+
+                ut = RegisteredUser(name=str(name), surname=str(surname),
+                                    birthday=str(bd), cf=str(codF),
+                                    email=str(emailAddr), userName=str(userN),
+                                    password=str(passW), address=userAddr)
+                ut.save()
+
+                card = CreditCard(owner=ut, cardNumber=cardNumber, expirationYear=year, expirationMonth=month,
+                                  cvvCode=cvv)
+                card.save()
+
+            else:
+                userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
+                userAddr.save()
+
+                ut = User(name=str(name), surname=str(surname), birthday=bd, cf=str(codF), email=str(emailAddr),
+                          address=userAddr)
+                ut.save()
+
+                card = CreditCard(owner=ut, cardNumber=cardNumber, expirationYear=year, expirationMonth=month,
+                                  cvvCode=cvv)
+                card.save()
 
             try:
                 searchPatternCheckIn = request.session['logIn_dt']
@@ -496,7 +518,6 @@ def bookingNotRegistered(request, roomBoking):
         formBooking = PaymentForm()
 
     return formBooking
-
 
 def bookingRegisteredUserWithoutCard(request, user, roomBooking):
     if (request.method == 'POST'):

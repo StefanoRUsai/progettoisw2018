@@ -68,7 +68,6 @@ class RegistrationForm(forms.Form):
         return self.cleaned_data["verificapassword"]
 
 
-
 class PaymentForm(forms.Form):
     name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     surname = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
@@ -83,8 +82,22 @@ class PaymentForm(forms.Form):
     month = forms.CharField(min_length=2, max_length=2, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     year = forms.CharField(min_length=4, max_length=4, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     cvv = forms.CharField(min_length=3, max_length=3, required=True,  widget=forms.TextInput(attrs={"class": "form-control"}))
+    userName = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={"class": "form-control"}))
+    password = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={"class": "form-control"}))
+    verificapassword = forms.CharField(label="Verifiched Password", required=False, max_length=50, widget=forms.TextInput(attrs={"class": "form-control"}))
 
+    def clean_userName(self):
+        username = self.cleaned_data["userName"]
+        if (RegisteredUser.objects.filter(userName=username).exists()) or (
+        HotelKeeper.objects.filter(userName=username).exists()):
+            raise forms.ValidationError('Username exists')
+        else:
+            return username
 
+    def clean_verificapassword(self):
+        if self.cleaned_data["verificapassword"] != self.cleaned_data["password"]:
+             raise forms.ValidationError('Verify password wrong')
+        return self.cleaned_data["verificapassword"]
 class creditCard(forms.Form):
     cardNumber = forms.CharField(min_length=15, max_length=15, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
     month = forms.CharField(min_length=2, max_length=2, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))

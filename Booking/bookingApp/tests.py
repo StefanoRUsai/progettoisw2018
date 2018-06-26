@@ -375,8 +375,77 @@ class AddRoomToHotelTest(TestCase):
         self.assertFalse(form.is_valid(), msg=form.errors)
 
 
+"""user story 8"""
+class SearchResultTest(TestCase):
+    def setUp(self):
+
+        hkAddress = Address(street='via francesco',houseNumber=12,city='savona',zipCode='00989')
+        hkAddress.save()
+        bookedUser = User(name='gianni', surname='deGasperi',birthday=datetime.date(1996,10,20),cf='fsaf34f32', email='gianni@gmail.com',address=hkAddress)
+        bookedUser.save()
+        userCreditCard=CreditCard(cardNumber='124563455436',expirationYear='2022',expirationMonth='03',cvvCode='007',owner=bookedUser)
+        userCreditCard.save()
+        hotelKeeper = HotelKeeper(name='francesco',surname='fadda',birthday= datetime.date(1996,10,20),cf='dasf12r1324',email='francesco@fadda.net',address=hkAddress,userName='francesco',password='isw')
+        hotelKeeper.save()
+        hotelAddress = Address(street='via hotel bellissimo',houseNumber=12,city='savona',zipCode='00929')
+        hotelAddress.save()
+        hotel = Hotel(name='Hotel Acquaragia',description='Hotel bellissimo',hotelKeeperId=hotelKeeper,address=hotelAddress,photoUrl='/static/img/amsterdamHotel.jpg')
+        hotel.save()
+        bookedRoom = Room(roomNumber=12,capacity=3,price=40.0,hotelId=hotel)
+        bookedRoom.save()
+        hotelKeeperNoBookings = HotelKeeper(name='filippo',surname='podddesu',birthday=datetime.date(1996,10,20),cf='dasf12r1324',email='filippo@poddesu.net',address=hkAddress,userName='filippo',password='isw')
+        hotelKeeperNoBookings.save()
+        booking = Booking(customerId=bookedUser,roomId=bookedRoom,checkIn=datetime.date(2018,11,28),checkOut=datetime.date(2018,11,20))
+        booking.save()
+
+        self.userWithHotels = hotelKeeper
+
+        self.request_factory = RequestFactory()
+        self.middleware = SessionMiddleware()
+
+    def testSearchResult(self):
+     #   request = self.request_factory.get('/search/?search_city=savona&search_number=3&search_checkin=2018-06-15&search_checkout=2018-06-24', follow=True)
+        request = self.request_factory.get('/search/',follow=True)
+
+        request.GET.__init__(mutable=True)
+
+        request.GET['search_city']='savona'
+        request.GET['search_number'] = '3'
+        request.GET['search_checkin'] = '2018-01-01'
+        request.GET['search_checkout'] = '2018-01-05'
+
+        self.middleware.process_request(request)
+        request.session.save()
+
+        print('città:'+request.GET.get('search_city', None))
+        print('numero:'+request.GET.get('search_number', None))
+        print('checkin:'+request.GET.get('search_checkin', None))
+        print('checkout:' + request.GET.get('search_checkout', None))
+
+        response = searchResults(request)
+        print(response.content.decode())
+
+        self.assertContains(response, 'Hotel Acquaragia')
+
+    def testSearchError(self):
+        #   request = self.request_factory.get('/search/?search_city=savona&search_number=3&search_checkin=2018-06-15&search_checkout=2018-06-24', follow=True)
+        request = self.request_factory.get('/search/', follow=True)
+
+        request.GET.__init__(mutable=True)
+
+        request.GET['search_city'] = 'cagliari'
+        request.GET['search_number'] = '3'
+        request.GET['search_checkin'] = '2018-01-01'
+        request.GET['search_checkout'] = '2018-01-05'
+
+        self.middleware.process_request(request)
+        request.session.save()
 
 
+        response = searchResults(request)
+        print(response.content.decode())
+
+        self.assertContains(response, 'There are no rooms available with these requirements')
 '''User story 9. book a room'''
 class reserveRoom(TestCase):
     def setUp(self):
