@@ -5,13 +5,13 @@
     <form class="container" action="" style="width:40%; height:10%;" method="POST">
         {% csrf_token %}
         {% for field in form %}
-            <div class="form-group" style="color:white;font-size:25px">
+            <div class="form-group" style="color:black;font-size:16px">
                 {{ field.errors }}
                 <a>{{ field.label_tag }}</a>
                 {{ field }}
             </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary" style="width: 100%">Login</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom:30px">Login</button>
     </form>
 </div>
 
