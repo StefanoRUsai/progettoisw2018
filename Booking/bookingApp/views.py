@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import *
 from .models import *
 import datetime
 from django.contrib import auth
+
 
 def notRegisteredHome(request):
     contatore = 0
@@ -28,7 +29,8 @@ def notRegisteredHome(request):
     elif(len(lista) == 2):
         context = { 'hotel1' : lista[0] , 'hotel2' : lista[1] , 'hotel3' : lista[0]}
     else:
-        return HttpResponse("<h1>Servono almeno due alberghi</h1>")
+        context = {"message" : "Two hotels are the minimum required"}
+        return render_to_response("messages.html",context)
 
     return render(request,'homeNotRegisteredUser.html',context)
 
@@ -87,7 +89,8 @@ def registeredUserHome(request):
     elif(len(lista) == 2):
         context = { 'hotel1' : lista[0] , 'hotel2' : lista[1] , 'hotel3' : lista[0]}
     else:
-        return HttpResponse("<h1>Servono almeno due alberghi</h1>")
+        context = {"message" : "Two hotels are the minimum required"}
+        return render_to_response("messages.html",context)
 
     return render(request, 'homeRegisteredUser.html', context)
 
@@ -117,26 +120,36 @@ def hotelKeeperHome(request):
 
 def addHotel (request):
     if request.method == 'POST':
+        print("sono in post")
         form = AddHotelForm(request.POST)
         if(form.is_valid()):
-            nameR = request.POST['name']
-            descriptionR = request.POST['description']
-            streetR = request.POST['street']
-            houseNumberR = request.POST['houseNumber']
-            cityR = request.POST['city']
-            zipCodeR = request.POST['zipCode']
-            photoUrlR = "static/img/" + str(request.POST['photoUrl'])
+            print("è valido")
+            nameR = form.cleaned_data['name']
+            descriptionR = form.cleaned_data['description']
+            streetR = form.cleaned_data['street']
+            houseNumberR = form.cleaned_data['houseNumber']
+            cityR = str(form.cleaned_data['city']).lower()
+            zipCodeR = form.cleaned_data['zipCode']
+            photoUrlR = "static/img/" + str(form.cleaned_data['photoUrl'])
 
             adress = Address(street=str(streetR),houseNumber=int(houseNumberR),city=str(cityR),zipCode=str(zipCodeR))
-            adress.save()
 
             for ht in Hotel.objects.all():
-                if(ht.address == adress):
-                    return HttpResponse("<h1>È già presente un hotel a questo indirizzo</h1>")
+                if(ht.address.city == adress.city and ht.address.street == adress.street and ht.address.houseNumber == adress.houseNumber):
+                    context = {"message" : "An hotel is already present at this address"}
+                    return render_to_response('messages.html',context)
 
             for r in RegisteredUser.objects.all():
-                if(r.address == adress):
-                    return HttpResponse("<h1>Vive già qualcuno a questo indirizzo</h1>")
+                if (r.address.city == adress.city and r.address.street == adress.street and r.address.houseNumber == adress.houseNumber):
+                    context = {"message": "A user of Booking.isw lives at this address"}
+                    return render_to_response('messages.html', context)
+
+            for r in HotelKeeper.objects.all():
+                if (r.address.city == adress.city and r.address.street == adress.street and r.address.houseNumber == adress.houseNumber):
+                    context = {"message": "An hotel keeper of Booking.ISW lives at this address"}
+                    return render_to_response('messages.html', context)
+
+            adress.save()
 
             username = request.session['usr']
 
@@ -150,8 +163,8 @@ def addHotel (request):
             return redirect('/hotels/')
     else:
         form = AddHotelForm()
-        context = {"form" : form}
-        return render(request, 'addHotel.html',context)
+    context = {"form" : form}
+    return render(request, 'addHotel.html',context)
 
 
 def addRoomToHotel(request):
@@ -166,37 +179,43 @@ def addRoomToHotel(request):
             hotelWhereAddCivN = request.session['htCivN']
 
             #recupero i dati dal form e li salvo nelle variabili
-            roomNumber = request.POST['roomNumber']
-            bedsNumber = request.POST['bedsNumber']
-            services = request.POST.getlist('services')
-            priceR = float(request.POST['price'])
+            roomNumber = form.cleaned_data['roomNumber']
+            bedsNumber = form.cleaned_data['bedsNumber']
+            services = form.cleaned_data['services']
+            priceR = float(form.cleaned_data['price'])
 
+            if(priceR > 0.0 and int(roomNumber) > 0 and int(bedsNumber) > 0):
+                for ht in Hotel.objects.all():
+                    if(ht.name == str(hotelWhereAddName) and ht.address.houseNumber == int(hotelWhereAddCivN)):
+                        hotelWhereAdd = ht
+                        break
 
-            for ht in Hotel.objects.all():
-                if(ht.name == str(hotelWhereAddName) and ht.address.houseNumber == int(hotelWhereAddCivN)):
-                    hotelWhereAdd = ht
-                    break
+                for rm in Room.objects.all():
+                    if (rm.hotelId == hotelWhereAdd):
+                        roomListWhereAdd.append(rm)
 
-            for rm in Room.objects.all():
-                if (rm.hotelId == hotelWhereAdd):
-                    roomListWhereAdd.append(rm)
+                if (len(roomListWhereAdd) == 0):
+                    tmpRoom = Room(roomNumber=int(roomNumber), capacity=int(bedsNumber), price=priceR, hotelId=hotelWhereAdd)
+                    tmpRoom.save()
+                else:
+                    for r in roomListWhereAdd:
+                        if (r.roomNumber == int(roomNumber)):
+                            context = {"message": "Room number already exist in the structure " + str(hotelWhereAdd.name)}
+                            return render_to_response("messages.html", context)
 
-            if (len(roomListWhereAdd) == 0):
-                tmpRoom = Room(roomNumber=int(roomNumber), capacity=int(bedsNumber), price=priceR, hotelId=hotelWhereAdd)
-                tmpRoom.save()
-            else:
-                for r in roomListWhereAdd:
-                    if (r.roomNumber == int(roomNumber)):
-                        return HttpResponse("<h1>Numero camera già prensente nella struttura " + str(hotelWhereAdd.name) + "</h1>")
-                print("anche")
-                tmpRoom = Room(roomNumber=int(roomNumber),capacity=int(bedsNumber),price=priceR,hotelId=hotelWhereAdd) #aggiungere il servizio sennò l'oggetto non viene creato
-                tmpRoom.save()
+                    tmpRoom = Room(roomNumber=int(roomNumber),capacity=int(bedsNumber),price=priceR,hotelId=hotelWhereAdd) #aggiungere il servizio sennò l'oggetto non viene creato
+                    tmpRoom.save()
 
-                #elimino permanentemente dalla sessione le variabili che non sono più utili
-                del request.session['htName']
-                del request.session['htCivN']
+                    for s in services:
+                        s = IncludedService(service = str(s))
+                        s.save()
+                        tmpRoom.services.add(s)
 
-                return redirect('/hotels/')
+                    #elimino permanentemente dalla sessione le variabili che non sono più utili
+                    del request.session['htName']
+                    del request.session['htCivN']
+
+                    return redirect('/hotels/')
     else:
         form = AddRoomForm()
         context = {"form" : form}
@@ -232,7 +251,7 @@ def registerUser(request):
             emailAddr = form.cleaned_data['email']
             street = form.cleaned_data['street']
             civicNr = form.cleaned_data['civicNumber']
-            userCity = form.cleaned_data['city']
+            userCity = str(form.cleaned_data['city']).lower()
             cap = form.cleaned_data['zipCode']
             userN = form.cleaned_data['userName']
             passW = form.cleaned_data['password']
@@ -329,7 +348,7 @@ def searchResults(request):
     listResult = []
 
     if request.method == 'GET':  # quando viene premuto il tasto di ricerca
-        searchPatternCity = request.GET.get('search_city', None)
+        searchPatternCity = request.GET.get('search_city', None).lower()
         searchPatternNumber = request.GET.get('search_number', None)
         searchPatternCheckIn = request.GET.get('search_checkin', None)
         searchPatternCheckOut = request.GET.get('search_checkout', None)
@@ -350,7 +369,8 @@ def searchResults(request):
                             request.session['logOut_dt'] = searchPatternCheckOut
                             between = Booking.objects.filter(checkIn=logIn_dt, checkOut=logOut_dt)
                             if(logOut_dt < logIn_dt):
-                                return HttpResponse("<h2>La data di check-out non può essere precedente alla data di check-in</h2>")
+                                context = {"message": "Check-out date must be greater than check-in date"}
+                                return render_to_response("messages.html", context)
                             if(between.exists()):
                                 return render(request, "search.html")
                             else:
@@ -423,7 +443,8 @@ def hotelDetail(request):
     if(hotel != None):
         context = {'hotel': hotel,'roomList': listaCamereHotel}
     else:
-        return HttpResponse("<h3>Nessun dettaglio al momento disponibile</h3>")
+        context = {"message" : "No details to show at the moment"}
+        return render_to_response("messages.html",context)
 
 
     return render(request,"manageHotel.html",context)
@@ -449,14 +470,36 @@ def bookingNotRegistered(request, roomBoking):
             year = formBooking.cleaned_data['year']
             cvv = formBooking.cleaned_data['cvv']
 
-            userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
-            userAddr.save()
+            userN = formBooking.cleaned_data['userName']
+            passW = formBooking.cleaned_data['password']
+            verificapassword = formBooking.cleaned_data['verificapassword']
 
-            ut = User(name=str(name), surname=str(surname), birthday=bd, cf=str(codF),email=str(emailAddr), address=userAddr)
-            ut.save()
+            if (userN != None and passW != None and verificapassword != None):
 
-            card = CreditCard(owner=ut, cardNumber=cardNumber, expirationYear=year,expirationMonth=month, cvvCode = cvv)
-            card.save()
+                userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
+                userAddr.save()
+
+                ut = RegisteredUser(name=str(name), surname=str(surname),
+                                    birthday=str(bd), cf=str(codF),
+                                    email=str(emailAddr), userName=str(userN),
+                                    password=str(passW), address=userAddr)
+                ut.save()
+
+                card = CreditCard(owner=ut, cardNumber=cardNumber, expirationYear=year, expirationMonth=month,
+                                  cvvCode=cvv)
+                card.save()
+
+            else:
+                userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
+                userAddr.save()
+
+                ut = User(name=str(name), surname=str(surname), birthday=bd, cf=str(codF), email=str(emailAddr),
+                          address=userAddr)
+                ut.save()
+
+                card = CreditCard(owner=ut, cardNumber=cardNumber, expirationYear=year, expirationMonth=month,
+                                  cvvCode=cvv)
+                card.save()
 
             try:
                 searchPatternCheckIn = request.session['logIn_dt']
@@ -475,7 +518,6 @@ def bookingNotRegistered(request, roomBoking):
         formBooking = PaymentForm()
 
     return formBooking
-
 
 def bookingRegisteredUserWithoutCard(request, user, roomBooking):
     if (request.method == 'POST'):

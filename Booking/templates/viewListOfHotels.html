@@ -8,12 +8,18 @@
 
         {% for item in hotelList %}
             <div class="card " style="width:40rem;margin:auto;margin-top:3%">
-                <img class="card-img-top" style="height:240px" src=/{{item.0.photoUrl}} alt="Card image cap">
+                <img class="card-img-top" style="height:23rem;width:39.9rem" src=/{{item.0.photoUrl}} alt="Card image cap">
                 <div class="card-body">
-                    <h4 class="card-title"><a>{{ item.name }}</a></h4>
-                    <p class="card-text">{{ item.description }}</p>
+                    <h4 class="card-title"><a>{{ item.0.name }}</a></h4>
+                    <p class="card-text">{{ item.0.description }}</p>
                     <a href="/hotel/?name={{item.0.name}}&civN={{item.0.address.houseNumber}}&city={{item.0.address.city}}" class="btn btn-primary">Go to details</a>
                 </div>
             </div>
         {% endfor %}
+        {% if hotelList|length == 0 %}
+            <div class="p-3 mb-2 bg-danger text-white" style="margin-left:30%; margin-right:30%; border: 3px solid; border-radius: 15px">
+                <br><br>
+                <h4 style="text-align: center; height: 90px">You have not registered any hotel!</h4>
+             </div>
+        {% endif %}
 {% endblock %}

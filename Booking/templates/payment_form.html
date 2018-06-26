@@ -2,83 +2,76 @@
 {% block title %} Book a room {% endblock %}
      {% block content %}
     <div class="card liste" style="width: 20rem; float:left; margin-left: 5%">
-  <img class="card-img-top" src="/{{roomBooking.hotelId.photoUrl}}" alt="Card image cap">
-  <div class="card-body">
-    <h5 class="card-title">{{roomBooking.hotelId.name}}</h5>
-  </div>
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item">Stanza: {{roomBooking.roomNumber}}</li>
-    <li class="list-group-item">Total price: € {{roomBooking.price}}</li>
-    <li class="list-group-item">Services:</li>
-      <ul >
-      {% for i in roomBooking.services.all %}
-      <li class="list-group-item">{{i}}</li>
-    {%endfor%}
-       </ul>
-  </ul>
-</div>
-    <div class="compileded" style="margin-left: 5%; width: 40%">
-    <!-- Utente esistente -->
-    {% if bookingUser is not None and creditCardUser is not None %}
-        <ul>
-            <li>
-                Name: {{bookingUser.name}}
-            </li>
-            <li>
-                Surname: {{bookingUser.surname}}
-            </li>
-            <li>
-                Email: {{bookingUser.email}}
-            </li>
-            <li>
-                Date of birth: {{bookingUser.birthday}}
-            </li>
-        </ul>
-    {% endif %}
-
-    <!-- esiste pure la carta esistente -->
-    {% if creditCardUser is not None %}
-        <ul>
-            <li>
-                Card number: {{creditCardUser.cardNumber}}
-            </li>
-        </ul>
-    <form class="c1" style="width:100%; margin-top:12%;" action="" method="POST">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-primary">reserve</button>
-    </form>
-    {% endif%}
-    <!-- non esiste la carta -->
-    {% if formBookingwithout is not None %}
-    <form class="c2" style="width:100%; margin-top:12%;" action="" method="POST">
-        {% csrf_token %}
-        {% for field in formBookingwithout %}
-            <div class="form-group" style="height: 40%; float: right">
-                {{ filed.error }}
-                <a>{{ field.label_tag }}</a>
-                {{ field }}
-            </div>
-        {% endfor %}
-        <button type="submit" class="btn btn-primary">reserve</button>
-    </form>
-    {% endif %}
-
-    <!-- l'utente deve registrarsi -->
-    {% if formBooking is not None %}
-        <div>
-            <p>If you want to autocompile the fields get <a href="/login/">login</a> or if you want to save your get <a href="/signUp/">sign up</a>   </p>
+        <img class="card-img-top" src="/{{roomBooking.hotelId.photoUrl}}" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title">{{roomBooking.hotelId.name}}</h5>
         </div>
-    <form class="c3" style="width:100%; margin-top:12%; height: 40%; float: right" action="" method="POST">
-        {% csrf_token %}
-        {% for field in formBooking %}
-            <div class="form-group">
-                {{ filed.error }}
-                <a>{{ field.label_tag }}</a>
-                {{ field }}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Stanza: {{roomBooking.roomNumber}}</li>
+            <li class="list-group-item">Total price: â‚¬ {{roomBooking.price}}</li>
+            <li class="list-group-item">Services:</li>
+            <ul>
+                {% for i in roomBooking.services.all %}
+                     <li class="list-group-item">{{i}}</li>
+                {%endfor%}
+            </ul>
+        </ul>
+    </div>
+    <div class="compileded" style="width:30%;margin-left: 30%; margin-top:8%; font-size:16px;">
+        <!-- Utente esistente -->
+        {% if bookingUser is not None and creditCardUser is not None %}
+            <h4>Your information:</h4>
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary">Name: {{bookingUser.name}}</li>
+                <li class="list-group-item list-group-item-primary">Surname: {{bookingUser.surname}}</li>
+                <li class="list-group-item list-group-item-primary">Email: {{bookingUser.email}}</li>
+                <li class="list-group-item list-group-item-primary">Date of birth: {{bookingUser.birthday}}</li>
+            </ul>
+        {% endif %}
+
+        <!-- esiste pure la carta esistente -->
+        {% if creditCardUser is not None %}
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary">
+                    Card number: {{creditCardUser.cardNumber}}
+                </li>
+            </ul>
+        <form class="c1" style="width:100%; margin-top:12%;" action="" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary" style="margin-left:4%">Reserve</button>
+        </form>
+        {% endif%}
+        <!-- non esiste la carta -->
+        {% if formBookingwithout is not None %}
+        <form class="c2" style="width:100%; margin-top:12%;" action="" method="POST">
+            {% csrf_token %}
+            {% for field in formBookingwithout %}
+                <div class="form-group" style="height: 40%; float: right">
+                    {{ filed.error }}
+                    <a>{{ field.label_tag }}</a>
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Reserve</button>
+        </form>
+        {% endif %}
+
+        <!-- l'utente deve registrarsi -->
+        {% if formBooking is not None %}
+            <div>
+                <p>If you want to autocompile the fields get <a href="/login/">login</a> or if you want to save yours get <a href="/signUp/">sign up</a>   </p>
             </div>
-        {% endfor %}
-     <button type="submit" class="btn btn-primary" style="width: 100%">reserve</button>
-    </form>
-    {% endif %}
-</div>
+        <form class="c3" style="width:100%; margin-top:12%; height: 40%; float: right" action="" method="POST">
+            {% csrf_token %}
+            {% for field in formBooking %}
+                <div class="form-group">
+                    {{ filed.error }}
+                    <a>{{ field.label_tag }}</a>
+                    {{ field }}
+                </div>
+            {% endfor %}
+         <button type="submit" class="btn btn-primary" style="width: 100%;margin-bottom:30px">Reserve</button>
+        </form>
+        {% endif %}
+    </div>
 {% endblock %}
