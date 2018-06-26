@@ -535,7 +535,6 @@ class reserveRoom(TestCase):
         hotel.save()
 
         room1 = Room(roomNumber=40, capacity=3, price='120', hotelId=hotel)
-
         room1.save()
 
         service = IncludedService(service=IncludedService.GARAGE, room=room1)
