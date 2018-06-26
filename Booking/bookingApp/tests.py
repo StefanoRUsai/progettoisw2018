@@ -12,106 +12,143 @@ from .views import *
 
 class ModelTest(TestCase):
     def setUp(self):
-        addressGlobal = Address(
-            street='via Piave',
-            houseNumber=60,
-            city='Uras',
-            zipCode='78999')
-
+        addressGlobal = Address(street='via Piave',houseNumber=60,city='Uras',zipCode='78999')
         addressGlobal.save()
-
-        creditCardGlobal = CreditCard(
-            cardNumber=56478397474839375,
-            expirationMonth=12,
-            expirationYear=2020,
-            cvvCode=666)
-
+        creditCardGlobal = CreditCard(cardNumber=56478397474839375,expirationMonth=12,expirationYear=2020,cvvCode=666)
         creditCardGlobal.save()
-
-        creditCard = CreditCard(
-            cardNumber=788888999987900,
-            expirationMonth=10,
-            expirationYear=2019,
-            cvvCode=555)
-
+        creditCard = CreditCard(cardNumber=788888999987900,expirationMonth=10,expirationYear=2019,cvvCode=555)
         creditCard.save()
-
-        person = Person(
-            name='Stefano',
-            surname='Marcello',
-            email='smarcello@gmail.com',
-            birthday=datetime.date(1987, 10, 11),
-            cf='MRCSTN84S13A355X',
-            address=addressGlobal)
-
+        person = Person(name='Stefano',surname='Marcello',email='smarcello@gmail.com',birthday=datetime.date(1987, 10, 11),cf='MRCSTN84S13A355X',address=addressGlobal)
         person.save()
-
-        hotelKeeper = HotelKeeper(
-            name='Giorgia',
-            surname='Congiu',
-            email='giogio.com',
-            birthday=datetime.date(1996, 10, 20),
-            cf='CNGGRG96R60A355U',
-            userName='giogioCong96',
-            password='palazzodellescienze',
-            address=addressGlobal)
-
+        hotelKeeper = HotelKeeper(name='Giorgia',surname='Congiu',email='giogio.com',birthday=datetime.date(1996, 10, 20),cf='CNGGRG96R60A355U',userName='giogioCong96',password='palazzodellescienze',address=addressGlobal)
         hotelKeeper.save()
-
-        hotel = Hotel(
-            name='T Hotel',
-            description='Nel cuore di Cagliari...',
-            hotelKeeperId=hotelKeeper,
-            address=addressGlobal)
-
+        hotel = Hotel(name='T Hotel',description='Nel cuore di Cagliari...',hotelKeeperId=hotelKeeper,address=addressGlobal)
         hotel.save()
-
-        room1 = Room(
-            capacity=3,
-            price='120.00',
-            hotelId=hotel)
-
+        room1 = Room(capacity=3,price='120.00',hotelId=hotel)
         room1.save()
-
         service = IncludedService(service=IncludedService.GARAGE, room=room1)
-
         service.save()
-
-        user = User(
-            name='Carlo',
-            surname='Puddu',
-            email='cpuddu@gmail.com',
-            birthday=datetime.date(1990, 10, 6),
-            cf='PDDCRL90F06F979T',
-            address=addressGlobal,
-            creditCard=creditCardGlobal)
-
+        user = User(name='Carlo',surname='Puddu',email='cpuddu@gmail.com',birthday=datetime.date(1990, 10, 6),cf='PDDCRL90F06F979T',address=addressGlobal,creditCard=creditCardGlobal)
         user.save()
-
-        registeredUser = RegisteredUser(
-            name='Mario',
-            surname='Cittadini',
-            email='marcit@gmail.com',
-            birthday=datetime.date(1987, 10, 11),
-            cf='CTTMRA76T607T',
-            userName='marcittttt2018',
-            password='gitPullFailed',
-            address=addressGlobal,
-            creditCard=creditCardGlobal)
-
+        registeredUser = RegisteredUser(name='Mario',surname='Cittadini',email='marcit@gmail.com',birthday=datetime.date(1987, 10, 11),cf='CTTMRA76T607T',userName='marcittttt2018',password='gitPullFailed',address=addressGlobal,creditCard=creditCardGlobal)
         registeredUser.save()
-
-        booking = Booking(
-            customerId=user,
-            roomId=room1,
-            checkIn=datetime.date(2018, 11, 12),
-            checkOut=datetime.date(2018, 11, 18))
-
+        booking = Booking(customerId=user,roomId=room1,checkIn=datetime.date(2018, 11, 12),checkOut=datetime.date(2018, 11, 18))
         booking.save()
 
 
+"""User Story 1. hotel keeper registration"""
+class RegisteredHotelKeeperTest(TestCase):
+    def setUp(self):
+        address = Address(street='via lanusei',houseNumber=12,city='Cagliari',zipCode='09127')
+        address.save()
+        hotelKeeper = HotelKeeper(name='Elena',surname='Puddu',birthday=datetime.date(1980, 1, 1),cf='pdueln80a21b354a',email='e.puddu@gmail.com',address=address,userName='prova23',password='isw')
+        address = Address(street='via nuoro',houseNumber=16,city='Cagliari',zipCode='09127')
+        address.save()
+        registereduser = RegisteredUser(name='Marco',surname='Baldo',birthday=datetime.date(1984, 1, 15),cf='bldmrc84a15b354a',email='marco.baldo@gmail.com',address=address,userName='baldo',password='isw')
+        hotelKeeper.save()
+        registereduser.save()
+
+        self.userregistered = registereduser
+        self.userhotelkeeper = hotelKeeper
+        self.request_factory = RequestFactory()
+        self.middleware = SessionMiddleware()
+
+    def test_RegistrationHotelKeeper(self):
+
+        request = self.request_factory.get('/signUp/', follow=True)
+        self.middleware.process_request(request)
+        request.session.save()
+
+        form = RegistrationForm(data={'hotelKeeper': True
+        ,'name': 'Pinco'
+        ,'surname': 'Panco'
+        ,'birthday': '2018-10-21'
+        ,'cf': '213321321312'
+        ,'email': 'baldo@gmail.com'
+        ,'userName': 'pinco'
+        ,'password': 'isw'
+        ,'verificapassword': 'isw'
+        ,'street': 'via da qui'
+        ,'civicNumber': '666'
+        ,'city': 'chenonce'
+        ,'zipCode': '02131'})
+
+        self.assertTrue(form.is_valid(), msg=form.errors)
+
+    def test_HomeHotellKeeper(self):
+        request = self.request_factory.get('/home/', follow=True)
+        self.middleware.process_request(request)
+        request.session.save()
+
+        request.session['usr'] = 'prova23'
+        request.session['usrType'] = 'hotelKeeper'
+
+        response = hotelKeeperHome(request)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_HomeHotellKeeperError(self):
+        request = self.request_factory.get('/home/', follow=True)
+        self.middleware.process_request(request)
+        request.session.save()
+
+        request.session['usr'] = 'baldo'
+        request.session['usrType'] = 'regUser'
+
+        response = hotelKeeperHome(request)
+
+        self.assertEquals(response.status_code, 302)
+
+
+
+"""User story 2. hotel keeper login"""
+class LoginHotelKeeperTest(TestCase):
+    def setUp(self):
+        address = Address(street='via lanusei',houseNumber=12,city='Cagliari',zipCode='09127')
+        address.save()
+        hotelKeeper = HotelKeeper(name='Elena',surname='Puddu',birthday=datetime.date(1980, 1, 1),cf='pdueln80a21b354a',email='e.puddu@gmail.com',address=address,userName='prova23',password='isw')
+        address = Address(street='via nuoro',houseNumber=16,city='Cagliari',zipCode='09127')
+        address.save()
+        registereduser = RegisteredUser(name='Marco',surname='Baldo',birthday=datetime.date(1984, 1, 15),cf='bldmrc84a15b354a',email='marco.baldo@gmail.com',address=address,userName='baldo',password='isw')
+        hotelKeeper.save()
+        registereduser.save()
+
+        self.userregistered = registereduser
+        self.userhotelkeeper = hotelKeeper
+        self.request_factory = RequestFactory()
+        self.middleware = SessionMiddleware()
+
+    def test_LoginPageRedirect(self):
+        request = self.request_factory.get('/login/', follow=True)
+        self.middleware.process_request(request)
+        request.session.save()
+
+        request.session['usr'] = self.userhotelkeeper.userName
+        request.session['usrType'] = 'hotelKeeper'
+
+        response = login(request)
+
+        print(request.get_full_path())
+        print(response.status_code)
+
+        self.assertEquals(response.status_code, 302)
+
+    def test_LoginHotelKeeper(self):
+        form = formLogin(data={'username': self.userhotelkeeper.userName,
+                               'password': self.userhotelkeeper.password})
+
+        self.assertTrue(form.is_valid(), msg=form.errors)
+
+    def test_LoginRegisteredUser(self):
+        form = formLogin(data={'username': self.userregistered.userName,
+                               'password': self.userregistered.password})
+
+        self.assertTrue(form.is_valid(), msg=form.errors)
+
+
+
 '''User story 3. Visualizza lista prenotazioni (hotelKeeperhome)'''
-class HotelKeeperHome(TestCase):
+class HotelKeeperHomeTest(TestCase):
     def setUp(self):
         hkAddress = Address(street='via francesco',houseNumber=12,city='savona',zipCode='00989')
         hkAddress.save()
@@ -190,7 +227,7 @@ class HotelsListTest(TestCase):
         self.request_factory = RequestFactory()
         self.middleware = SessionMiddleware()
 
-    def testHotelListVisualization(self):
+    def test_HotelListVisualization(self):
         request = self.request_factory.get('/hotels/')
         self.middleware.process_request(request)
         request.session.save()
@@ -200,7 +237,7 @@ class HotelsListTest(TestCase):
         self.assertContains(response, 'Hotel Acquaragia')
         self.assertContains(response, 'Hotel Napoleone')
 
-    def testEmptyHotelListVisualization(self):
+    def test_EmptyHotelListVisualization(self):
         request = self.request_factory.get('/hotels/')
         self.middleware.process_request(request)
         request.session.save()
@@ -210,66 +247,22 @@ class HotelsListTest(TestCase):
         self.assertContains(response, "You have not registered any hotel!")
 
 
-
+'''User story 5. add hotel'''
 class AddHotelInTheList(TestCase):
-
     def setUp(self):
-        hkAddress = Address(
-            street='via del guasto',
-            houseNumber=28,
-            city='Bologna',
-            zipCode='09888')
+        hkAddress = Address(street='via del guasto',houseNumber=28,city='Bologna',zipCode='09888')
         hkAddress.save()
-
-        hotelKeeper = HotelKeeper(
-            name='Gianna',
-            surname='Poho',
-            birthday=datetime.date(1992, 1, 12),
-            cf='phognn92t21b354ta',
-            email='g.poho@gmail.com',
-            address=hkAddress,
-            userName='giannina',
-            password='isw'
-        )
+        hotelKeeper = HotelKeeper(name='Gianna',surname='Poho',birthday=datetime.date(1992, 1, 12),cf='phognn92t21b354ta',email='g.poho@gmail.com',address=hkAddress,userName='giannina',password='isw')
         hotelKeeper.save()
-
-        h1Address = Address(
-            street='via da qui',
-            houseNumber=40,
-            city='Bologna',
-            zipCode='09888')
+        h1Address = Address(street='via da qui',houseNumber=40,city='Bologna',zipCode='09888')
         h1Address.save()
-
-        hotel1 = Hotel(
-            name='Hotel Bacco',
-            description="Nell'affascinante Bologna...",
-            hotelKeeperId=hotelKeeper,
-            address=h1Address,
-            photoUrl='/static/img/bedAndBreakfastLondon.jpg'
-        )
+        hotel1 = Hotel(name='Hotel Bacco',description="Nell'affascinante Bologna...",hotelKeeperId=hotelKeeper,address=h1Address,photoUrl='/static/img/bedAndBreakfastLondon.jpg')
         hotel1.save()
-
-        h2Address = Address(
-            street='via Quadrilatero',
-            houseNumber=90,
-            city='Bologna',
-            zipCode='09888')
+        h2Address = Address(street='via Quadrilatero',houseNumber=90,city='Bologna',zipCode='09888')
         h2Address.save()
-
-        hotel2 = Hotel(
-            name='Hotel Tarallucci',
-            description="Tanti biscotti a colazione",
-            hotelKeeperId=hotelKeeper,
-            address=h2Address,
-            photoUrl='/static/img/cortina.jpg'
-        )
+        hotel2 = Hotel(name='Hotel Tarallucci',description="Tanti biscotti a colazione",hotelKeeperId=hotelKeeper,address=h2Address,photoUrl='/static/img/cortina.jpg')
         hotel2.save()
-
-        newAddress = Address(
-            street='via Holita',
-            houseNumber=30,
-            city='Bologna',
-            zipCode='09888')
+        newAddress = Address(street='via Holita',houseNumber=30,city='Bologna',zipCode='09888')
         newAddress.save()
 
         self.newAd = newAddress
@@ -277,7 +270,7 @@ class AddHotelInTheList(TestCase):
         self.request_factory = RequestFactory()
         self.middleware = SessionMiddleware()
 
-    def testAddHotelInTheList(self):
+    def test_AddHotelInTheList(self):
 
         request = self.request_factory.get('/addHotel/', follow=True)
         self.middleware.process_request(request)
@@ -301,173 +294,6 @@ class AddHotelInTheList(TestCase):
 
 
 
-"""test login"""
-class LoginHotelKeeperTest(TestCase):
-    def setUp(self):
-        address = Address(
-            street='via lanusei',
-            houseNumber=12,
-            city='Cagliari',
-            zipCode='09127')
-        address.save()
-
-        hotelKeeper = HotelKeeper(
-            name='Elena',
-            surname='Puddu',
-            birthday=datetime.date(1980, 1, 1),
-            cf='pdueln80a21b354a',
-            email='e.puddu@gmail.com',
-            address=address,
-            userName='prova23',
-            password='isw'
-        )
-
-        address = Address(
-            street='via nuoro',
-            houseNumber=16,
-            city='Cagliari',
-            zipCode='09127')
-        address.save()
-
-        registereduser = RegisteredUser(
-            name='Marco',
-            surname='Baldo',
-            birthday=datetime.date(1984, 1, 15),
-            cf='bldmrc84a15b354a',
-            email='marco.baldo@gmail.com',
-            address=address,
-            userName='baldo',
-            password='isw'
-        )
-        hotelKeeper.save()
-        registereduser.save()
-
-        self.userregistered = registereduser
-        self.userhotelkeeper = hotelKeeper
-        self.request_factory = RequestFactory()
-        self.middleware = SessionMiddleware()
-
-    def testLoginPageRedirect(self):
-        request = self.request_factory.get('/login/', follow=True)
-        self.middleware.process_request(request)
-        request.session.save()
-
-        request.session['usr'] = self.userhotelkeeper.userName
-        request.session['usrType'] = 'hotelKeeper'
-
-        response = login(request)
-
-        print(request.get_full_path())
-        print(response.status_code)
-
-        self.assertEquals(response.status_code, 302)
-
-    def testLoginHotelKeeper(self):
-        form = formLogin(data={'username': self.userhotelkeeper.userName,
-                               'password': self.userhotelkeeper.password})
-
-        self.assertTrue(form.is_valid(), msg=form.errors)
-
-    def testLoginRegisteredUser(self):
-        form = formLogin(data={'username': self.userregistered.userName,
-                               'password': self.userregistered.password})
-
-        self.assertTrue(form.is_valid(), msg=form.errors)
-
-
-
-""" registrazione utente, controllo visualizzazione pagina home"""
-class RegisteredHotelKeeperTest(TestCase):
-
-    def setUp(self):
-        address = Address(
-            street='via lanusei',
-            houseNumber=12,
-            city='Cagliari',
-            zipCode='09127')
-        address.save()
-
-        hotelKeeper = HotelKeeper(
-            name='Elena',
-            surname='Puddu',
-            birthday=datetime.date(1980, 1, 1),
-            cf='pdueln80a21b354a',
-            email='e.puddu@gmail.com',
-            address=address,
-            userName='prova23',
-            password='isw'
-        )
-
-        address = Address(
-            street='via nuoro',
-            houseNumber=16,
-            city='Cagliari',
-            zipCode='09127')
-        address.save()
-
-        registereduser = RegisteredUser(
-            name='Marco',
-            surname='Baldo',
-            birthday=datetime.date(1984, 1, 15),
-            cf='bldmrc84a15b354a',
-            email='marco.baldo@gmail.com',
-            address=address,
-            userName='baldo',
-            password='isw'
-        )
-        hotelKeeper.save()
-        registereduser.save()
-
-        self.userregistered = registereduser
-        self.userhotelkeeper = hotelKeeper
-        self.request_factory = RequestFactory()
-        self.middleware = SessionMiddleware()
-
-    def testRegistrationHotelKeeper(self):
-
-        request = self.request_factory.get('/signUp/', follow=True)
-        self.middleware.process_request(request)
-        request.session.save()
-
-        form = RegistrationForm(data={'hotelKeeper': True
-        ,'name': 'Pinco'
-        ,'surname': 'Panco'
-        ,'birthday': '2018-10-21'
-        ,'cf': '213321321312'
-        ,'email': 'baldo@gmail.com'
-        ,'userName': 'pinco'
-        ,'password': 'isw'
-        ,'verificapassword': 'isw'
-        ,'street': 'via da qui'
-        ,'civicNumber': '666'
-        ,'city': 'chenonce'
-        ,'zipCode': '02131'})
-
-        self.assertTrue(form.is_valid(), msg=form.errors)
-
-    def testHomeHotellKeeper(self):
-        request = self.request_factory.get('/home/', follow=True)
-        self.middleware.process_request(request)
-        request.session.save()
-
-        request.session['usr'] = 'prova23'
-        request.session['usrType'] = 'hotelKeeper'
-
-        response = hotelKeeperHome(request)
-
-        self.assertEquals(response.status_code, 200)
-
-    def testHomeHotellKeeperError(self):
-        request = self.request_factory.get('/home/', follow=True)
-        self.middleware.process_request(request)
-        request.session.save()
-
-        request.session['usr'] = 'baldo'
-        request.session['usrType'] = 'regUser'
-
-        response = hotelKeeperHome(request)
-
-        self.assertEquals(response.status_code, 302)
 
 """Manage Hotel 6 controllo dettagli hotel e camera"""
 class ManageHotel(TestCase):
@@ -516,6 +342,42 @@ class ManageHotel(TestCase):
         self.assertContains(response, '3')
         self.assertContains(response, '120')
 
+
+
+'''User story 7. add a room to hotel'''
+class AddRoomToHotelTest(TestCase):
+    def setUp(self):
+        hkAddress = Address(street='via del guasto', houseNumber=28, city='Bologna', zipCode='09888')
+        hkAddress.save()
+        hotelKeeper = HotelKeeper(name='Gianna', surname='Poho', birthday=datetime.date(1992, 1, 12),cf='phognn92t21b354ta', email='g.poho@gmail.com', address=hkAddress,userName='giannina', password='isw')
+        hotelKeeper.save()
+        h1Address = Address(street='via da qui', houseNumber=40, city='Bologna', zipCode='09888')
+        h1Address.save()
+        hotel = Hotel(name='Hotel Bacco', description="Nell'affascinante Bologna...", hotelKeeperId=hotelKeeper,address=h1Address, photoUrl='/static/img/bedAndBreakfastLondon.jpg')
+        hotel.save()
+
+        self.userhotelkeeper = hotelKeeper
+        self.hotel = hotel
+        self.hotelAddress = hkAddress
+        self.request_factory = RequestFactory()
+        self.middleware = SessionMiddleware()
+
+    def test_addRoomMissingFields(self):
+        request = self.request_factory.get('/addRoom/', follow=True)
+        self.middleware.process_request(request)
+        request.session.save()
+
+        request.session['htName'] = self.hotel.name
+        request.session['htCivN'] = self.hotelAddress.houseNumber
+
+        form = AddRoomForm(data={'roomNumber': 3, 'bedsNumber': 2})
+
+        self.assertFalse(form.is_valid(), msg=form.errors)
+
+
+
+
+'''User story 9. book a room'''
 class reserveRoom(TestCase):
     def setUp(self):
         hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
