@@ -468,3 +468,170 @@ class RegisteredHotelKeeperTest(TestCase):
         response = hotelKeeperHome(request)
 
         self.assertEquals(response.status_code, 302)
+
+"""Manage Hotel 6 controllo dettagli hotel e camera"""
+class ManageHotel(TestCase):
+    def setUp(self):
+        hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
+        hkAddress.save()
+
+        hotelKeeper = HotelKeeper(name='francesco', surname='fadda', birthday=datetime.date(1996, 10, 20), cf='dasf12r1324',
+                              email='francesco@fadda.net', address=hkAddress, userName='francesco', password='isw')
+        hotelKeeper.save()
+
+        hotelAddress = Address(street='via hotel bellissimo', houseNumber=12, city='savona', zipCode='00929')
+        hotelAddress.save()
+
+        hotel = Hotel(name='Hotel Acquaragia', description='Hotel bellissimo', hotelKeeperId=hotelKeeper, address=hotelAddress,
+              photoUrl='/static/img/amsterdamHotel.jpg')
+        hotel.save()
+
+        room1 = Room(roomNumber=40, capacity=3, price='120', hotelId=hotel)
+
+        room1.save()
+
+        service = IncludedService(service=IncludedService.GARAGE, room=room1)
+
+        service.save()
+
+        self.hotelKeeperSession = hotelKeeper
+        self.hotel = hotel
+        self.hotelAddress = hotelAddress
+        self.room = room1
+        self.request_factory = RequestFactory()
+        self.middleware = SessionMiddleware()
+
+    def test_hotelsRoomsDataVisualization(self):
+        hotelPage = '/hotel/?name=' + self.hotel.name + '&civN=' + str(self.hotelAddress.houseNumber) + '&city=' + self.hotelAddress.city
+        request = self.request_factory.get(hotelPage, follow=True)
+        self.middleware.process_request(request)
+        request.session.save()
+        request.session['usr'] = self.hotelKeeperSession.userName
+        request.session['usrType'] = 'hotelKeeper'
+
+        response = hotelDetail(request)
+
+        self.assertContains(response, 'Hotel Acquaragia')
+        self.assertContains(response, '40')
+        self.assertContains(response, '3')
+        self.assertContains(response, '120')
+
+class reserveRoom(TestCase):
+    def setUp(self):
+        hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
+        hkAddress.save()
+
+        hotelKeeper = HotelKeeper(name='francesco', surname='fadda', birthday=datetime.date(1996, 10, 20),
+                                  cf='dasf12r1324',
+                                  email='francesco@fadda.net', address=hkAddress, userName='francesco', password='isw')
+        hotelKeeper.save()
+
+        hotelAddress = Address(street='via hotel bellissimo', houseNumber=12, city='savona', zipCode='00929')
+        hotelAddress.save()
+
+        hotel = Hotel(name='Hotel Acquaragia', description='Hotel bellissimo', hotelKeeperId=hotelKeeper,
+                      address=hotelAddress,
+                      photoUrl='/static/img/amsterdamHotel.jpg')
+        hotel.save()
+
+        room1 = Room(roomNumber=40, capacity=3, price='120', hotelId=hotel)
+
+        room1.save()
+
+        service = IncludedService(service=IncludedService.GARAGE, room=room1)
+
+        service.save()
+
+        self.hotel = hotel
+        self.hotelAddress = hotelAddress
+        self.room = room1
+        self.request_factory = RequestFactory()
+        self.middleware = SessionMiddleware()
+
+    def test_bookingMissingFields(self):
+        #http://127.0.0.1:8000/booking/?roomid=4
+        bookingPage = '/booking/?roomid='+str(self.room.id)
+        request = self.request_factory.get(bookingPage, follow=True)
+        self.middleware.process_request(request)
+        request.session.save()
+
+        response = bookARoom(request)
+
+        form = PaymentForm(data={
+            'name': 'Giorgio',
+            'surname': 'Imola',
+            'birthday': '2018-10-21',
+            'cf': '90913829011',
+            'email': 'giogioImola@gmail.com',
+            'userName': 'giorgio',
+            'password': 'isw',
+            'verificapassword': 'isw',
+            'street': 'via dalle scatole',
+            'civicNumber': '777',
+            'city': 'Marius',
+            'zipCode': '02131',
+            #'cardNumber': '123456789012345',
+            'month': '10',
+            'year': '2019',
+            'cvv': '908'
+        })
+        self.assertFalse(form.is_valid(), msg=form.errors)
+
+    """
+        def test_bookingRoomSuccessfull(self):
+        request = self.request_factory.get('/booking/', follow=True)
+        self.middleware.process_request(request)
+        request.session.save()
+
+        response = bookARoom(request)
+
+        form = PaymentForm(data={
+            'name': 'Giorgio',
+            'surname': 'Imola',
+            'birthday': '2018-10-21',
+            'cf': '90913829011',
+            'email': 'giogioImola@gmail.com',
+            'userName': 'giorgio',
+            'password': 'isw',
+            'verificapassword': 'isw',
+            'street': 'via dalle scatole',
+            'civicNumber': '777',
+            'city': 'Marius',
+            'zipCode': '02131',
+            'cardNumber': '123456789012345',
+            'month': '10',
+            'year': '2019',
+            'cvv': '908'
+        })
+        self.assertTrue(form.is_valid(), msg=form.true)
+        pass
+    """
+
+""""
+Titolo: Salvataggio dati da prenotazione
+10.     Requisito: Il Sistema deve dare la possibilità di salvare i dati di pagamento per prenotazioni future.
+
+
+class saveDateForFuture (TestCase):
+    def setUp(self):
+        self.request_factory = RequestFactory()
+        self.middleware = SessionMiddleware()
+
+    def test_redirectToRegistration(self):
+        bookingPage = '/booking/?roomid=' + str(self.room.id)
+        request = self.request_factory.get(bookingPage, follow=True)
+        self.middleware.process_request(request)
+        request.session.save()
+
+        response = bookARoom(request)
+
+        response = c.get('/customer/details/')
+"""
+
+
+
+
+
+
+
+
