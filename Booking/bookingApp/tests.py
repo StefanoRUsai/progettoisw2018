@@ -154,7 +154,7 @@ class HotelKeeperHome(TestCase):
         request.session['usr'] = self.userWithoutBookings.userName
         request.session['usrType'] = 'hotelKeeper'
         response = hotelKeeperHome(request)
-       # self.assertContains(response, "You didn't get any reservation yet")
+        self.assertContains(response, "You have not reservations in your hotels!")
 
 
 
@@ -204,10 +204,10 @@ class HotelsListTest(TestCase):
         request = self.request_factory.get('/hotels/')
         self.middleware.process_request(request)
         request.session.save()
-        request.session['usr'] = self.userWithHotels.userName
+        request.session['usr'] = self.userWithoutHotels.userName
         request.session['usrType'] = 'hotelKeeper'
         response = hotelsList(request)
-     #   self.assertContains(response, "You didn't register an hotel yet")
+        self.assertContains(response, "You have not registered any hotel!")
 
 
 
