@@ -6,6 +6,7 @@ from .models import *
 import datetime
 from django.contrib import auth
 
+
 def notRegisteredHome(request):
     contatore = 0
     lista = []
