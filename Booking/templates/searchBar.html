@@ -8,8 +8,8 @@
                 <nav class="navbar navbar-light bg-ligh searchBar">
                         <form class="form-inline" method="GET" action="/search/" style="width: 90%; margin:auto">
                         {% csrf_token %}
-                    <input class="form-control mr-sm-2"  id="search_box" type="text" required = "" name="search_city" placeholder="What city do you want to go to?" style="width: 20rem; margin: 2%">
-                            <select name="search_number"  placeholder="Beds number" required = "" class="searchBar searchDropDown" style="margin: 1%">
+                    <input class="form-control mr-sm-2"  id="search_box" type="text" name="search_city" placeholder="What city do you want to go to?" style="width: 20rem; margin: 2%">
+                            <select name="search_number"  placeholder="Beds number" class="searchBar searchDropDown" style="margin: 1%">
                                 <option value=0 selected="selected">Beds number</option>
                                 <option value=1>1</option>
                                 <option value=2>2</option>
@@ -22,8 +22,8 @@
                                 <option value=9>9</option>
                                 <option value=10>10</option>
                             </select>
-                        <input class="form-control mr-sm-2" type = date name="search_checkin" required = ""  value = "CheckIn" placeholder="check In?">
-                        <input class="form-control mr-sm-2" type = date name="search_checkout" required = ""  value = "CheckOut" placeholder="check Out?">
+                        <input class="form-control mr-sm-2" type = date name="search_checkin" value = "CheckIn" placeholder="check In?">
+                        <input class="form-control mr-sm-2" type = date name="search_checkout" value = "CheckOut" placeholder="check Out?">
                       <button class="btn btn-outline-success my-2 my-sm-0" id="search_submit" type="submit">Search</button>
                     </form>
                 </nav>

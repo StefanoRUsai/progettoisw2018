@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %} SignUp {% endblock %}
      {% block content %}
 <div class="signUp" style="margin-top: 2%">
@@ -11,8 +12,8 @@
                 {{ field }}
             </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom:30px">Sign up!</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom:30px" onclick="popUpFun()">Login</button>
     </form>
 </div>
-
+<script type="text/javascript" src="{% static 'js/popup.js' %}"></script>
 {% endblock %}

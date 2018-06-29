@@ -41,18 +41,19 @@ class formLogin(forms.Form):
 
 class RegistrationForm(forms.Form):
     hotelKeeper = forms.BooleanField(widget=forms.CheckboxInput(attrs={}), required=False)
-    name = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    surname = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    birthday = forms.DateField(required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    cf = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    email = forms.EmailField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    userName = forms.CharField(max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    password = forms.CharField(max_length=50, required=True, widget=forms.PasswordInput(attrs={"class": "form-control"}))
-    verificapassword = forms.CharField(max_length=50, required=True, widget=forms.PasswordInput(attrs={"class": "form-control"}))
-    street = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    civicNumber = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    city = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
-    zipCode = forms.CharField(max_length=15, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    name = forms.CharField(label="Name",max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    surname = forms.CharField(label="Surname",max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    birthday = forms.DateField(label="Birthday",required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    cf = forms.CharField(label="Fiscal code",max_length=20, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    email = forms.EmailField(label="Email",max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    phoneNumber = forms.CharField(label="Phone",max_length=20, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    userName = forms.CharField(label="Username",max_length=50, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    password = forms.CharField(label="Password",max_length=50, required=True, widget=forms.PasswordInput(attrs={"class": "form-control"}))
+    verificapassword = forms.CharField(label="Verify password",max_length=50, required=True, widget=forms.PasswordInput(attrs={"class": "form-control"}))
+    street = forms.CharField(label="Street",max_length=100, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    civicNumber = forms.IntegerField(label="Nº",required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    city = forms.CharField(label="City",max_length=30, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
+    zipCode = forms.CharField(label="Zip code/CAP",max_length=15, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 
     def clean_userName(self):
         username = self.cleaned_data["userName"]

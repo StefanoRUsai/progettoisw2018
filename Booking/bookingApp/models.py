@@ -11,6 +11,8 @@ class Address(models.Model):
     def __str__(self):
        return str(self.street) + " " + str(self.houseNumber) + " " + str(self.city) + " " + str(self.zipCode)
 
+
+
 class Person(models.Model):
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
@@ -23,10 +25,12 @@ class Person(models.Model):
         return str(self.name) + " " + str(self.surname) + " " + str(self.birthday) + " " + str(self.cf) + " " + str(self.email) + " " + self.address.__str__()
 
 class User(Person):
-    #creditCard = models.ForeignKey(CreditCard, on_delete=models.CASCADE, null=True)
+    phoneNumber = models.CharField(max_length=20)
 
     def __str__(self):
-        return str(self.name) + " " + str(self.surname) + " " + str(self.birthday) + " " + str(self.cf) + " " + str(self.email) + " " + self.address.__str__()
+        return self.phoneNumber.__str__()
+
+
 
 class CreditCard(models.Model):
     cardNumber = models.CharField(max_length=10)
@@ -38,6 +42,8 @@ class CreditCard(models.Model):
 
     def __str__(self):
        return str(self.cardNumber) + " " + str(self.expirationYear) + " " + str(self.expirationMonth) + " " + str(self.cvvCode)
+
+
 
 
 class HotelKeeper(Person):
@@ -111,3 +117,4 @@ class Booking(models.Model):
 
     def __str__(self):
         return self.customerId.__str__() + " " + self.roomId.__str__() + " " + str(self.checkIn) + " " + str(self.checkOut)
+

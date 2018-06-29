@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, render_to_response
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseRedirect
+from django.core.mail import send_mail
 from .forms import *
 from .models import *
 import datetime
+from passlib.hash import pbkdf2_sha256
 from django.contrib import auth
 
 
@@ -49,13 +50,15 @@ def login(request):
             userN = form.cleaned_data['username']
             passW = form.cleaned_data['password']
 
+
+
             for ut in RegisteredUser.objects.all():
-                if(ut.userName == userN and ut.password == passW):
+                if(ut.userName == userN and pbkdf2_sha256.verify(passW,ut.password)):
                     request.session['usr'] = form.cleaned_data['username']
                     request.session['usrType'] = 'regUser'
                     return redirect('/homeRegistered/')
             for ut in HotelKeeper.objects.all():
-                if (ut.userName == userN and ut.password == passW):
+                if (ut.userName == userN and pbkdf2_sha256.verify(passW,ut.password)):
                     request.session['usr'] = form.cleaned_data['username']
                     request.session['usrType'] = 'hotelKeeper'
                     return redirect('/home/')
@@ -249,6 +252,7 @@ def registerUser(request):
             bd = form.cleaned_data['birthday']
             codF = form.cleaned_data['cf']
             emailAddr = form.cleaned_data['email']
+            phoneNumberR = form.cleaned_data['phoneNumber']
             street = form.cleaned_data['street']
             civicNr = form.cleaned_data['civicNumber']
             userCity = str(form.cleaned_data['city']).lower()
@@ -256,6 +260,9 @@ def registerUser(request):
             userN = form.cleaned_data['userName']
             passW = form.cleaned_data['password']
             verificapassword = form.cleaned_data['verificapassword']
+
+
+            passCrypted = pbkdf2_sha256.encrypt(passW,rounds=12000,salt_size=32)
 
 
             hotelKeeper = form.cleaned_data['hotelKeeper']
@@ -268,10 +275,11 @@ def registerUser(request):
             if (hotelKeeper != True):
                 ut = RegisteredUser(name=str(name), surname=str(surname),
                                     birthday=str(bd), cf=str(codF),
-                                    email=str(emailAddr), userName=str(userN),
-
-                                    password=str(passW), address=userAddr)
+                                    email=str(emailAddr),address=userAddr,phoneNumber=str(phoneNumberR),userName=str(userN),
+                                    password=str(passCrypted))
                 ut.save()
+                #send_mail( 'BOOKING.ISW',"Ciao " + str(ut.name) + "benvenuto su Booking.ISW,se hai ricevuto questa mail significa che la tua registrazione è avvenuta con successo",
+                 #                                                'edo.citta@gmail.com',[str(ut.email)],fail_silently=False )
             else:
                 hk = HotelKeeper(name=str(name), surname=str(surname),
                                  birthday=str(bd), cf=str(codF),
@@ -279,7 +287,8 @@ def registerUser(request):
 
                                  password=str(passW), address=userAddr)
                 hk.save()
-
+                send_mail( 'BOOKING.ISW',"Ciao " + str(hk.name) + "benvenuto su Booking.ISW, la tua registrazione come albergatore è avvenuta con successo",
+                                                                 'edo.citta@gmail.com',[str(hk.email)],fail_silently=False )
             request.session['usr'] = userN
 
             if hotelKeeper != True:
@@ -452,6 +461,8 @@ def hotelDetail(request):
 
 
 """ check su bookin not registered NON È una view ma una funzione di appoggio"""
+
+
 def bookingNotRegistered(request, roomBoking):
     if (request.method == 'POST'):
         formBooking = PaymentForm(request.POST)
@@ -513,7 +524,7 @@ def bookingNotRegistered(request, roomBoking):
             except:
                 booking = None
 
-            return redirect('/booking/')
+            return redirect('//')
     else:
         formBooking = PaymentForm()
 
@@ -543,7 +554,7 @@ def bookingRegisteredUserWithoutCard(request, user, roomBooking):
             except:
                 booking = None
 
-            return redirect('/booking/')
+            return redirect('//')
     else:
         formBooking = creditCard()
 
