@@ -41,20 +41,21 @@ class LoginForm(forms.Form):
             raise forms.ValidationError('Username not exists')
 
     def clean_password(self):
-        try:
+        password = None
+        if (RegisteredClient.objects.filter(username=self.cleaned_data["username"]).exists()):
             user = RegisteredClient.objects.get(username=self.cleaned_data["username"])
-        except:
+        elif (HotelKeeper.objects.filter(username=self.cleaned_data["username"]).exists()):
+            user = HotelKeeper.objects.get(username=self.cleaned_data["username"])
+        else:
             raise forms.ValidationError('Verify password wrong')
-        print('password db  :   '+user.password)
-        newpassword=str(self.cleaned_data["password"])
-        print('password passata : '+newpassword)
+
+        newpassword = str(self.cleaned_data["password"])
         passCrypted = pbkdf2_sha256.verify(newpassword, user.password)
 
         if passCrypted:
-            passCrypted = user.password
+            password = user.password
 
-        return passCrypted
-
+        return password
 
 class RegistrationForm(forms.Form):
     hotelKeeper = forms.BooleanField(widget=forms.CheckboxInput(attrs={}), required=False)

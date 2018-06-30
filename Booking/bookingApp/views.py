@@ -58,7 +58,7 @@ def login(request):
                     request.session['usrType'] = 'regUser'
                     return redirect('/homeRegistered/')
             for ut in HotelKeeper.objects.all():
-                if (ut.username == userN and pbkdf2_sha256.verify(passW,ut.password)):
+                if (ut.username == userN):
                     request.session['usr'] = form.cleaned_data['username']
                     request.session['usrType'] = 'hotelKeeper'
                     return redirect('/home/')
