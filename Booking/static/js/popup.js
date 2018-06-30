@@ -1,6 +1,6 @@
 function popUpFun() {
     var txt;
-    if (confirm("Registrazione avvenuta con successo")) {
+    if (confirm("Confirm form")) {
     } else {
     }
 }
