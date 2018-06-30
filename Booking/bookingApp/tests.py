@@ -47,6 +47,268 @@ class ModelTest(TestCase):
         booking.save()
 
 
+
+
+
+
+''' Unitary tests for testing the forms'''
+class FormsTest(TestCase):
+    def setUp(self):
+        addressGlobal = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        addressGlobal.save()
+        creditCardGlobal = CreditCard(cardNumber=788888999987900, expirationMonth=10, expirationYear=2019, cvvCode=555)
+        creditCardGlobal.save()
+        r = RegisteredClient(name='Diego', surname='Cittadini', email='marcit@gmail.com',birthday=datetime.date(1987, 10, 11), cf='CTTMRA76T607T',username='diego', password='password', address=addressGlobal,creditCard=creditCardGlobal)
+        r.save()
+
+
+    def tearDown(self):
+        pass
+
+
+    # Tests whether a filled AddHotelForm is valid
+    # Expected: a complete form is valid
+    def test_AddHotelFormValidity(self):
+        # Instantiating an AddHotelForm
+        addHotelForm = AddHotelForm()
+
+        # Filling the form
+        photo_file = open(os.path.dirname(__file__) + '/../static/img/cortina.jpg', 'rb')
+        addHotelForm.name = 'Test hotel'
+        addHotelForm.description = 'Hotel used for unitary test'
+        addHotelForm.street = 'Test street'
+        addHotelForm.houseNumber = 12
+        addHotelForm.city = 'Test city'
+        addHotelForm.zipCode = '19928'
+        addHotelForm.photoUrl = SimpleUploadedFile(photo_file.name, photo_file.read())
+
+
+        # Testing the form
+        self.assertTrue(addHotelForm.is_valid(), addHotelForm.errors)
+
+    # Tests whether a incomplete AddHotelForm is invalid
+    # Expected: an incomplete form is not valid
+    def test_AddHotelFormIsNotValid(self):
+        # Instantiating an AddHotelForm
+        addHotelForm = AddHotelForm()
+
+        # Filling the form
+        # The form is missing the photoUrl field
+        addHotelForm.name = 'Test hotel'
+        addHotelForm.description = 'Hotel used for unitary test'
+        addHotelForm.street = 'Test street'
+        addHotelForm.houseNumber = 12
+        addHotelForm.city = 'Test city'
+        addHotelForm.zipCode = '19928'
+
+        # Testing the form
+        self.assertFalse(addHotelForm.is_valid(), addHotelForm.errors)
+
+
+    # Tests whether a filled AddRoomForm is valid
+    # Expected: a complete form is valid
+    def test_AddRoomFormValidity(self):
+        # Instantiating an AddRoomForm
+        addRoomForm = AddRoomForm()
+
+        # Filling the form
+        addRoomForm.roomNumber = 14
+        addRoomForm.bedsNumber = 3
+        addRoomForm.services = ['GARAGE', 'WIFI']
+        addRoomForm.price = 120.0
+
+
+        # Testing the form
+        self.assertTrue(addRoomForm.is_valid(), addRoomForm.errors)
+
+
+    # Tests whether an incomplete AddRoomForm is invalid
+    # Expected: an incomplete form is not valid
+    def test_AddRoomFormIsNotValid(self):
+        # Instantiating an AddRoomForm
+        addRoomForm = AddRoomForm()
+
+        # Filling the form
+        # The form is missing the bedsNumber field
+        addRoomForm.roomNumber = 14
+        addRoomForm.services = ['GARAGE', 'WIFI']
+        addRoomForm.price = 120.0
+
+        # Testing the form
+        self.assertFalse(addRoomForm.is_valid(), addRoomForm.errors)
+
+    # Tests whether a filled CreditCardForm is valid
+    # Expected: a complete form is valid
+    def test_CreditCardFormValidity(self):
+        # Instantiating a CreditCardForm
+        ccForm = CreditCardForm()
+
+        # Filling the form
+        ccForm.cardNumber = '1235551223234124'
+        ccForm.month = '03'
+        ccForm.year = '2019'
+        ccForm.cvv = '003'
+
+        # Testing the form
+        self.assertTrue(ccForm.is_valid(), ccForm.errors)
+
+    # Tests whether an incomplete CreditCardForm is invalid
+    # Expected: an incomplete form is not valid
+    def test_CreditCardFormIsNotValid(self):
+        # Instantiating a CreditCardForm
+        ccForm = CreditCardForm()
+
+        # Filling the form
+        # The form is missing the cardNumber field
+        ccForm.month = '03'
+        ccForm.year = '2019'
+        ccForm.cvv = '003'
+
+        # Testing the form
+        self.assertFalse(ccForm.is_valid(), ccForm.errors)
+
+    # Tests whether a filled LoginForm is valid
+    # Expected: a complete form is valid
+    def test_LoginFormValidity(self):
+        # Instantiating a LoginForm
+        logForm = LoginForm()
+
+        # Filling the form
+        logForm.username = 'diego'
+        logForm.password = 'password'
+
+        # Testing the form
+        self.assertTrue(logForm.is_valid(), logForm.errors)
+
+    # Tests whether an incomplete LoginForm is invalid
+    # Expected: an incomplete form is not valid
+    def test_LoginFormIsNotValid(self):
+        # Instantiating a LoginForm
+        logForm = LoginForm()
+
+        # Filling the form
+        # The form is missing the username field
+        logForm.password = 'password'
+
+        # Testing the form
+        self.assertFalse(logForm.is_valid(), logForm.errors)
+
+
+    # Tests whether a filled RegistrationForm is valid
+    # Expected: a complete form is valid
+    def test_RegistrationFormValidity(self):
+        # Instantiating a RegistrationForm
+        regForm = RegistrationForm()
+
+        # Filling the form
+        regForm.hotelKeeper = True
+        regForm.name = 'Gianni'
+        regForm.surname = 'Pinna'
+        regForm.birthday = '1990-02-13'
+        regForm.cf = 'kjhf240'
+        regForm.email = 'sonoGianni@gmail.com'
+        regForm.username = 'gianni'
+        regForm.password = 'password'
+        regForm.verificapassword = 'password'
+        regForm.street = 'via torre'
+        regForm.civicNumber = 12
+        regForm.city = 'torres'
+        regForm.zipCode = '42843'
+
+        # Testing the form
+        self.assertTrue(regForm.is_valid(), regForm.errors)
+
+
+    # Tests whether an incomplete RegistrationForm is not valid
+    # Expected: an incomplete form is not valid
+    def test_RegistrationFormIsNotValid(self):
+        # Instantiating a RegistrationForm
+        regForm = RegistrationForm()
+
+        # Filling the form
+        # The form is missing the email field
+        regForm.hotelKeeper = True
+        regForm.name = 'Gianni'
+        regForm.surname = 'Pinna'
+        regForm.birthday = '1990-02-13'
+        regForm.cf = 'kjhf240'
+        regForm.username = 'gianni'
+        regForm.password = 'password'
+        regForm.verificapassword = 'password'
+        regForm.street = 'via torre'
+        regForm.civicNumber = 12
+        regForm.city = 'torres'
+        regForm.zipCode = '42843'
+
+        # Testing the form
+        self.assertFalse(regForm.is_valid(), regForm.errors)
+
+
+
+    # Tests whether a filled PaymentForm is valid
+    # Expected: a complete form is valid
+    def test_PaymentFormValidity(self):
+        # Instantiating an AddHotelForm
+        payForm = PaymentForm()
+
+        # Filling the form
+        payForm.name = 'giovanni'
+        payForm.surname = 'frau'
+        payForm.birthday = '1992-12-12'
+        payForm.cf = 'asff21'
+        payForm.email = 'giovanni@gmail.com'
+        payForm.street = 'via san giovanni'
+        payForm.civicNumber = 12
+        payForm.city = 'cagliari'
+        payForm.zipCode = '00098'
+        payForm.cardNumber = '124124513'
+        payForm.month = '05'
+        payForm.year = '2001'
+        payForm.cvv ='098'
+        payForm.username = 'diego'
+        payForm.password = 'password'
+        payForm.verificapassword = 'password'
+
+
+        # Testing the form
+        self.assertTrue(payForm.is_valid(), payForm.errors)
+
+
+    # Tests whether a filled PaymentForm is valid
+    # Expected: a complete form is valid
+    def test_PaymentFormIsNotValid(self):
+        # Instantiating an AddHotelForm
+        payForm = PaymentForm()
+
+        # Filling the form
+        # The form is missing the surname field
+        payForm.name = 'giovanni'
+        payForm.birthday = '1992-12-12'
+        payForm.cf = 'asff21'
+        payForm.email = 'giovanni@gmail.com'
+        payForm.street = 'via san giovanni'
+        payForm.civicNumber = 12
+        payForm.city = 'cagliari'
+        payForm.zipCode = '00098'
+        payForm.cardNumber = '124124513'
+        payForm.month = '05'
+        payForm.year = '2001'
+        payForm.cvv ='098'
+        payForm.username = 'diego'
+        payForm.password = 'password'
+        payForm.verificapassword = 'password'
+
+
+        # Testing the form
+        self.assertFalse(payForm.is_valid(), payForm.errors)
+
+
+
+
+
+
+
+
 """User Story 1. hotel keeper registration"""
 
 
@@ -147,9 +409,6 @@ class LoginHotelKeeperTest(TestCase):
         request.session['usrType'] = 'hotelKeeper'
 
         response = login(request)
-
-        print(request.get_full_path())
-        print(response.status_code)
 
         self.assertEquals(response.status_code, 302)
 
@@ -474,13 +733,7 @@ class SearchResultTest(TestCase):
         self.middleware.process_request(request)
         request.session.save()
 
-        print('città:' + request.GET.get('search_city', None))
-        print('numero:' + request.GET.get('search_number', None))
-        print('checkin:' + request.GET.get('search_checkin', None))
-        print('checkout:' + request.GET.get('search_checkout', None))
-
         response = searchResults(request)
-        print(response.content.decode())
 
         self.assertContains(response, 'Hotel Acquaragia')
 
@@ -499,7 +752,6 @@ class SearchResultTest(TestCase):
         request.session.save()
 
         response = searchResults(request)
-        print(response.content.decode())
 
         self.assertContains(response, 'There are no rooms available with these requirements')
 
@@ -765,3 +1017,90 @@ class AddRoom(TestCase):
                 roomList.append(rm)
 
         self.assertEqual(len(roomList), 2)
+
+
+class NonRegistration(TestCase):
+    def setUp(self):
+        address = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
+        address.save()
+
+        registeredClient = RegisteredClient(name='Marco',surname='Baldo',birthday=datetime.date(1984, 1, 15),
+                                        cf='bldmrc84a15b354a',email='marco.baldo@gmail.com',
+                                        address=address,username='marco',
+                                            password=str(pbkdf2_sha256.encrypt("isw", rounds=12000,salt_size=32)))
+        registeredClient.save()
+
+        self.registeredClient = registeredClient
+        self.address = address
+        self.request_factory = RequestFactory()
+        self.middleware = SessionMiddleware()
+
+    def test_non_registration(self):
+        registeredClientList = []
+        bookingPage = '/booking/signUp/'
+        request = self.request_factory.get(bookingPage, follow=True)
+        self.middleware.process_request(request)
+        session = self.client.session
+        session.save()
+
+
+        form = RegistrationForm(data={'name' : 'Marco',
+                                      'surname' : 'Rossi',
+                                      'birthday' : datetime.date(1996,11,15),
+                                      'cf' : 'MRCRSS01345503',
+                                      'email' : 'm.rossi@outlook.com',
+                                      'username' : 'marco',
+                                      'password' : 'isw',
+                                      'verifyPassword' : 'isw',
+                                      'street' : 'Via Marchi',
+                                      'civicNumber' : 15,
+                                      'city' : 'Roma',
+                                      'zipCode' : '09134'
+                                    })
+
+        self.assertFalse(form.is_valid())
+
+        for cl in RegisteredClient.objects.all():
+            registeredClientList.append(cl)
+
+        self.assertTrue(len(registeredClientList),1)
+
+        form_data = {'name':'Marco','surname':'Rossi','birthday':datetime.date(1996,11,15),'cf':'MRCRSS01345503',
+                     'email':'m.rossi@outlook.com','username':'marco','password' : 'isw',
+                     'verifyPassword':'isw','street':'Via Marchi','civicNumber':15,'city':'Roma',
+                     'zipCode':'09134'}
+
+        self.client.post('/signUp/', form_data)
+
+        registeredClientList = []
+
+        for cl in RegisteredClient.objects.all():
+            registeredClientList.append(cl)
+
+        self.assertTrue(len(registeredClientList),1)
+
+
+    def test_check_registration_fields(self):
+        bookingPage = '/booking/signUp/'
+        request = self.request_factory.get(bookingPage, follow=True)
+        self.middleware.process_request(request)
+
+
+        form_data = {'name':'Marco','surname':'Rossi','birthday':datetime.date(1996,11,15),'cf':'MRCRSS01345503',
+                     'email':'m.rossi@outlook.com','username':'marco','password' : 'isw',
+                     'verifyPassword':'isw','street':'Via Marchi','civicNumber':15,'city':'Roma',
+                     'zipCode':'09134'}
+
+        form = RegistrationForm(data=form_data)
+        self.assertEqual(form.data['name'],"Marco")
+        self.assertEqual(form.data['surname'],"Rossi")
+        self.assertEqual(form.data['birthday'],datetime.date(1996,11,15))
+        self.assertEqual(form.data['cf'],"MRCRSS01345503")
+        self.assertEqual(form.data['email'],"m.rossi@outlook.com")
+        self.assertEqual(form.data['username'],"marco")
+        self.assertEqual(form.data['password'],"isw")
+        self.assertEqual(form.data['verifyPassword'],"isw")
+        self.assertEqual(form.data['street'],"Via Marchi")
+        self.assertEqual(form.data['civicNumber'],15)
+        self.assertEqual(form.data['city'],"Roma")
+        self.assertEqual(form.data['zipCode'],"09134")
