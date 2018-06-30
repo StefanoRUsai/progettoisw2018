@@ -5,9 +5,9 @@ urlpatterns = [
     path('', v.notRegisteredHome),
     path('addRoom/', v.addRoomToHotel),
     path('login/', v.login),
-    path('profile/', v.viewProfileUser),
-    path('signUp/', v.registerUser),
-    path('homeRegistered/', v.registeredUserHome),
+    path('profile/', v.viewProfileClient),
+    path('signUp/', v.registerClient),
+    path('homeRegistered/', v.registeredClientHome),
     path('search/', v.searchResults),
     path('booking/', v.bookARoom),
     path('home/', v.hotelKeeperHome),  # ho lasciato home perchè dai disegni delle specifiche si vede così

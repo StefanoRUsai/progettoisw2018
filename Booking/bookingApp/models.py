@@ -24,11 +24,11 @@ class Person(models.Model):
     def __str__(self):
         return str(self.name) + " " + str(self.surname) + " " + str(self.birthday) + " " + str(self.cf) + " " + str(self.email) + " " + self.address.__str__()
 
-class User(Person):
-    phoneNumber = models.CharField(max_length=20)
+class Client(Person):
+
 
     def __str__(self):
-        return self.phoneNumber.__str__()
+        return self.name.__str__()
 
 
 
@@ -38,7 +38,7 @@ class CreditCard(models.Model):
     expirationMonth = models.CharField(max_length=2)
     cvvCode = models.CharField(max_length=3)
 
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Client, on_delete=models.CASCADE)
 
     def __str__(self):
        return str(self.cardNumber) + " " + str(self.expirationYear) + " " + str(self.expirationMonth) + " " + str(self.cvvCode)
@@ -47,18 +47,19 @@ class CreditCard(models.Model):
 
 
 class HotelKeeper(Person):
-    userName = models.CharField(max_length=50)
+    username = models.CharField(max_length=50)
     password = models.CharField(max_length=50)
 
     def __str__(self):
        return str(self.name) + " " + str(self.surname)
 
-class RegisteredUser(User):
-    userName = models.CharField(max_length=50)
+class RegisteredClient(Client):
+    username = models.CharField(max_length=50)
     password = models.CharField(max_length=50)
 
     def __str__(self):
-       return str(self.userName) # + " " + str(self.surname) + " ...con username --> " + str(self.userName)
+       return str(self.username)
+
 
 class Hotel(models.Model):
     name = models.CharField(max_length=30)
@@ -70,8 +71,8 @@ class Hotel(models.Model):
     def __str__(self):
        return str(self.name) + " " + self.address.__str__()
 
-    def returnCity(self):
-        return self.city
+#    def returnCity(self):
+#        return self.city
 
 
 class IncludedService(models.Model):
@@ -110,7 +111,7 @@ class Room(models.Model):
        return "Hotel di appartenenza --> " + self.hotelId.__str__() + " Room number --> " + str(self.roomNumber)
 
 class Booking(models.Model):
-    customerId = models.ForeignKey(User, on_delete=models.CASCADE)
+    customerId = models.ForeignKey(Client, on_delete=models.CASCADE)
     roomId = models.ForeignKey(Room, on_delete=models.CASCADE)
     checkIn = models.DateField()
     checkOut = models.DateField()
