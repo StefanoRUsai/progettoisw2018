@@ -48,258 +48,261 @@ class ModelTest(TestCase):
 
 
 
-
-
-
-''' Unitary tests for testing the forms'''
+# Test unitari sui form
 class FormsTest(TestCase):
     def setUp(self):
         addressGlobal = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
         addressGlobal.save()
-        creditCardGlobal = CreditCard(cardNumber=788888999987900, expirationMonth=10, expirationYear=2019, cvvCode=555)
-        creditCardGlobal.save()
-        r = RegisteredClient(name='Diego', surname='Cittadini', email='marcit@gmail.com',birthday=datetime.date(1987, 10, 11), cf='CTTMRA76T607T',username='diego', password='password', address=addressGlobal,creditCard=creditCardGlobal)
+        r = RegisteredClient(name='Diego', surname='Cittadini', email='marcit@gmail.com',
+                             birthday=datetime.date(1987, 10, 11), cf='CTTMRA76T607T',username='diego',
+                             password=str(pbkdf2_sha256.encrypt("isw", rounds=12000,salt_size=32)), address=addressGlobal)
         r.save()
+        creditCardGlobal = CreditCard(cardNumber=788888999987900, expirationMonth=10, expirationYear=2019, cvvCode=555,owner=r)
+        creditCardGlobal.save()
 
 
-    def tearDown(self):
-        pass
-
-
-    # Tests whether a filled AddHotelForm is valid
-    # Expected: a complete form is valid
     def test_AddHotelFormValidity(self):
-        # Instantiating an AddHotelForm
-        addHotelForm = AddHotelForm()
+        """ Verifica che un AddHotelForm compilato sia valido """
 
-        # Filling the form
+        # Riempimento del form
         photo_file = open(os.path.dirname(__file__) + '/../static/img/cortina.jpg', 'rb')
-        addHotelForm.name = 'Test hotel'
-        addHotelForm.description = 'Hotel used for unitary test'
-        addHotelForm.street = 'Test street'
-        addHotelForm.houseNumber = 12
-        addHotelForm.city = 'Test city'
-        addHotelForm.zipCode = '19928'
-        addHotelForm.photoUrl = SimpleUploadedFile(photo_file.name, photo_file.read())
+        form_data = {'name' : 'Test hotel',
+                     'description' : 'Hotel used for unitary test',
+                     'street' : 'Test street',
+                     'houseNumber' : 12,
+                     'city' : 'Test city',
+                     'zipCode' : '19928',
+                     'photoUrl' : SimpleUploadedFile(photo_file.name, photo_file.read())
+                     }
 
+        # Istanziamento del form
+        addHotelForm = AddHotelForm(data=form_data)
 
-        # Testing the form
+        # Verifica
         self.assertTrue(addHotelForm.is_valid(), addHotelForm.errors)
 
-    # Tests whether a incomplete AddHotelForm is invalid
-    # Expected: an incomplete form is not valid
+
     def test_AddHotelFormIsNotValid(self):
-        # Instantiating an AddHotelForm
-        addHotelForm = AddHotelForm()
+        """ Verifica che un  AddHotelForm con campi mancanti non sia valido """
 
-        # Filling the form
-        # The form is missing the photoUrl field
-        addHotelForm.name = 'Test hotel'
-        addHotelForm.description = 'Hotel used for unitary test'
-        addHotelForm.street = 'Test street'
-        addHotelForm.houseNumber = 12
-        addHotelForm.city = 'Test city'
-        addHotelForm.zipCode = '19928'
+        # Riempimento
+        # Al form manca il campo photoUrl
+        form_data = {'name' : 'Test hotel',
+                     'description' : 'Hotel used for unitary test',
+                     'street' : 'Test street',
+                     'houseNumber' : 12,
+                     'city' : 'Test city',
+                     'zipCode' : '19928' }
 
-        # Testing the form
-        self.assertFalse(addHotelForm.is_valid(), addHotelForm.errors)
+        # Istanziamento del form
+        addHotelForm = AddHotelForm(data=form_data)
+
+        # Verifica
+        self.assertTrue(addHotelForm.is_valid(), addHotelForm.errors)
 
 
-    # Tests whether a filled AddRoomForm is valid
-    # Expected: a complete form is valid
     def test_AddRoomFormValidity(self):
-        # Instantiating an AddRoomForm
-        addRoomForm = AddRoomForm()
+        """ Verifica che un AddRoomForm compilato sia valido """
 
-        # Filling the form
-        addRoomForm.roomNumber = 14
-        addRoomForm.bedsNumber = 3
-        addRoomForm.services = ['GARAGE', 'WIFI']
-        addRoomForm.price = 120.0
+        # Riempimento del form
+        form_data = {'roomNumber' : 14,
+                     'bedsNumber' : 3,
+                     'services' : ['GARAGE', 'WIFI'],
+                     'price' : 120.0 }
 
+        # Istanziamento del form
+        addRoomForm = AddRoomForm(data=form_data)
 
-        # Testing the form
+        # Verifica
         self.assertTrue(addRoomForm.is_valid(), addRoomForm.errors)
 
 
-    # Tests whether an incomplete AddRoomForm is invalid
-    # Expected: an incomplete form is not valid
     def test_AddRoomFormIsNotValid(self):
-        # Instantiating an AddRoomForm
-        addRoomForm = AddRoomForm()
+        """ Verifica che un AddRoomForm con campi mancanti non sia valido """
 
-        # Filling the form
-        # The form is missing the bedsNumber field
-        addRoomForm.roomNumber = 14
-        addRoomForm.services = ['GARAGE', 'WIFI']
-        addRoomForm.price = 120.0
+        # Riempimento
+        # Al form manca il campo bedsNumber
+        form_data = {'roomNumber' : 14,
+                     'services' : ['GARAGE', 'WIFI'],
+                     'price' : 120.0 }
 
-        # Testing the form
+        # Istanziamento form
+        addRoomForm = AddRoomForm(data=form_data)
+
+        # Verifica
         self.assertFalse(addRoomForm.is_valid(), addRoomForm.errors)
 
-    # Tests whether a filled CreditCardForm is valid
-    # Expected: a complete form is valid
+
     def test_CreditCardFormValidity(self):
-        # Instantiating a CreditCardForm
-        ccForm = CreditCardForm()
+        """ Verifica che un CreditCardForm compilato sia valido """
 
-        # Filling the form
-        ccForm.cardNumber = '1235551223234124'
-        ccForm.month = '03'
-        ccForm.year = '2019'
-        ccForm.cvv = '003'
+        # Riempimento form
+        form_data ={'cardNumber' : '123456789010111',
+                    'month' : '03',
+                    'year' : '2019',
+                    'cvv' : '003' }
 
-        # Testing the form
+        # Istanziamento form
+        ccForm = CreditCardForm(data=form_data)
+
+        # Verifica
         self.assertTrue(ccForm.is_valid(), ccForm.errors)
 
-    # Tests whether an incomplete CreditCardForm is invalid
-    # Expected: an incomplete form is not valid
+
     def test_CreditCardFormIsNotValid(self):
-        # Instantiating a CreditCardForm
-        ccForm = CreditCardForm()
+        """ Verifica che un CreditCardForm con campi mancanti non sia valido """
 
-        # Filling the form
-        # The form is missing the cardNumber field
-        ccForm.month = '03'
-        ccForm.year = '2019'
-        ccForm.cvv = '003'
+        # Riempimento dati del form
+        # Al form manca il valore di cardNumber
+        form_data = {'month' : '03',
+                     'year' : '2019',
+                     'cvv' : '003' }
 
-        # Testing the form
+        # Istanziameento del form
+        ccForm = CreditCardForm(data=form_data)
+
+
+        # Verifica
         self.assertFalse(ccForm.is_valid(), ccForm.errors)
 
-    # Tests whether a filled LoginForm is valid
-    # Expected: a complete form is valid
+
     def test_LoginFormValidity(self):
-        # Instantiating a LoginForm
-        logForm = LoginForm()
+        """ Verifica che un LoginForm opportunamente compilato sia valido """
 
-        # Filling the form
-        logForm.username = 'diego'
-        logForm.password = 'password'
+        # Riempimento del form
+        form_data = {'username' : 'diego',
+                     'password' : 'isw'}
 
-        # Testing the form
+        # Istanziamento
+        logForm = LoginForm(data=form_data)
+
+        # Verifica
         self.assertTrue(logForm.is_valid(), logForm.errors)
 
-    # Tests whether an incomplete LoginForm is invalid
-    # Expected: an incomplete form is not valid
+
     def test_LoginFormIsNotValid(self):
-        # Instantiating a LoginForm
-        logForm = LoginForm()
+        """ Verifica che un LoginForm con campi non compilati non sia valido """
 
-        # Filling the form
-        # The form is missing the username field
-        logForm.password = 'password'
+        # Riempimento form
+        # Al form manca il campo password
+        form_data = {'username' : 'franco'}
 
-        # Testing the form
+        # Istanziamento form
+        logForm = LoginForm(data=form_data)
+
+
+        # Verifica
         self.assertFalse(logForm.is_valid(), logForm.errors)
 
 
-    # Tests whether a filled RegistrationForm is valid
-    # Expected: a complete form is valid
     def test_RegistrationFormValidity(self):
-        # Instantiating a RegistrationForm
-        regForm = RegistrationForm()
+        """ Verifica che un RegistrationForm compilato sia valido """
 
-        # Filling the form
-        regForm.hotelKeeper = True
-        regForm.name = 'Gianni'
-        regForm.surname = 'Pinna'
-        regForm.birthday = '1990-02-13'
-        regForm.cf = 'kjhf240'
-        regForm.email = 'sonoGianni@gmail.com'
-        regForm.username = 'gianni'
-        regForm.password = 'password'
-        regForm.verificapassword = 'password'
-        regForm.street = 'via torre'
-        regForm.civicNumber = 12
-        regForm.city = 'torres'
-        regForm.zipCode = '42843'
+        # Riempimento form
+        form_data = {'hotelKeeper' : True,
+                     'name' : 'Gianni',
+                     'surname' : 'Pinna',
+                     'birthday' : '1990-02-13',
+                     'cf' : 'kjhf240',
+                     'email' : 'sonoGianni@gmail.com',
+                     'username' : 'gianni',
+                     'password' : 'password',
+                     'verifyPassword' : 'password',
+                     'street' : 'via torre',
+                     'civicNumber' : 12,
+                     'city' : 'torres',
+                     'zipCode' : '42843' }
 
-        # Testing the form
+
+        # Istanziamento form
+        regForm = RegistrationForm(data=form_data)
+
+
+        # Verifica
         self.assertTrue(regForm.is_valid(), regForm.errors)
 
 
-    # Tests whether an incomplete RegistrationForm is not valid
-    # Expected: an incomplete form is not valid
     def test_RegistrationFormIsNotValid(self):
-        # Instantiating a RegistrationForm
-        regForm = RegistrationForm()
+        """ Verifica che un RegistrationForm con campi mancanti non sia valido """
 
-        # Filling the form
-        # The form is missing the email field
-        regForm.hotelKeeper = True
-        regForm.name = 'Gianni'
-        regForm.surname = 'Pinna'
-        regForm.birthday = '1990-02-13'
-        regForm.cf = 'kjhf240'
-        regForm.username = 'gianni'
-        regForm.password = 'password'
-        regForm.verificapassword = 'password'
-        regForm.street = 'via torre'
-        regForm.civicNumber = 12
-        regForm.city = 'torres'
-        regForm.zipCode = '42843'
+        # Riempimento form
+        # Al form manca il campo email
+        form_data = {'hotelKeeper': True,
+                    'name': 'Gianni',
+                     'surname': 'Pinna',
+                     'birthday': '1990-02-13',
+                     'cf': 'kjhf240',
+                     'username': 'gianni',
+                     'password': 'password',
+                     'verificapassword': 'password',
+                     'street': 'via torre',
+                     'civicNumber': 12,
+                     'city': 'torres',
+                     'zipCode': '42843'}
 
-        # Testing the form
+        # Istanziamento form
+        regForm = RegistrationForm(data=form_data)
+
+        # Verifica
         self.assertFalse(regForm.is_valid(), regForm.errors)
 
 
-
-    # Tests whether a filled PaymentForm is valid
-    # Expected: a complete form is valid
     def test_PaymentFormValidity(self):
-        # Instantiating an AddHotelForm
-        payForm = PaymentForm()
+        """ Verifica che un PaymentForm compilato sia valido """
 
-        # Filling the form
-        payForm.name = 'giovanni'
-        payForm.surname = 'frau'
-        payForm.birthday = '1992-12-12'
-        payForm.cf = 'asff21'
-        payForm.email = 'giovanni@gmail.com'
-        payForm.street = 'via san giovanni'
-        payForm.civicNumber = 12
-        payForm.city = 'cagliari'
-        payForm.zipCode = '00098'
-        payForm.cardNumber = '124124513'
-        payForm.month = '05'
-        payForm.year = '2001'
-        payForm.cvv ='098'
-        payForm.username = 'diego'
-        payForm.password = 'password'
-        payForm.verificapassword = 'password'
+        # Riempimento form
+        form_data = {'name' : 'giovanni',
+                     'surname' : 'frau',
+                     'birthday' : '2001-12-12',
+                     'cf' : 'asff21',
+                     'email' : 'giovanni@gmail.com',
+                     'street' : 'via san giovanni',
+                     'civicNumber' : 12,
+                     'city' : 'cagliari',
+                     'zipCode' : '00098',
+                     'cardNumber' : '123456789123456',
+                     'month' : '05',
+                     'year' : '2001',
+                     'cvv' : '098',
+                     'username' : 'arnold',
+                     'password' : 'password',
+                     'verifyPassword' : 'password' }
 
 
-        # Testing the form
+        # Istanziamento form
+        payForm = PaymentForm(data=form_data)
+
+
+        # Verifica
         self.assertTrue(payForm.is_valid(), payForm.errors)
 
 
-    # Tests whether a filled PaymentForm is valid
-    # Expected: a complete form is valid
     def test_PaymentFormIsNotValid(self):
-        # Instantiating an AddHotelForm
-        payForm = PaymentForm()
+        """ Verifica che un PaymentForm con campi mancanti non sia valido """
 
-        # Filling the form
-        # The form is missing the surname field
-        payForm.name = 'giovanni'
-        payForm.birthday = '1992-12-12'
-        payForm.cf = 'asff21'
-        payForm.email = 'giovanni@gmail.com'
-        payForm.street = 'via san giovanni'
-        payForm.civicNumber = 12
-        payForm.city = 'cagliari'
-        payForm.zipCode = '00098'
-        payForm.cardNumber = '124124513'
-        payForm.month = '05'
-        payForm.year = '2001'
-        payForm.cvv ='098'
-        payForm.username = 'diego'
-        payForm.password = 'password'
-        payForm.verificapassword = 'password'
+        # Riempimento form
+        # Al form manca il campo surname
+        form_data = {'name': 'giovanni',
+                     'birthday': '1992-12-12',
+                     'cf': 'asff21',
+                     'email': 'giovanni@gmail.com',
+                     'street': 'via san giovanni',
+                     'civicNumber': 12,
+                     'city': 'cagliari',
+                     'zipCode': '00098',
+                     'cardNumber': '124124513',
+                     'month': '05',
+                     'year': '2001',
+                     'cvv': '098',
+                     'username': 'diego',
+                     'password': 'password',
+                     'verificapassword': 'password'}
+
+        # Istanziamento form
+        payForm = PaymentForm(data= form_data)
 
 
-        # Testing the form
+        # Verifica
         self.assertFalse(payForm.is_valid(), payForm.errors)
 
 
@@ -309,10 +312,8 @@ class FormsTest(TestCase):
 
 
 
-"""User Story 1. hotel keeper registration"""
-
-
 class RegisteredHotelKeeperTest(TestCase):
+    """ Classe contenente i TA della user story 1 """
     def setUp(self):
         address = Address(street='via lanusei', houseNumber=12, city='Cagliari', zipCode='09127')
         address.save()
@@ -331,56 +332,133 @@ class RegisteredHotelKeeperTest(TestCase):
         self.request_factory = RequestFactory()
         self.middleware = SessionMiddleware()
 
-    def test_RegistrationHotelKeeper(self):
+    def test_registrationMissingFields(self):
+        """ Verifica che un form di registrazione incompleto non consenta la registrazione """
+
+        # Ottenimento della request
         request = self.request_factory.get('/signUp/', follow=True)
         self.middleware.process_request(request)
+        # Creazione della sessione
         request.session.save()
 
-        form = RegistrationForm(data={'hotelKeeper': True
-            , 'name': 'Pinco'
-            , 'surname': 'Panco'
-            , 'birthday': '2018-10-21'
-            , 'cf': '213321321312'
-            , 'email': 'baldo@gmail.com'
-            , 'username': 'pinco'
-            , 'password': 'isw'
-            , 'verifyPassword': 'isw'
-            , 'street': 'via da qui'
-            , 'civicNumber': '666'
-            , 'city': 'chenonce'
-            , 'zipCode': '02131'})
+        # Riempimento del form
+        form = RegistrationForm(data={'hotelKeeper': True,
+                                'name': 'Pinco',
+                                'surname': 'Panco',
+                                'birthday': '2018-10-21',
+                                'cf': '213321321312',
+                                'email': 'baldo@gmail.com',
+                                'username': 'pinco',
+                                'password': 'isw',
+                                'verifyPassword': 'isw',
+                                'street': 'via da qui',
+                                'civicNumber': '666',
+                                'city': 'chenonce',
+                                'zipCode': '02131'})
 
+        # Verifica
         self.assertTrue(form.is_valid(), msg=form.errors)
 
-    def test_HomeHotellKeeper(self):
+
+    def test_registrationSuccessful(self):
+        """ Verifica che un hotel keeper registrato possa accedere alla sua home """
+
+        # Creazione request
         request = self.request_factory.get('/home/', follow=True)
         self.middleware.process_request(request)
+        # Creazione sessione
         request.session.save()
 
+        # Simulazione login
         request.session['usr'] = 'prova23'
         request.session['usrType'] = 'hotelKeeper'
 
+        # Esecuzione della vista che gestisce la home dell'albergatore
         response = hotelKeeperHome(request)
 
+        # Verifica l'accesso
         self.assertEquals(response.status_code, 200)
 
-    def test_HomeHotellKeeperError(self):
+    def test_registrationFailed(self):
+        """ Verifica che un hotel keeper non registrato non possa accedere alla shome"""
+
+        # Creazione request
         request = self.request_factory.get('/home/', follow=True)
         self.middleware.process_request(request)
+        # Creazione sessione
         request.session.save()
 
+        # Simulazione login
         request.session['usr'] = 'baldo'
         request.session['usrType'] = 'regUser'
 
+        # Esecuzione della vista che gestisce la home dell'hotel keeper
         response = hotelKeeperHome(request)
 
+        # Verifica accesso negato e redirect
         self.assertEquals(response.status_code, 302)
 
+    def test_registrationExistingUsername(self):
+        """ Verifica che sia negata l'iscrizione se l'username specificato esiste già """
 
-"""User story 2. hotel keeper login"""
+        # Lista di appoggio
+        registeredClientList = []
+
+        # Pagina di registrazione
+        bookingPage = '/booking/signUp/'
+
+        # Creazione request
+        request = self.request_factory.get(bookingPage, follow=True)
+        self.middleware.process_request(request)
+        # Creazione sessione
+        session = self.client.session
+        session.save()
+
+        # Riempimento form con username già usato
+        form = RegistrationForm(data={'name': 'Marco',
+                                      'surname': 'Rossi',
+                                      'birthday': datetime.date(1996, 11, 15),
+                                      'cf': 'MRCRSS01345503',
+                                      'email': 'm.rossi@outlook.com',
+                                      'username': 'baldo',
+                                      'password': 'isw',
+                                      'verifyPassword': 'isw',
+                                      'street': 'Via Marchi',
+                                      'civicNumber': 15,
+                                      'city': 'Roma',
+                                      'zipCode': '09134'
+                                      })
+
+        # verifica che sia negata la validazione del form
+        self.assertFalse(form.is_valid(), form.errors)
+
+        # Conta gli utenti registrati e verifica che non ne siano stati aggiunti
+        for cl in RegisteredClient.objects.all():
+            registeredClientList.append(cl)
+
+        self.assertTrue(len(registeredClientList), 1)
+
+        # Riempimento form valido
+        form_data = {'name': 'Marco', 'surname': 'Rossi', 'birthday': datetime.date(1996, 11, 15),
+                     'cf': 'MRCRSS01345503',
+                     'email': 'm.rossi@outlook.com', 'username': 'marco', 'password': 'isw',
+                     'verifyPassword': 'isw', 'street': 'Via Marchi', 'civicNumber': 15, 'city': 'Roma',
+                     'zipCode': '09134'}
+
+        # Invio form all'url che gestisce la registrazione
+        self.client.post('/signUp/', form_data)
+
+        # Conteggio e verifica
+        registeredClientList = []
+
+        for cl in RegisteredClient.objects.all():
+            registeredClientList.append(cl)
+
+        self.assertTrue(len(registeredClientList), 1)
 
 
 class LoginHotelKeeperTest(TestCase):
+    """ Classe contenente i TA della user story 2 """
     def setUp(self):
         address = Address(street='via lanusei', houseNumber=12, city='Cagliari', zipCode='09127')
         address.save()
@@ -400,37 +478,29 @@ class LoginHotelKeeperTest(TestCase):
         self.request_factory = RequestFactory()
         self.middleware = SessionMiddleware()
 
-    def test_LoginPageRedirect(self):
+    def test_hotelKeeperHomeRedirect(self):
+        """ Verifica che un hotel keeper loggato non abbia accesso alla pagina di login """
+
+        # Creazione della request
         request = self.request_factory.get('/login/', follow=True)
         self.middleware.process_request(request)
+        # Creazione della sessione
         request.session.save()
 
+        # Simulaazione hotel keeper loggato
         request.session['usr'] = self.userhotelkeeper.username
         request.session['usrType'] = 'hotelKeeper'
 
+        # Esecuzione della vista di login
         response = login(request)
 
+        # Verifica il redirect
         self.assertEquals(response.status_code, 302)
 
-    def test_LoginHotelKeeper(self):
-
-
-        form = LoginForm(data={'username': 'prova23',
-                               'password': 'isw'})
-
-        self.assertTrue(form.is_valid(), msg=form.errors)
-
-    def test_LoginRegisteredUser(self):
-        form = LoginForm(data={'username': self.userregistered.username,
-                               'password': self.userregistered.password})
-
-        self.assertTrue(form.is_valid(), msg=form.errors)
-
-
-'''User story 3. Visualizza lista prenotazioni (hotelKeeperhome)'''
 
 
 class HotelKeeperHomeTest(TestCase):
+    """ Classe contenente i TA della user story 3 """
     def setUp(self):
         hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
         hkAddress.save()
@@ -465,29 +535,48 @@ class HotelKeeperHomeTest(TestCase):
         self.middleware = SessionMiddleware()
 
     def test_hotelKeeperBookingsVisualization(self):
+        """ Verifica che un hotel keeper con prenotazioni le visualizzi nella sua home """
+
+        # Creazione della request
         request = self.request_factory.get('/home/')
         self.middleware.process_request(request)
+        # Creazione della sessione
         request.session.save()
+
+        # Simulazione hotel keeper loggato
         request.session['usr'] = self.userWithBookings.username
         request.session['usrType'] = 'hotelKeeper'
+
+        # Esecuzione della view che gestisce la home dell'albergatore
         response = hotelKeeperHome(request)
+
+        # Verifica che la pagina contenga la prenotazione
         self.assertContains(response, 'gianni')
         self.assertContains(response, 'Hotel Acquaragia')
 
+
     def test_hotelKeeperNoBookingsMessage(self):
+        """ Verifica che un hotel keeper senza prenotazioni visualizzi il messaggio relativo """
+
+        # Creazione della requqest
         request = self.request_factory.get('/home/')
         self.middleware.process_request(request)
+        # Creazione della sessione
         request.session.save()
+
+        # Simulazione albergatore loggato
         request.session['usr'] = self.userWithoutBookings.username
         request.session['usrType'] = 'hotelKeeper'
+
+        # Esecuzione della view che gestisce la home dell'albergatore
         response = hotelKeeperHome(request)
+
+        # Verifica della visualizzazione del messaggio
         self.assertContains(response, "You have not reservations in your hotels!")
 
 
-''''User story 4. (req. ViewHotelList)'''
-
-
 class HotelsListTest(TestCase):
+    """ Classe contenente i TA della user story 4 """
     def setUp(self):
         hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
         hkAddress.save()
@@ -524,29 +613,48 @@ class HotelsListTest(TestCase):
         self.middleware = SessionMiddleware()
 
     def test_HotelListVisualization(self):
+        """ Verifica che un hotel keeper che possiede hotel ne visualizzi la lista """
+
+        # Creazione request
         request = self.request_factory.get('/hotels/')
         self.middleware.process_request(request)
+        # Creazione sessione
         request.session.save()
+
+        # Simulazione hotel keeper loggato
         request.session['usr'] = self.userWithHotels.username
         request.session['usrType'] = 'hotelKeeper'
+
+        # Esecuzione della vista che gestisce la lista hotel
         response = hotelsList(request)
+
+        # Verifica che gli hotel vengano visualizzati
         self.assertContains(response, 'Hotel Acquaragia')
         self.assertContains(response, 'Hotel Napoleone')
 
     def test_EmptyHotelListVisualization(self):
+        """ Verifica che un hotel keeper senza hotel visualizzi il messaggio relativo """
+
+        # Creazione request
         request = self.request_factory.get('/hotels/')
         self.middleware.process_request(request)
+        # Creazione sessione
         request.session.save()
+
+        # Simulazione hotel keeper loggato
         request.session['usr'] = self.userWithoutHotels.username
         request.session['usrType'] = 'hotelKeeper'
+
+        # Esecuzione della vista che gestisce la lista hotel
         response = hotelsList(request)
+
+        # Verifica della visualizzaazione del messaggio
         self.assertContains(response, "You have not registered any hotel!")
 
 
-'''User story 5. add hotel'''
-
 
 class AddHotelInTheList(TestCase):
+    """ Classe contenente i TA della user story 5 """
     def setUp(self):
         hkAddress = Address(street='via del guasto', houseNumber=28, city='Bologna', zipCode='09888')
         hkAddress.save()
@@ -568,17 +676,24 @@ class AddHotelInTheList(TestCase):
         newAddress.save()
 
         self.newAd = newAddress
-        self.userhotelkeeper = hotelKeeper
+        self.hotelKeeper = hotelKeeper
         self.request_factory = RequestFactory()
         self.middleware = SessionMiddleware()
 
-    def test_AddHotelInTheList(self):
+    def test_addHotelMissingFields(self):
+        """ Verifica che non venga consentita l'aggiunta di un hotel se il form è incompleto """
+
+        # Creazione request
         request = self.request_factory.get('/addHotel/', follow=True)
         self.middleware.process_request(request)
+        # Creazione sessione
         request.session.save()
-        request.session['usr'] = self.userhotelkeeper.username
+
+        # Simulazione hotel keeper loggato
+        request.session['usr'] = self.hotelKeeper.username
         request.session['usrType'] = 'hotelKeeper'
 
+        # Riempimento form
         photo_file = open(os.path.dirname(__file__) + '/../static/img/cortina.jpg', 'rb')
         form_data = {'name': "hotel Trinciapollo",
                      'description': "Poulet e besciamel",
@@ -589,13 +704,76 @@ class AddHotelInTheList(TestCase):
                      'photoUrl': SimpleUploadedFile(photo_file.name, photo_file.read())}
 
         form = AddHotelForm(data=form_data)
+
+        # Verifica
         self.assertTrue(form.is_valid(), msg=form.errors)
 
 
-"""Manage Hotel 6 controllo dettagli hotel e camera"""
+    def test_hotelAdded(self):
+        """ Verifica che un hotel sia correttamente aggiunto """
+
+        # Lista temporanea
+        listaHotel = []
+
+        # Pagina con il di aggiunta hotel
+        bookingPage = '/booking/addHotel/'
+
+        # Creazione request
+        request = self.request_factory.get(bookingPage, follow=True)
+        self.middleware.process_request(request)
+        # Simulazione hotel keeper loggaato e creazione sessione
+        session_key = self.hotelKeeper.username
+        session = self.client.session
+        session['usr'] = session_key
+        session.save()
+
+        # Verifica del numero di hotel presenti prima dell'aggiunta
+        for ht in Hotel.objects.all():
+            if (ht.hotelKeeperId.username == self.hotelKeeper.username):
+                listaHotel.append(ht)
+
+        self.assertEqual(len(listaHotel), 2)
+
+        # Esecuzione della vista che gestisce l'aggiunta di hotel
+        response = addHotel(request)
+
+        # Riempimento form
+        form = AddHotelForm(data={
+            'name': 'Bonsoir',
+            'description': "C'est magnifique",
+            'street': 'Rue Mont Poisson',
+            'houseNumber': 5,
+            'city': 'Paris',
+            'zipCode': '09234',
+            'photoUrl': '/static/img/parisHotel.jpg'
+        })
+
+        form_data = {'name': 'Bonsoir', 'description': "C'est magnifique", 'street': 'Rue Mont Poisson',
+                     'houseNumber': 5, 'city': 'Paris',
+                     'zipCode': '09234', 'photoUrl': '/static/img/parisHotel.jpg'}
+
+        # Verifica che il form sia valido
+        self.assertTrue(form.is_valid())
+
+        # Verifica che la view non abbia restituito errore
+        self.assertEquals(response.status_code, 200)
+
+        # Invia il form in POST all'url di aggiunta hotel
+        self.client.post('/addHotel/', form_data)
+
+        # Verifica della corretta aggiunta dell'hotel
+        listaHotel = []
+
+        for ht in Hotel.objects.all():
+            if (ht.hotelKeeperId.username == self.hotelKeeper.username):
+                listaHotel.append(ht)
+
+        self.assertEqual(len(listaHotel), 3)
+
 
 
 class ManageHotel(TestCase):
+    """ Classe contenente i TA della user story 6 """
     def setUp(self):
         hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
         hkAddress.save()
@@ -630,26 +808,34 @@ class ManageHotel(TestCase):
         self.middleware = SessionMiddleware()
 
     def test_hotelsRoomsDataVisualization(self):
-        hotelPage = '/hotel/?name=' + self.hotel.name + '&civN=' + str(
-            self.hotelAddress.houseNumber) + '&city=' + self.hotelAddress.city
+        """ Verifica che l'hotel keeper visualizzi i dati dell'hotel e delle camere che contiene"""
+
+        # Pagina dell'hotel aggiunto in setUp()
+        hotelPage = '/hotel/?name=' + self.hotel.name + '&civN=' + str(self.hotelAddress.houseNumber) + '&city=' + self.hotelAddress.city
+
+        # Creazione request
         request = self.request_factory.get(hotelPage, follow=True)
         self.middleware.process_request(request)
+        # Creazione sessione
         request.session.save()
+
+        # Simulazione login
         request.session['usr'] = self.hotelKeeperSession.username
         request.session['usrType'] = 'hotelKeeper'
 
+        # Esecuzione della vista che gestisce i dettagli dell'hotel
         response = hotelDetail(request)
 
+        # Verifica che la pagina contenga i dati dell'hotel
         self.assertContains(response, 'Hotel Acquaragia')
         self.assertContains(response, '40')
         self.assertContains(response, '3')
         self.assertContains(response, '120')
 
 
-'''User story 7. add a room to hotel'''
-
 
 class AddRoomToHotelTest(TestCase):
+    """ Classe contenente i TA della user story 7 """
     def setUp(self):
         hkAddress = Address(street='via del guasto', houseNumber=28, city='Bologna', zipCode='09888')
         hkAddress.save()
@@ -663,13 +849,19 @@ class AddRoomToHotelTest(TestCase):
                       address=h1Address, photoUrl='/static/img/bedAndBreakfastLondon.jpg')
         hotel.save()
 
+        room = Room(roomNumber=27,capacity=3,price=35.5,hotelId=hotel)
+        room.save()
+
+
         self.userhotelkeeper = hotelKeeper
         self.hotel = hotel
+        self.room = room
         self.hotelAddress = hkAddress
         self.request_factory = RequestFactory()
         self.middleware = SessionMiddleware()
 
     def test_addRoomMissingFields(self):
+        """ Verifica che non sia accettato un form incompleto"""
         request = self.request_factory.get('/addRoom/', follow=True)
         self.middleware.process_request(request)
         request.session.save()
@@ -681,11 +873,64 @@ class AddRoomToHotelTest(TestCase):
 
         self.assertFalse(form.is_valid(), msg=form.errors)
 
+    def test_addRoomSuccesful(self):
+        """ Verifica che una camera venga correttamente aggiunta """
 
-"""user story 8. search"""
+        # Lista di appoggio
+        roomList = []
+
+        # Pagina di aggiunta camera
+        bookingPage = '/booking/addRoom/'
+
+        # Creazione request
+        request = self.request_factory.get(bookingPage, follow=True)
+        self.middleware.process_request(request)
+
+        # Scrittura in sessione dei dati necessari alla vista
+        session_key1 = str(self.hotel.name)
+        session_key2 = str(self.hotel.address.houseNumber)
+        session = self.client.session
+        session['htName'] = session_key1
+        session['htCivN'] = session_key2
+        session.save()
+
+        # Riempimento form
+        form = AddRoomForm(data={'roomNumber': 111,
+                                 'bedsNumber': 3,
+                                 'services' : ["TELEPHONE","GARAGE"],
+                                 'price' : 75.50
+                                 })
+
+        # Verifica il form
+        self.assertTrue(form.is_valid())
+
+        # Conteggio camere prima dell'aggiunta e verifica
+        for rm in Room.objects.all():
+            if (rm.hotelId == self.hotel):
+                roomList.append(rm)
+
+        self.assertEqual(len(roomList), 1)
+
+        # Riempimento form
+        form_data = {'roomNumber': 111,'bedsNumber': 3,'services' : ["TELEPHONE","GARAGE"],'price' : 75.50}
+
+        # Invio form all'url che gestisce l'aggiunta della camera
+        self.client.post('/addRoom/',form_data)
+
+        # Conteggio camere dopo l'aggiunta e verifica
+        roomList = []
+
+        for rm in Room.objects.all():
+            if (rm.hotelId == self.hotel):
+                roomList.append(rm)
+
+        self.assertEqual(len(roomList), 2)
+
+
 
 
 class SearchResultTest(TestCase):
+    """ Classe contenente i TA della user story 8 """
     def setUp(self):
         hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
         hkAddress.save()
@@ -719,10 +964,14 @@ class SearchResultTest(TestCase):
         self.request_factory = RequestFactory()
         self.middleware = SessionMiddleware()
 
-    def test_SearchResult(self):
-        #   request = self.request_factory.get('/search/?search_city=savona&search_number=3&search_checkin=2018-06-15&search_checkout=2018-06-24', follow=True)
+
+    def test_searchResult(self):
+        """ Verifica che sia possibile effettuare una ricerca"""
+
+        # Creazione request
         request = self.request_factory.get('/search/', follow=True)
 
+        # Creazione valori in GET
         request.GET.__init__(mutable=True)
 
         request.GET['search_city'] = 'savona'
@@ -731,16 +980,24 @@ class SearchResultTest(TestCase):
         request.GET['search_checkout'] = '2018-01-05'
 
         self.middleware.process_request(request)
+
+        # Creazione sessione
         request.session.save()
 
+        # Invio dei dati alla view che effettua la ricerca
         response = searchResults(request)
 
+        # Verifica corrispondenze trovate
         self.assertContains(response, 'Hotel Acquaragia')
 
-    def test_SearchError(self):
-        #   request = self.request_factory.get('/search/?search_city=savona&search_number=3&search_checkin=2018-06-15&search_checkout=2018-06-24', follow=True)
+
+    def test_searchNoMatches(self):
+        """ Verifica che se la lista dei risultati è vuota sia visualizzato il messaggio """
+
+        # Creazione request
         request = self.request_factory.get('/search/', follow=True)
 
+        # Creazione dati in GET per la ricerca
         request.GET.__init__(mutable=True)
 
         request.GET['search_city'] = 'cagliari'
@@ -749,17 +1006,20 @@ class SearchResultTest(TestCase):
         request.GET['search_checkout'] = '2018-01-05'
 
         self.middleware.process_request(request)
+
+        # Creazione sessione
         request.session.save()
 
+        # Invio dati alla view che esegue la ricerca
         response = searchResults(request)
 
+        # Verifica che non siano stati trovate occorrenze
         self.assertContains(response, 'There are no rooms available with these requirements')
 
 
-'''User story 9. book a room'''
-
 
 class reserveRoom(TestCase):
+    """ Classe contenente i TA della user story 9 """
     def setUp(self):
         hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
         hkAddress.save()
@@ -792,14 +1052,22 @@ class reserveRoom(TestCase):
         self.middleware = SessionMiddleware()
 
     def test_bookingMissingFields(self):
-        # http://127.0.0.1:8000/booking/?roomid=4
+        """ Verifica che non venga effettuata una prenotazione se il form è incompleto """
+
+        # Pagina di prenotazione di una camera
         bookingPage = '/booking/?roomid=' + str(self.room.id)
+
+        # Creazione request
         request = self.request_factory.get(bookingPage, follow=True)
         self.middleware.process_request(request)
+        # Creazione sessione
         request.session.save()
 
+        # Esecuzione della vista che gestisce le prenotazioni
         response = bookARoom(request)
 
+
+        # Riempimento form
         form = PaymentForm(data={
             'name': 'Giorgio',
             'surname': 'Imola',
@@ -818,13 +1086,14 @@ class reserveRoom(TestCase):
             'year': '2019',
             'cvv': '908'
         })
+
+        # Verifica form
         self.assertFalse(form.is_valid(), msg=form.errors)
 
 
-"""User story 10. data save when booking"""
-
 
 class TestDatasave(TestCase):
+    """ Classe contenente i TA della user story 10 """
     def setUp(self):
         hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
         hkAddress.save()
@@ -862,6 +1131,7 @@ class TestDatasave(TestCase):
         self.middleware = SessionMiddleware()
 
     def testSearchResult(self):
+        # Riempimento form
         form_data = {'name': 'Marco', 'surname': 'cognome',
                      'birthday': datetime.date(1996, 10, 20),
                      'cf': '23132123321', 'email': 'mail@ciao.com',
@@ -871,236 +1141,8 @@ class TestDatasave(TestCase):
                      'username': 'miao', 'password': 'isw',
                      'verifyPassword': 'isw'}
 
+        # Invio form alla pagina
         self.client.post('/booking/?roomid=1', form_data)
 
         app_count = RegisteredClient.objects.filter(username='miao').count()
         self.assertEqual(app_count, 1)
-
-
-
-
-class AddHotel(TestCase):
-    def setUp(self):
-        hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
-        hkAddress.save()
-
-        hotelKeeper = HotelKeeper(name='francesco', surname='fadda', birthday=datetime.date(1996, 10, 20),cf='dasf12r1324',
-                                  email='francesco@fadda.net', address=hkAddress, username='francesco',
-                                  password=str(pbkdf2_sha256.encrypt("isw", rounds=12000,salt_size=32)))
-        hotelKeeper.save()
-
-        hotelAddress = Address(street='via hotel bellissimo', houseNumber=12, city='savona', zipCode='00929')
-        hotelAddress.save()
-
-        hotel = Hotel(name='Hotel Acquaragia', description='Hotel bellissimo', hotelKeeperId=hotelKeeper,address=hotelAddress,
-                      photoUrl='/static/img/amsterdamHotel.jpg')
-        hotel.save()
-
-        self.hotel = hotel
-        self.hotelKeeper = hotelKeeper
-        self.hotelAddress = hotelAddress
-        self.request_factory = RequestFactory()
-        self.middleware = SessionMiddleware()
-
-
-    def test_addHotel(self):
-        listaHotel = []
-        bookingPage = '/booking/addHotel/'
-        request = self.request_factory.get(bookingPage, follow=True)
-        self.middleware.process_request(request)
-        session_key = self.hotelKeeper.username
-        session = self.client.session
-        session['usr'] = session_key
-        session.save()
-
-        for ht in Hotel.objects.all():
-            if(ht.hotelKeeperId.username == self.hotelKeeper.username):
-                listaHotel.append(ht)
-
-        self.assertEqual(len(listaHotel),1)
-
-        response = addHotel(request)
-
-        form = AddHotelForm(data={
-            'name': 'Bonsoir',
-            'description': "C'est magnifique",
-            'street': 'Rue Mont Poisson',
-            'houseNumber': 5,
-            'city': 'Paris',
-            'zipCode': '09234',
-            'photoUrl' : '/static/img/parisHotel.jpg'
-        })
-
-        form_data = {'name': 'Bonsoir','description': "C'est magnifique",'street': 'Rue Mont Poisson','houseNumber': 5,'city': 'Paris',
-                     'zipCode': '09234','photoUrl' : '/static/img/parisHotel.jpg'}
-
-        self.assertTrue(form.is_valid())
-
-        self.assertEquals(response.status_code, 200)
-
-        self.client.post('/addHotel/',form_data)
-
-        listaHotel = []
-
-        for ht in Hotel.objects.all():
-            if(ht.hotelKeeperId.username == self.hotelKeeper.username):
-                listaHotel.append(ht)
-
-        self.assertEqual(len(listaHotel), 2)
-
-
-
-
-class AddRoom(TestCase):
-    def setUp(self):
-        hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
-        hkAddress.save()
-
-        hotelKeeper = HotelKeeper(name='francesco', surname='fadda', birthday=datetime.date(1996, 10, 20),cf='dasf12r1324',
-                                  email='francesco@fadda.net', address=hkAddress, username='francesco',
-                                  password=str(pbkdf2_sha256.encrypt("isw", rounds=12000,salt_size=32)))
-        hotelKeeper.save()
-
-        hotelAddress = Address(street='via hotel bellissimo', houseNumber=12, city='savona', zipCode='00929')
-        hotelAddress.save()
-
-        hotel = Hotel(name='Hotel Acquaragia', description='Hotel bellissimo', hotelKeeperId=hotelKeeper,address=hotelAddress,
-                      photoUrl='/static/img/amsterdamHotel.jpg')
-        hotel.save()
-
-        room = Room(roomNumber=27,capacity=3,price=35.5,hotelId=hotel)
-        room.save()
-
-        self.hotel = hotel
-        self.hotelKeeper = hotelKeeper
-        self.hotelAddress = hotelAddress
-        self.room = room
-        self.request_factory = RequestFactory()
-        self.middleware = SessionMiddleware()
-
-
-
-    def test_addRoom(self):
-        roomList = []
-        bookingPage = '/booking/addRoom/'
-        request = self.request_factory.get(bookingPage, follow=True)
-        self.middleware.process_request(request)
-        session_key1 = str(self.hotel.name)
-        session_key2 = str(self.hotel.address.houseNumber)
-        session = self.client.session
-        session['htName'] = session_key1
-        session['htCivN'] = session_key2
-        session.save()
-
-        form = AddRoomForm(data={'roomNumber': 111,
-                                 'bedsNumber': 3,
-                                 'services' : ["TELEPHONE","GARAGE"],
-                                 'price' : 75.50
-                                 })
-
-        self.assertTrue(form.is_valid())
-
-        for rm in Room.objects.all():
-            if (rm.hotelId == self.hotel):
-                roomList.append(rm)
-
-        self.assertEqual(len(roomList), 1)
-
-        form_data = {'roomNumber': 111,'bedsNumber': 3,'services' : ["TELEPHONE","GARAGE"],'price' : 75.50}
-
-        self.client.post('/addRoom/',form_data)
-
-        roomList = []
-
-        for rm in Room.objects.all():
-            if (rm.hotelId == self.hotel):
-                roomList.append(rm)
-
-        self.assertEqual(len(roomList), 2)
-
-
-class NonRegistration(TestCase):
-    def setUp(self):
-        address = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
-        address.save()
-
-        registeredClient = RegisteredClient(name='Marco',surname='Baldo',birthday=datetime.date(1984, 1, 15),
-                                        cf='bldmrc84a15b354a',email='marco.baldo@gmail.com',
-                                        address=address,username='marco',
-                                            password=str(pbkdf2_sha256.encrypt("isw", rounds=12000,salt_size=32)))
-        registeredClient.save()
-
-        self.registeredClient = registeredClient
-        self.address = address
-        self.request_factory = RequestFactory()
-        self.middleware = SessionMiddleware()
-
-    def test_non_registration(self):
-        registeredClientList = []
-        bookingPage = '/booking/signUp/'
-        request = self.request_factory.get(bookingPage, follow=True)
-        self.middleware.process_request(request)
-        session = self.client.session
-        session.save()
-
-
-        form = RegistrationForm(data={'name' : 'Marco',
-                                      'surname' : 'Rossi',
-                                      'birthday' : datetime.date(1996,11,15),
-                                      'cf' : 'MRCRSS01345503',
-                                      'email' : 'm.rossi@outlook.com',
-                                      'username' : 'marco',
-                                      'password' : 'isw',
-                                      'verifyPassword' : 'isw',
-                                      'street' : 'Via Marchi',
-                                      'civicNumber' : 15,
-                                      'city' : 'Roma',
-                                      'zipCode' : '09134'
-                                    })
-
-        self.assertFalse(form.is_valid())
-
-        for cl in RegisteredClient.objects.all():
-            registeredClientList.append(cl)
-
-        self.assertTrue(len(registeredClientList),1)
-
-        form_data = {'name':'Marco','surname':'Rossi','birthday':datetime.date(1996,11,15),'cf':'MRCRSS01345503',
-                     'email':'m.rossi@outlook.com','username':'marco','password' : 'isw',
-                     'verifyPassword':'isw','street':'Via Marchi','civicNumber':15,'city':'Roma',
-                     'zipCode':'09134'}
-
-        self.client.post('/signUp/', form_data)
-
-        registeredClientList = []
-
-        for cl in RegisteredClient.objects.all():
-            registeredClientList.append(cl)
-
-        self.assertTrue(len(registeredClientList),1)
-
-
-    def test_check_registration_fields(self):
-        bookingPage = '/booking/signUp/'
-        request = self.request_factory.get(bookingPage, follow=True)
-        self.middleware.process_request(request)
-
-
-        form_data = {'name':'Marco','surname':'Rossi','birthday':datetime.date(1996,11,15),'cf':'MRCRSS01345503',
-                     'email':'m.rossi@outlook.com','username':'marco','password' : 'isw',
-                     'verifyPassword':'isw','street':'Via Marchi','civicNumber':15,'city':'Roma',
-                     'zipCode':'09134'}
-
-        form = RegistrationForm(data=form_data)
-        self.assertEqual(form.data['name'],"Marco")
-        self.assertEqual(form.data['surname'],"Rossi")
-        self.assertEqual(form.data['birthday'],datetime.date(1996,11,15))
-        self.assertEqual(form.data['cf'],"MRCRSS01345503")
-        self.assertEqual(form.data['email'],"m.rossi@outlook.com")
-        self.assertEqual(form.data['username'],"marco")
-        self.assertEqual(form.data['password'],"isw")
-        self.assertEqual(form.data['verifyPassword'],"isw")
-        self.assertEqual(form.data['street'],"Via Marchi")
-        self.assertEqual(form.data['civicNumber'],15)
-        self.assertEqual(form.data['city'],"Roma")
-        self.assertEqual(form.data['zipCode'],"09134")
