@@ -2,8 +2,8 @@ from django.contrib import admin
 from .models import *
 # Register your models here.
 
-admin.site.register(User)
-admin.site.register(RegisteredUser)
+admin.site.register(Client)
+admin.site.register(RegisteredClient)
 admin.site.register(HotelKeeper)
 admin.site.register(CreditCard)
 admin.site.register(Address)
