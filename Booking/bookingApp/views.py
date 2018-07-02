@@ -206,9 +206,12 @@ def addHotel (request):
 
             username = request.session['usr']
 
+            #si controlla che l'username sia nella lista degli albergatori
             for hk in HotelKeeper.objects.all():
                 if(hk.username == str(username)):
-                    htFK = hk #hotelKeeper Foreign Key
+                    # hotelKeeper Foreign Key
+                    htFK = hk
+                    #si crea l'hotel e si aggiunge al database
                     hotel = Hotel(name=str(nameR),description=str(descriptionR),hotelKeeperId=htFK,address=adress,photoUrl=str(photoUrlR))
                     hotel.save()
                     break
@@ -221,50 +224,60 @@ def addHotel (request):
 
 
 def addRoomToHotel(request):
+    """ funzione per il controllo della view per aggiungere delle stanze agli hotel,
+        tramite un form"""
+
     if request.method == 'POST':
         form = AddRoomForm(request.POST)
         if(form.is_valid()):
+            #liste di supporto
             roomListWhereAdd = []
             servicesListToAdd = []
 
-            #recupero i dati utili da sessione
+            #recupero dei dati dalla sessione
             hotelWhereAddName = request.session['htName']
             hotelWhereAddCivN = request.session['htCivN']
 
-            #recupero i dati dal form e li salvo nelle variabili
+            #recupero dei dati dal form vengono assegnati alle variabili
             roomNumber = form.cleaned_data['roomNumber']
             bedsNumber = form.cleaned_data['bedsNumber']
             services = form.cleaned_data['services']
             priceR = float(form.cleaned_data['price'])
 
+            #controllo sul prezzo, numero di stanza e capacità
             if(priceR > 0.0 and int(roomNumber) > 0 and int(bedsNumber) > 0):
                 for ht in Hotel.objects.all():
+                    #se sono soddisfatti si ottiene l'oggetto hotel
                     if(ht.name == str(hotelWhereAddName) and ht.address.houseNumber == int(hotelWhereAddCivN)):
                         hotelWhereAdd = ht
                         break
-
+                #si cicla sulla tabelle delle stanze, quando la stanza appartiene all'hotel viene aggiunta alla lista di supporto
                 for rm in Room.objects.all():
                     if (rm.hotelId == hotelWhereAdd):
                         roomListWhereAdd.append(rm)
 
+                #se la lista è di lunghezza 0 si crea la stanza e si aggiunge al databse
                 if (len(roomListWhereAdd) == 0):
                     tmpRoom = Room(roomNumber=int(roomNumber), capacity=int(bedsNumber), price=priceR, hotelId=hotelWhereAdd)
                     tmpRoom.save()
                 else:
+                    #se la lista ha una dimensione diversa da 0 si cicla su di essa e si controlla se esiste gia una stanza con quel numero
                     for r in roomListWhereAdd:
                         if (r.roomNumber == int(roomNumber)):
                             context = {"message": "Room number already exist in the structure " + str(hotelWhereAdd.name)}
                             return render_to_response("messages.html", context)
 
-                    tmpRoom = Room(roomNumber=int(roomNumber),capacity=int(bedsNumber),price=priceR,hotelId=hotelWhereAdd) #aggiungere il servizio sennò l'oggetto non viene creato
+                    # aggiungere il servizio sennò l'oggetto non viene creato
+                    tmpRoom = Room(roomNumber=int(roomNumber),capacity=int(bedsNumber),price=priceR,hotelId=hotelWhereAdd)
                     tmpRoom.save()
 
+                    #si inseriscono tutti i servizi alla stanza
                     for s in services:
                         s = IncludedService(service = str(s))
                         s.save()
                         tmpRoom.services.add(s)
 
-                    #elimino permanentemente dalla sessione le variabili che non sono più utili
+                    #eliminazione permanentemente dalla sessione le variabili che non sono più utili
                     del request.session['htName']
                     del request.session['htCivN']
 
@@ -278,16 +291,24 @@ def addRoomToHotel(request):
 def isFreeUsername(toBeChecked):
     """funzione di supporto per sapere se un username è libero"""
     flag = True
+    #cicla su tutta la tabella dei clienti registrati
     for ut in RegisteredClient.objects.all():
         if(ut.username == toBeChecked):
             flag =  False
+    # cicla su tutta la tabella dei clienti registrati
     for ut in HotelKeeper.objects.all():
         if(ut.username == toBeChecked):
             flag =  False
+
+    # registituisce un valore booleano
     return flag
 
 
 def registerClient(request):
+    """ funzione per il controllo della view per registare il cliente,
+        tramite un form"""
+
+
     if 'usr' in request.session:
         if 'usrType' in request.session and request.session['usrType'] == 'regUser':
             return redirect('/homeRegistered/')
@@ -310,18 +331,13 @@ def registerClient(request):
             userN = form.cleaned_data['username']
             passW = form.cleaned_data['password']
             verifyPassword = form.cleaned_data['verifyPassword']
-
-
-
-
-
             hotelKeeper = form.cleaned_data['hotelKeeper']
 
-            # creo prima l'oggetto di tipo indirizzo
+            #si crea l'oggetto indirizzo
             userAddr = Address(street=str(street), houseNumber=str(civicNr), city=str(userCity), zipCode=str(cap))
             userAddr.save()
 
-            # creo poi l'oggetto ut di tipo RegisteredClient che comprende l'oggetto userAddr creato poco sopra
+            #se la variabile booleana hotelKeeper nel form è False viene creato un utente Registrato
             if (hotelKeeper != True):
                 ut = RegisteredClient(name=str(name), surname=str(surname),
                                     birthday=str(bd), cf=str(codF),
@@ -329,13 +345,14 @@ def registerClient(request):
                                     password=str(verifyPassword))
                 ut.save()
             else:
+                #nel caso la variabile sia a True viene creato un albergatore
                 hk = HotelKeeper(name=str(name), surname=str(surname),
                                  birthday=str(bd), cf=str(codF),
                                  email=str(emailAddr), username=str(userN),
 
                                  password=str(verifyPassword), address=userAddr)
                 hk.save()
-
+            #viene settato in sessione l'username e il tipo di classe, l'utente una volta registrato viene indirizzato alla propria Home come gia loggato
             request.session['usr'] = userN
 
             if hotelKeeper != True:
@@ -345,7 +362,7 @@ def registerClient(request):
                 request.session['usrType'] = 'hotelKeeper'
                 return redirect('/home/')
 
-    else:  # Qui ci si entra in caso di prima di prima visualizzazione o richiesta GET
+    else:
         form = RegistrationForm()
 
     context = {'form' : form}
@@ -353,15 +370,21 @@ def registerClient(request):
 
 
 def viewProfileClient(request):
+    """ funzione per il controllo dei dati della view profilo dell'utente"""
+
+    #si assegna il nome utente registrato in sessione
     username = request.session['usr']
+    #si creano delle variabili di supporto
     userSession = None
     flag_user = True
 
+    #si ottengono i dati dell'utente ciclando sulla tabella  registeredClient
     for userAtrs in RegisteredClient.objects.all():
         if(userAtrs.username==username):
             userSession = userAtrs
             break
 
+    #se  userSession è settato ancora a None si fa la stessa cosa sulla tabella degli Albergatori
     if(userSession==None):
         flag_user = False
         for userAtrs in HotelKeeper.objects.all():
@@ -369,9 +392,11 @@ def viewProfileClient(request):
                 userSession = userAtrs
                 break
 
+        #si passano i dati al contesto e si reindirizza alla pagina del profilo dell'albergatore
         context = {'userProfile': userSession,'flag_user': flag_user,}
         return render(request, 'profile.html', context)
 
+    #si controlla se il cliente registrato ha una carta di credito
     flag_card = False
     creditCardOfUser = None
     for creditCard in CreditCard.objects.all():
@@ -380,9 +405,10 @@ def viewProfileClient(request):
             flag_card = True
             break
 
+    #si crea una variabile di appoggio per le prenotazioni dell'utente
     listBooking = []
     flag_pren = False
-
+    #si crea una lista delle prenotazioni fatte dal cliente
     for book in Booking.objects.all():
         if (userSession.id == book.customerId.id):
             for room in Room.objects.all():
@@ -394,6 +420,8 @@ def viewProfileClient(request):
                                 flag_pren=True
                             break
 
+
+    #si passano tutti i dati sull'utente al context e si rindirizza alla sua pagina profilo
     context = {'userProfile': userSession, 'creditCardView': creditCardOfUser, 'listBooking': listBooking, 'flag_user': flag_user,'flag_card':flag_card,'flag_pren':flag_pren}
     return render(request, 'profile.html', context)
 
@@ -523,135 +551,6 @@ def hotelDetail(request):
     return render(request,"manageHotel.html",context)
 
 
-def bookingNotRegistered(request, roomBoking):
-    """ funzione di supporto per il controllo della view per le prenotazioni, nel caso l'utente/cliente non sia registrato"""
-
-    #si richiama il form PyamentForm
-    if (request.method == 'POST'):
-        formBooking = PaymentForm(request.POST)
-        if (formBooking.is_valid()):
-            name = formBooking.cleaned_data['name']
-            surname = formBooking.cleaned_data['surname']
-            bd = formBooking.cleaned_data['birthday']
-            codF = formBooking.cleaned_data['cf']
-            emailAddr = formBooking.cleaned_data['email']
-            street = formBooking.cleaned_data['street']
-            civicNr = formBooking.cleaned_data['civicNumber']
-            city = formBooking.cleaned_data['city']
-            cap = formBooking.cleaned_data['zipCode']
-            cardNumber = formBooking.cleaned_data['cardNumber']
-            month = formBooking.cleaned_data['month']
-            year = formBooking.cleaned_data['year']
-            cvv = formBooking.cleaned_data['cvv']
-            username = formBooking.cleaned_data['username']
-            passsword = formBooking.cleaned_data['password']
-            verifyPassword = formBooking.cleaned_data['verifyPassword']
-
-            #se i campi username, password e verica password son compilati viene registrato un utente
-            if (username != None and passsword != None and verifyPassword != None):
-
-                # creazione dell'oggetto indirizzo
-                userAddress = Address(street=str(street), houseNumber=str(civicNr), city=str(city), zipCode=str(cap))
-
-                #salvataggio sul DB dell'oggetto indirizzo
-                userAddress.save()
-
-                #creazione dell'oggetto registeredClient
-                user = RegisteredClient(name=str(name), surname=str(surname),
-                                    birthday=str(bd), cf=str(codF),
-                                    email=str(emailAddr), username=str(username),
-                                    password=str(verifyPassword), address=userAddress)
-
-                #salvataggio sul DB dell'oggetto registeredClient
-                user.save()
-
-                #creazione dell'oggetto registeredClient
-                card = CreditCard(owner=user, cardNumber=cardNumber, expirationYear=year, expirationMonth=month,
-                                  cvvCode=cvv)
-
-                #salvataggio sul DB dell'oggetto carta di credito
-                card.save()
-
-            else:
-                #salvataggio dei dati ai fini della prenotazione nel caso il cliente non voglia registrarsi sul sito
-
-                userAddress = Address(street=str(street), houseNumber=str(civicNr), city=str(city), zipCode=str(cap))
-                userAddress.save()
-
-                user = Client(name=str(name), surname=str(surname), birthday=bd, cf=str(codF), email=str(emailAddr),
-                          address=userAddress)
-                user.save()
-
-                card = CreditCard(owner=user, cardNumber=cardNumber, expirationYear=year, expirationMonth=month,
-                                  cvvCode=cvv)
-                card.save()
-
-            try:
-                # si richiedono le date dalla sessione
-                searchPatternCheckIn = request.session['logIn_dt']
-                searchPatternCheckOut = request.session['logOut_dt']
-                # si ottengono la data di checkIn e checkOut in maniera da poterle usare per la ricerca
-                listIn = searchPatternCheckIn.split("-")
-                listOut = searchPatternCheckOut.split("-")
-                # si creano 2 oggetti datetime per impostare le date per la prenotazione
-                logIn_dt = datetime.datetime(int(listIn[0]), int(listIn[1]), int(listIn[2]))
-                logOut_dt = datetime.datetime(int(listOut[0]), int(listOut[1]), int(listOut[2]))
-                # creazione oggetto prenotazione
-                booking = Booking(customerId=user, roomId=roomBoking, checkIn=logIn_dt, checkOut=logOut_dt)
-                # salvataggio prenotazione
-                booking.save()
-            except:
-                booking = None
-            return redirect('/')
-
-    else:
-        formBooking = PaymentForm()
-
-    return formBooking
-
-def bookingRegisteredClientWithoutCard(request, user, roomBooking):
-    """ funzione di supporto per il controllo della view per le prenotazioni, nel caso l'utente/cliente
-    registrato non abbia ancora una carta di credito associata"""
-
-    #richiesta del form
-    if (request.method == 'POST'):
-        formBooking = CreditCardForm(request.POST)
-        if (formBooking.is_valid()):
-            cardNumber = formBooking.cleaned_data['cardNumber']
-            month = formBooking.cleaned_data['month']
-            year = formBooking.cleaned_data['year']
-            cvv = formBooking.cleaned_data['cvv']
-
-            #creazione dell'oggeto carta di credito
-            card = CreditCard(owner=user, cardNumber=cardNumber, expirationYear=year,expirationMonth=month,cvvCode=cvv)
-            #salvataggio della carta di credito
-            card.save()
-
-            try:
-                #si richiedono le date dalla sessione
-                searchPatternCheckIn = request.session['logIn_dt']
-                searchPatternCheckOut = request.session['logOut_dt']
-                # si ottengono la data di checkIn e checkOut in maniera da poterle usare per la ricerca
-                listIn = searchPatternCheckIn.split("-")
-                listOut = searchPatternCheckOut.split("-")
-                #si creano 2 oggetti datetime per impostare le date per la prenotazione
-                logIn_dt = datetime.datetime(int(listIn[0]), int(listIn[1]), int(listIn[2]))
-                logOut_dt = datetime.datetime(int(listOut[0]), int(listOut[1]), int(listOut[2]))
-                #creazione oggetto prenotazione
-                booking = Booking(customerId=user, roomId=roomBooking, checkIn=logIn_dt, checkOut=logOut_dt)
-                #salvataggio prenotazione
-                booking.save()
-
-            except:
-                booking = None
-
-            return redirect('/homeRegistered')
-    else:
-        formBooking = CreditCardForm()
-
-    return formBooking
-
-
 def bookARoom(request):
     """funzione per il controllo della view in cui si visualizzaon i dati di ricerca,
     tramite un form,  alla lista di un albergatore"""
@@ -680,7 +579,85 @@ def bookARoom(request):
 
     #se l'utente non è loggato si utilizza la funzione di supporto e si imposta la flag a True
     if user == None:
-        formBooking = bookingNotRegistered(request, roomBooking)
+        if (request.method == 'POST'):
+            formBooking = PaymentForm(request.POST)
+            if (formBooking.is_valid()):
+                name = formBooking.cleaned_data['name']
+                surname = formBooking.cleaned_data['surname']
+                bd = formBooking.cleaned_data['birthday']
+                codF = formBooking.cleaned_data['cf']
+                emailAddr = formBooking.cleaned_data['email']
+                street = formBooking.cleaned_data['street']
+                civicNr = formBooking.cleaned_data['civicNumber']
+                city = formBooking.cleaned_data['city']
+                cap = formBooking.cleaned_data['zipCode']
+                cardNumber = formBooking.cleaned_data['cardNumber']
+                month = formBooking.cleaned_data['month']
+                year = formBooking.cleaned_data['year']
+                cvv = formBooking.cleaned_data['cvv']
+                username = formBooking.cleaned_data['username']
+                passsword = formBooking.cleaned_data['password']
+                verifyPassword = formBooking.cleaned_data['verifyPassword']
+
+                # se i campi username, password e verica password son compilati viene registrato un utente
+                if (username != '' and passsword != '' and verifyPassword != ''):
+
+                    # creazione dell'oggetto indirizzo
+                    userAddress = Address(street=str(street), houseNumber=str(civicNr), city=str(city),
+                                          zipCode=str(cap))
+
+                    # salvataggio sul DB dell'oggetto indirizzo
+                    userAddress.save()
+
+                    # creazione dell'oggetto registeredClient
+                    user = RegisteredClient(name=str(name), surname=str(surname),
+                                            birthday=str(bd), cf=str(codF),
+                                            email=str(emailAddr), username=str(username),
+                                            password=str(verifyPassword), address=userAddress)
+
+                    # salvataggio sul DB dell'oggetto registeredClient
+                    user.save()
+
+                    # creazione dell'oggetto registeredClient
+                    card = CreditCard(owner=user, cardNumber=cardNumber, expirationYear=year, expirationMonth=month,
+                                      cvvCode=cvv)
+
+                    # salvataggio sul DB dell'oggetto carta di credito
+                    card.save()
+
+                else:
+                    # salvataggio dei dati ai fini della prenotazione nel caso il cliente non voglia registrarsi sul sito
+
+                    userAddress = Address(street=str(street), houseNumber=str(civicNr), city=str(city),
+                                          zipCode=str(cap))
+                    userAddress.save()
+
+                    user = Client(name=str(name), surname=str(surname), birthday=bd, cf=str(codF), email=str(emailAddr),
+                                  address=userAddress)
+                    user.save()
+
+                    card = CreditCard(owner=user, cardNumber=cardNumber, expirationYear=year, expirationMonth=month,
+                                      cvvCode=cvv)
+                    card.save()
+
+                # si richiedono le date dalla sessione
+                searchPatternCheckIn = request.session['logIn_dt']
+                searchPatternCheckOut = request.session['logOut_dt']
+                # si ottengono la data di checkIn e checkOut in maniera da poterle usare per la ricerca
+                listIn = searchPatternCheckIn.split("-")
+                listOut = searchPatternCheckOut.split("-")
+                # si creano 2 oggetti datetime per impostare le date per la prenotazione
+                logIn_dt = datetime.datetime(int(listIn[0]), int(listIn[1]), int(listIn[2]))
+                logOut_dt = datetime.datetime(int(listOut[0]), int(listOut[1]), int(listOut[2]))
+                # creazione oggetto prenotazione
+                booking = Booking(customerId=user, roomId=roomBooking, checkIn=logIn_dt, checkOut=logOut_dt)
+                # salvataggio prenotazione
+                booking.save()
+                return redirect('/')
+
+        else:
+
+            formBooking = PaymentForm()
         flagNotRegistered =True
     else:
         #se l'utente esiste si controlla se ha una carta di credito
@@ -690,7 +667,39 @@ def bookARoom(request):
             creditCardUser = None
         #se l'utente non ha la carta di credito si utilizza la funzione di supporto per visualizzare il form per crearla
         if creditCardUser == None:
-            formBooking = bookingRegisteredClientWithoutCard(request, user, roomBooking)
+            # richiesta del form
+            if (request.method == 'POST'):
+                formBooking = CreditCardForm(request.POST)
+                if (formBooking.is_valid()):
+                    cardNumber = formBooking.cleaned_data['cardNumber']
+                    month = formBooking.cleaned_data['month']
+                    year = formBooking.cleaned_data['year']
+                    cvv = formBooking.cleaned_data['cvv']
+
+                    # creazione dell'oggeto carta di credito
+                    card = CreditCard(owner=user, cardNumber=cardNumber, expirationYear=year, expirationMonth=month,
+                                      cvvCode=cvv)
+                    # salvataggio della carta di credito
+                    card.save()
+
+                    # si richiedono le date dalla sessione
+                    searchPatternCheckIn = request.session['logIn_dt']
+                    searchPatternCheckOut = request.session['logOut_dt']
+                    # si ottengono la data di checkIn e checkOut in maniera da poterle usare per la ricerca
+                    listIn = searchPatternCheckIn.split("-")
+                    listOut = searchPatternCheckOut.split("-")
+                    # si creano 2 oggetti datetime per impostare le date per la prenotazione
+                    logIn_dt = datetime.datetime(int(listIn[0]), int(listIn[1]), int(listIn[2]))
+                    logOut_dt = datetime.datetime(int(listOut[0]), int(listOut[1]), int(listOut[2]))
+                    # creazione oggetto prenotazione
+                    booking = Booking(customerId=user, roomId=roomBooking, checkIn=logIn_dt, checkOut=logOut_dt)
+                    # salvataggio prenotazione
+                    booking.save()
+
+                    return redirect('/homeRegistered')
+
+            else:
+                formBooking = CreditCardForm()
             flagRegisteredWithoutCard = True
         else:
             #se esiste la carta di credito si registra la prenotazione

@@ -11,41 +11,329 @@ from .views import *
 from passlib.hash import pbkdf2_sha256
 
 
-class ModelTest(TestCase):
-    def setUp(self):
-        addressGlobal = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
-        addressGlobal.save()
-        creditCardGlobal = CreditCard(cardNumber=56478397474839375, expirationMonth=12, expirationYear=2020,
-                                      cvvCode=666)
-        creditCardGlobal.save()
-        creditCard = CreditCard(cardNumber=788888999987900, expirationMonth=10, expirationYear=2019, cvvCode=555)
-        creditCard.save()
+class ModelTestAdress(TestCase):
+    def test_Adress(self):
+        """Funzione per il controllo del corretto salvataggio di un oggetto Address restituisce true
+        nel caso sia stato salvato correttamente"""
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
+        address_count = Address.objects.filter(street='via Piave', houseNumber=60, city='Uras', zipCode='78999').count()
+        self.assertEqual(address_count, 1)
+
+
+class ModelTestPerson(TestCase):
+    def test_Person(self):
+        """Funzione per il controllo del corretto salvataggio di un oggetto Person restituisce true
+        nel caso sia stato salvato correttamente"""
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
         person = Person(name='Stefano', surname='Marcello', email='smarcello@gmail.com',
-                        birthday=datetime.date(1987, 10, 11), cf='MRCSTN84S13A355X', address=addressGlobal)
+                        birthday=datetime.date(1987, 10, 11), cf='MRCSTN84S13A355X', address=address)
         person.save()
-        hotelKeeper = HotelKeeper(name='Giorgia', surname='Congiu', email='giogio.com',
-                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', username='giogioCong96',
-                                  password=str(pbkdf2_sha256.encrypt("isw", rounds=12000,salt_size=32)), address=addressGlobal)
-        hotelKeeper.save()
-        hotel = Hotel(name='T Hotel', description='Nel cuore di Cagliari...', hotelKeeperId=hotelKeeper,
-                      address=addressGlobal)
-        hotel.save()
-        room1 = Room(capacity=3, price='120.00', hotelId=hotel)
-        room1.save()
-        service = IncludedService(service=IncludedService.GARAGE, room=room1)
-        service.save()
+
+
+        address_count = Address.objects.filter(street='via Piave', houseNumber=60, city='Uras', zipCode='78999').count()
+        self.assertEqual(address_count, 1)
+
+        person_count = Person.objects.filter(name='Stefano', surname='Marcello', email='smarcello@gmail.com',
+                        birthday=datetime.date(1987, 10, 11), cf='MRCSTN84S13A355X', address=address).count()
+        self.assertEqual(person_count, 1)
+
+
+class ModelTestClient(TestCase):
+    def test_Client(self):
+        """Funzione per il controllo del corretto salvataggio di un oggetto Client restituisce true
+        nel caso sia stato salvato correttamente"""
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
         user = Client(name='Carlo', surname='Puddu', email='cpuddu@gmail.com', birthday=datetime.date(1990, 10, 6),
-                    cf='PDDCRL90F06F979T', address=addressGlobal, creditCard=creditCardGlobal)
+                      cf='PDDCRL90F06F979T', address=address)
         user.save()
-        registeredUser = RegisteredClient(name='Mario', surname='Cittadini', email='marcit@gmail.com',
-                                        birthday=datetime.date(1987, 10, 11), cf='CTTMRA76T607T',
-                                        username='marcittttt2018', password='gitPullFailed', address=addressGlobal,
-                                        creditCard=creditCardGlobal)
-        registeredUser.save()
-        booking = Booking(customerId=user, roomId=room1, checkIn=datetime.date(2018, 11, 12),
+
+        address_count = Address.objects.filter(street='via Piave', houseNumber=60, city='Uras', zipCode='78999').count()
+        self.assertEqual(address_count, 1)
+
+        user_count = Person.objects.filter(name='Carlo', surname='Puddu', email='cpuddu@gmail.com', birthday=datetime.date(1990, 10, 6),
+                      cf='PDDCRL90F06F979T', address=address).count()
+        self.assertEqual(user_count, 1)
+
+
+class ModelTestRegisteredClient(TestCase):
+    def test_RegisteredClient(self):
+        """Funzione per il controllo del corretto salvataggio di un oggetto RegisteredClient restituisce true
+        nel caso sia stato salvato correttamente"""
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
+        user = RegisteredClient(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234')
+        user.save()
+
+
+        address_count = Address.objects.filter(street='via Piave', houseNumber=60, city='Uras', zipCode='78999').count()
+        self.assertEqual(address_count, 1)
+
+        user_count = RegisteredClient.objects.filter(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234').count()
+        self.assertEqual(user_count, 1)
+
+
+class ModelTestHotelKeeper(TestCase):
+    def test_HotelKeeper(self):
+        """Funzione per il controllo del corretto salvataggio di un oggetto HotelKeeper restituisce true
+        nel caso sia stato salvato correttamente"""
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
+        hotelKeeper = HotelKeeper(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234')
+        hotelKeeper.save()
+
+
+        address_count = Address.objects.filter(street='via Piave', houseNumber=60, city='Uras', zipCode='78999').count()
+        self.assertEqual(address_count, 1)
+
+        hotelKeeper_count = HotelKeeper.objects.filter(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234').count()
+        self.assertEqual(hotelKeeper_count, 1)
+
+
+class ModelTestHotel(TestCase):
+    """Funzione per il controllo del corretto salvataggio di un oggetto Hotel restituisce true
+    nel caso sia stato salvato correttamente"""
+    def test_Hotel(self):
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
+        hotelKeeper = HotelKeeper(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234')
+        hotelKeeper.save()
+
+        hotel = Hotel(name='T Hotel', description='Nel cuore di Cagliari...', hotelKeeperId=hotelKeeper,
+                      address=address)
+        hotel.save()
+
+
+        address_count = Address.objects.filter(street='via Piave', houseNumber=60, city='Uras', zipCode='78999').count()
+        self.assertEqual(address_count, 1)
+
+        hotelKeeper_count = HotelKeeper.objects.filter(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234').count()
+        self.assertEqual(hotelKeeper_count, 1)
+
+        hotel_count = Hotel.objects.filter(name='T Hotel', description='Nel cuore di Cagliari...', hotelKeeperId=hotelKeeper,
+                      address=address).count()
+        self.assertEqual(hotel_count, 1)
+
+
+class ModelTestRoom(TestCase):
+    def test_Room(self):
+        """Funzione per il controllo del corretto salvataggio di un oggetto Room restituisce true
+        nel caso sia stato salvato correttamente"""
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
+        hotelKeeper = HotelKeeper(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234')
+        hotelKeeper.save()
+
+        hotel = Hotel(name='T Hotel', description='Nel cuore di Cagliari...', hotelKeeperId=hotelKeeper,
+                      address=address)
+        hotel.save()
+
+        room = Room(capacity=3, price='120.00', hotelId=hotel)
+        room.save()
+
+        address_count = Address.objects.filter(street='via Piave', houseNumber=60, city='Uras', zipCode='78999').count()
+        self.assertEqual(address_count, 1)
+
+        hotelKeeper_count = HotelKeeper.objects.filter(name='Giorgia', surname='Congiu', email='giogio.com',
+                                                       birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U',
+                                                       address=address,
+                                                       username='giogioCong96', password='1234').count()
+        self.assertEqual(hotelKeeper_count, 1)
+
+        hotel_count = Hotel.objects.filter(name='T Hotel', description='Nel cuore di Cagliari...',
+                                           hotelKeeperId=hotelKeeper,
+                                           address=address).count()
+        self.assertEqual(hotel_count, 1)
+
+        room_count = Room.objects.filter(capacity=3, price='120.00', hotelId=hotel).count()
+        self.assertEqual(room_count, 1)
+
+
+class ModelTestRoomService(TestCase):
+    def test_RoomService(self):
+        """Funzione per il controllo del corretto salvataggio di un oggetto IncludeService restituisce true
+        nel caso sia stato salvato correttamente"""
+
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
+        hotelKeeper = HotelKeeper(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234')
+        hotelKeeper.save()
+
+        hotel = Hotel(name='T Hotel', description='Nel cuore di Cagliari...', hotelKeeperId=hotelKeeper,
+                      address=address)
+        hotel.save()
+
+        room = Room(capacity=3, price='120.00', hotelId=hotel)
+        room.save()
+
+        service = IncludedService(service=IncludedService.TELEPHONE, room=room)
+        service.save()
+
+        address_count = Address.objects.filter(street='via Piave', houseNumber=60, city='Uras', zipCode='78999').count()
+        self.assertEqual(address_count, 1)
+
+        hotelKeeper_count = HotelKeeper.objects.filter(name='Giorgia', surname='Congiu', email='giogio.com',
+                                                       birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U',
+                                                       address=address,
+                                                       username='giogioCong96', password='1234').count()
+        self.assertEqual(hotelKeeper_count, 1)
+
+        hotel_count = Hotel.objects.filter(name='T Hotel', description='Nel cuore di Cagliari...',
+                                           hotelKeeperId=hotelKeeper,
+                                           address=address).count()
+        self.assertEqual(hotel_count, 1)
+
+        room_count = Room.objects.filter(capacity=3, price='120.00', hotelId=hotel).count()
+        self.assertEqual(room_count, 1)
+
+        service_count = IncludedService.objects.filter().count()
+        self.assertEqual(service_count, 1)
+
+
+class ModelTestBooking(TestCase):
+    def test_Booking(self):
+
+        """Funzione per il controllo del corretto salvataggio di un oggetto Booking restituisce true
+        nel caso sia stato salvato correttamente"""
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
+        user = RegisteredClient(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234')
+        user.save()
+
+        hotelKeeper = HotelKeeper(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234')
+        hotelKeeper.save()
+
+        hotel = Hotel(name='T Hotel', description='Nel cuore di Cagliari...', hotelKeeperId=hotelKeeper,
+                      address=address)
+        hotel.save()
+
+        room = Room(capacity=3, price='120.00', hotelId=hotel)
+        room.save()
+
+        service = IncludedService(service=IncludedService.TELEPHONE, room=room)
+        service.save()
+
+        booking = Booking(customerId=user, roomId=room, checkIn=datetime.date(2018, 11, 12),
                           checkOut=datetime.date(2018, 11, 18))
         booking.save()
 
+
+        address_count = Address.objects.filter(street='via Piave', houseNumber=60, city='Uras', zipCode='78999').count()
+        self.assertEqual(address_count, 1)
+
+        user_count = RegisteredClient.objects.filter(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234').count()
+        self.assertEqual(user_count, 1)
+
+
+        hotelKeeper_count = HotelKeeper.objects.filter(name='Giorgia', surname='Congiu', email='giogio.com',
+                                                       birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U',
+                                                       address=address,
+                                                       username='giogioCong96', password='1234').count()
+        self.assertEqual(hotelKeeper_count, 1)
+
+        hotel_count = Hotel.objects.filter(name='T Hotel', description='Nel cuore di Cagliari...',
+                                           hotelKeeperId=hotelKeeper,
+                                           address=address).count()
+        self.assertEqual(hotel_count, 1)
+
+        room_count = Room.objects.filter(capacity=3, price='120.00', hotelId=hotel).count()
+        self.assertEqual(room_count, 1)
+
+        service_count = IncludedService.objects.filter().count()
+        self.assertEqual(service_count, 1)
+
+        booking_count = Booking.objects.filter(customerId=user, roomId=room, checkIn=datetime.date(2018, 11, 12),
+                          checkOut=datetime.date(2018, 11, 18)).count()
+        self.assertEqual(booking_count, 1)
+
+
+class ModelTestCreditCardClient(TestCase):
+    def test_CreditCardClient(self):
+        """Funzione per il controllo del corretto salvataggio di un oggetto CreditCard con un Client restituisce true
+        nel caso sia stato salvato correttamente"""
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
+        user = Client(name='Carlo', surname='Puddu', email='cpuddu@gmail.com', birthday=datetime.date(1990, 10, 6),
+                      cf='PDDCRL90F06F979T', address=address)
+        user.save()
+
+        creditCard = CreditCard(cardNumber=56478397474839375, expirationMonth=12, expirationYear=2020,
+                                      cvvCode=666, owner=user)
+        creditCard.save()
+
+        address_count = Address.objects.filter(street='via Piave', houseNumber=60, city='Uras', zipCode='78999').count()
+        self.assertEqual(address_count, 1)
+
+        user_count = Client.objects.filter(name='Carlo', surname='Puddu', email='cpuddu@gmail.com', birthday=datetime.date(1990, 10, 6),
+                      cf='PDDCRL90F06F979T', address=address).count()
+        self.assertEqual(user_count, 1)
+
+        card_count = CreditCard.objects.filter(cardNumber=56478397474839375, expirationMonth=12, expirationYear=2020,
+                                      cvvCode=666, owner=user).count()
+        self.assertEqual(card_count, 1)
+
+
+class ModelTestCreditCardRegisteredClient(TestCase):
+    def test_CreditCardRegisteredClient(self):
+        """Funzione per il controllo del corretto salvataggio di un oggetto CreditCard con un
+        RegisteredClient restituisce true nel caso sia stato salvato correttamente"""
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
+        user = RegisteredClient(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234')
+        user.save()
+
+        creditCard = CreditCard(cardNumber=56478397474839375, expirationMonth=12, expirationYear=2020,
+                                      cvvCode=666, owner=user)
+        creditCard.save()
+
+        address_count = Address.objects.filter(street='via Piave', houseNumber=60, city='Uras', zipCode='78999').count()
+        self.assertEqual(address_count, 1)
+
+        user_count = RegisteredClient.objects.filter(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234').count()
+        self.assertEqual(user_count, 1)
+
+        card_count = CreditCard.objects.filter(cardNumber=56478397474839375, expirationMonth=12, expirationYear=2020,
+                                      cvvCode=666, owner=user).count()
+        self.assertEqual(card_count, 1)
 
 
 # Test unitari sui form
@@ -1140,6 +1428,13 @@ class TestDatasave(TestCase):
                      'month': 12, 'year': 2019, 'cvv': 321,
                      'username': 'miao', 'password': 'isw',
                      'verifyPassword': 'isw'}
+
+        s = self.client.session
+        s.update({
+            "logIn_dt": '2010-12-05',
+            "logOut_dt": '2010-12-06',
+        })
+        s.save()
 
         # Invio form alla pagina
         self.client.post('/booking/?roomid=1', form_data)
