@@ -31,3 +31,8 @@ codice CVV), il sistema deve dare la possibilità di salvare i dati di pagamento
 prenotazioni future. Al termine del pagamento viene creata una Prenotazione (email,
 camera, data check-in, data check-out).
 
+
+
+### Note Ambiente ###
+### Il progetto è stato svilupato su Python 3.6 ###
+### con Django 2.6 ###

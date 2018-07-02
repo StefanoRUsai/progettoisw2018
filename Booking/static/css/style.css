@@ -1,3 +1,14 @@
+.myfooter{
+position: absolute !important;
+height: 44px;
+background-color:#bfbfbf;
+bottom: 0px;
+left: 0px;
+right: 0px;
+margin-bottom: -10px;
+border-color:gray;"
+}
+
 /* INIZIO CLASSI searchBar.html */
 .searchBar{
     width: 90%;

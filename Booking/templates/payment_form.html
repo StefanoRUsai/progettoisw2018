@@ -36,7 +36,7 @@
                     Card number: {{creditCardUser.cardNumber}}
                 </li>
             </ul>
-        <form class="c1" style="width:100%; margin-top:12%;" action="" method="POST">
+        <form class="c1" style="width:100%; margin-top:12%;" action="/homeRegistered/" method="POST">
             {% csrf_token %}
             <button type="submit" class="btn btn-primary" style="margin-left:4%">Reserve</button>
         </form>

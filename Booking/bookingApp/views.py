@@ -256,32 +256,34 @@ def addRoomToHotel(request):
                     if (rm.hotelId == hotelWhereAdd):
                         roomListWhereAdd.append(rm)
 
+
                 #se la lista è di lunghezza 0 si crea la stanza e si aggiunge al databse
                 if (len(roomListWhereAdd) == 0):
                     tmpRoom = Room(roomNumber=int(roomNumber), capacity=int(bedsNumber), price=priceR, hotelId=hotelWhereAdd)
+
                     tmpRoom.save()
+
                 else:
                     #se la lista ha una dimensione diversa da 0 si cicla su di essa e si controlla se esiste gia una stanza con quel numero
                     for r in roomListWhereAdd:
                         if (r.roomNumber == int(roomNumber)):
                             context = {"message": "Room number already exist in the structure " + str(hotelWhereAdd.name)}
                             return render_to_response("messages.html", context)
-
                     # aggiungere il servizio sennò l'oggetto non viene creato
                     tmpRoom = Room(roomNumber=int(roomNumber),capacity=int(bedsNumber),price=priceR,hotelId=hotelWhereAdd)
                     tmpRoom.save()
 
-                    #si inseriscono tutti i servizi alla stanza
-                    for s in services:
-                        s = IncludedService(service = str(s))
-                        s.save()
-                        tmpRoom.services.add(s)
+                #si inseriscono tutti i servizi alla stanza
+                for s in services:
+                    s = IncludedService(service = str(s))
+                    s.save()
+                    tmpRoom.services.add(s)
 
-                    #eliminazione permanentemente dalla sessione le variabili che non sono più utili
-                    del request.session['htName']
-                    del request.session['htCivN']
+                #eliminazione permanentemente dalla sessione le variabili che non sono più utili
+                del request.session['htName']
+                del request.session['htCivN']
 
-                    return redirect('/hotels/')
+                return redirect('/hotels/')
     else:
         form = AddRoomForm()
         context = {"form" : form}
@@ -719,7 +721,6 @@ def bookARoom(request):
                 #salvataggio prenotazione
                 booking.save()
 
-                return redirect('/homeRegistered')
             except:
                 booking = None
 
