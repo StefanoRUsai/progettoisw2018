@@ -1309,6 +1309,16 @@ class SearchResultTest(TestCase):
 class reserveRoom(TestCase):
     """ Classe contenente i TA della user story 9 """
     def setUp(self):
+
+        address = Address(street='via Piave', houseNumber=60, city='Uras', zipCode='78999')
+        address.save()
+
+        user = RegisteredClient(name='Giorgia', surname='Congiu', email='giogio.com',
+                                  birthday=datetime.date(1996, 10, 20), cf='CNGGRG96R60A355U', address=address,
+                                username='giogioCong96', password='1234')
+        user.save()
+
+
         hkAddress = Address(street='via francesco', houseNumber=12, city='savona', zipCode='00989')
         hkAddress.save()
 
@@ -1333,6 +1343,17 @@ class reserveRoom(TestCase):
 
         service.save()
 
+        registereduser = RegisteredClient(name='Marco', surname='Baldo', birthday=datetime.date(1984, 1, 15),
+                                        cf='bldmrc84a15b354a', email='marco.baldo@gmail.com', address=hkAddress,
+                                        username='baldo', password=pbkdf2_sha256.encrypt("isw", rounds=12000,salt_size=32))
+        registereduser.save()
+
+        creditCard = CreditCard(cardNumber=56478397474839375, expirationMonth=12, expirationYear=2020,
+                                      cvvCode=666, owner=user)
+        creditCard.save()
+
+        self.user = user
+        self.registeredClient = registereduser
         self.hotel = hotel
         self.hotelAddress = hotelAddress
         self.room = room1
@@ -1354,7 +1375,6 @@ class reserveRoom(TestCase):
         # Esecuzione della vista che gestisce le prenotazioni
         response = bookARoom(request)
 
-
         # Riempimento form
         form = PaymentForm(data={
             'name': 'Giorgio',
@@ -1369,7 +1389,7 @@ class reserveRoom(TestCase):
             'civicNumber': '777',
             'city': 'Marius',
             'zipCode': '02131',
-            # 'cardNumber': '123456789012345',
+            #'cardNumber': '123456789012345',
             'month': '10',
             'year': '2019',
             'cvv': '908'
@@ -1378,82 +1398,94 @@ class reserveRoom(TestCase):
         # Verifica form
         self.assertFalse(form.is_valid(), msg=form.errors)
 
-        # NEW
-        def test_bookingRoomSuccessfull(self):
-            bookingPage = '/booking/?roomid=' + str(self.room.id)
-            request = self.request_factory.get(bookingPage, follow=True)
-            self.middleware.process_request(request)
-            s = self.client.session
-            s.update({'usr': str(self.registeredClient.username),
-                      'logIn_dt': "2018-01-01",
-                      'logOut_dt': "2018-01-05"})
-            s.save()
+    # NEW
+    def test_bookingRoomSuccessfull(self):
+        bookingPage = '/booking/?roomid=' + str(self.room.id)
+        request = self.request_factory.get(bookingPage, follow=True)
+        self.middleware.process_request(request)
+        s = self.client.session
+        s.update({'usr': str(self.user.username),
+                  'logIn_dt': "2018-01-01",
+                  'logOut_dt': "2018-01-05"})
+        s.save()
 
-            # passo alla vista booking i valori tramite richiesta di tipo GET
-            self.client.post(bookingPage)
+        # passo alla vista booking i valori tramite richiesta di tipo GET
+        self.client.post(bookingPage)
 
-            response = bookARoom(request)
+        response = bookARoom(request)
 
-            # dichiaro una variablile booleana per controllare lo stato della prenotazione
-            reservationSuccess = False
+        # dichiaro una variablile booleana per controllare lo stato della prenotazione
+        reservationSuccess = False
 
-            # controllo se la view ha risposto correttamente
-            self.assertEqual(response.status_code, 200)
+        # controllo se la view ha risposto correttamente
+        self.assertEqual(response.status_code, 200)
 
-            for reservetion in Booking.objects.all():
-                if (
-                        reservetion.roomId.roomNumber == self.room.roomNumber and reservetion.customerId.email == self.registeredClient.email):
-                    reservationSuccess = True
+        for reservetion in Booking.objects.all():
+            if (
+                    reservetion.roomId.roomNumber == self.room.roomNumber and reservetion.customerId.email == self.user.email):
+                reservationSuccess = True
 
-            # controllo se la prenotazione è stata realmente effettuata
-            self.assertTrue(reservationSuccess, "Prenotazione non creata")
+        # controllo se la prenotazione è stata realmente effettuata
+        self.assertTrue(reservationSuccess, "Prenotazione non creata")
 
-        # NEW
-        def test_registrationFromBooking(self):
-            # Pagina di prenotazione di una camera
-            bookingPage = '/booking/?roomid=' + str(self.room.id)
 
-            # Creazione request
-            request = self.request_factory.get(bookingPage, follow=True)
-            self.middleware.process_request(request)
 
-            # creo i dati per compilare il form
-            form_data = {'name': 'Giorgio', 'surname': 'Imola', 'birthday': '2018-10-21', 'cf': '90913829011',
-                         'email': 'giogioImola@gmail.com', 'username': 'giorgio', 'password': 'isw',
-                         'verifyPassword': 'isw', 'street': 'via dalle scatole', 'civicNumber': '777',
-                         'city': 'Marius', 'zipCode': '02131', 'cardNumber': '123456789012345', 'month': '10',
-                         'year': '2019', 'cvv': '908'}
 
-            # Riempimento form con i dati creati sopra
-            form = PaymentForm(data=form_data)
+    # NEW
+    def test_registrationFromBooking(self):
+        # Pagina di prenotazione di una camera
+        bookingPage = '/booking/?roomid=' + str(self.room.id)
 
-            # Verifica form
-            self.assertTrue(form.is_valid(), msg=form.errors)
+        # Creazione request
+        request = self.request_factory.get(bookingPage, follow=True)
+        self.middleware.process_request(request)
 
-            # passo i dati alla vista
-            self.client.post(bookingPage, form_data)
-            response = bookARoom(request)
+        # creo i dati per compilare il form
+        form_data = {'name': 'Giorgio', 'surname': 'Imola', 'birthday': '2018-10-21', 'cf': '90913829011',
+                     'email': 'giogioImola@gmail.com', 'username': 'giorgio', 'password': 'isw',
+                     'verifyPassword': 'isw', 'street': 'via dalle scatole', 'civicNumber': '777',
+                     'city': 'Marius', 'zipCode': '02131', 'cardNumber': '123456789012345', 'month': '10',
+                     'year': '2019', 'cvv': '908'}
 
-            # controllo che la risposta della view sia corretta
-            self.assertEqual(response.status_code, 200)
+        # Riempimento form con i dati creati sopra
+        form = PaymentForm(data=form_data)
 
-            # creo due variabili per verificare il corretto salvataggio di carta di credito e dati utente
-            registrationCl = False
-            registationCreditCard = False
+        # Verifica form
+        self.assertTrue(form.is_valid(), msg=form.errors)
 
-            # controllo se i dati dell'utente sono stati effettivamente salvati
-            for cl in Client.objects.all():
-                if (cl.email == "giogioImola@gmail.com"):
-                    registrationCl = True
 
-            # controllo se i dati della carta di credito sono stati effettivamente salvati
-            for credtiCard in CreditCard.objects.all():
-                if (credtiCard.cardNumber == "123456789012345" and credtiCard.cvvCode == "908"):
-                    registationCreditCard = True
 
-            # verifico che entrambi gli oggetti siano stati salvati correttamente
-            self.assertTrue(registrationCl, "Dati della carta non salvati correttamente")
-            self.assertTrue(registationCreditCard, "Dati della carta non salvati correttamente")
+        s = self.client.session
+        s.update({
+            "logIn_dt": '2010-12-05',
+            "logOut_dt": '2010-12-06',
+        })
+        s.save()
+
+        # passo i dati alla vista
+        self.client.post(bookingPage, form_data)
+        response = bookARoom(request)
+
+        # controllo che la risposta della view sia corretta
+        self.assertEqual(response.status_code, 200)
+
+        # creo due variabili per verificare il corretto salvataggio di carta di credito e dati utente
+        registrationCl = False
+        registationCreditCard = False
+
+        # controllo se i dati dell'utente sono stati effettivamente salvati
+        for cl in Client.objects.all():
+            if (cl.email == "giogioImola@gmail.com"):
+                registrationCl = True
+
+        # controllo se i dati della carta di credito sono stati effettivamente salvati
+        for credtiCard in CreditCard.objects.all():
+            if (credtiCard.cardNumber == "123456789012345" and credtiCard.cvvCode == "908"):
+                registationCreditCard = True
+
+        # verifico che entrambi gli oggetti siano stati salvati correttamente
+        self.assertTrue(registrationCl, "Dati della carta non salvati correttamente")
+        self.assertTrue(registationCreditCard, "Dati della carta non salvati correttamente")
 
 
 
@@ -1495,7 +1527,7 @@ class TestDatasave(TestCase):
         self.request_factory = RequestFactory()
         self.middleware = SessionMiddleware()
 
-    def testSearchResult(self):
+    def testResult(self):
         # Riempimento form
         form_data = {'name': 'Marco', 'surname': 'cognome',
                      'birthday': datetime.date(1996, 10, 20),
@@ -1518,3 +1550,8 @@ class TestDatasave(TestCase):
 
         app_count = RegisteredClient.objects.filter(username='miao').count()
         self.assertEqual(app_count, 1)
+
+        booking_count = Booking.objects.filter().count()
+        self.assertEqual(booking_count, 2)
+
+
