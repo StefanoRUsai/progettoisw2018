@@ -60,15 +60,17 @@ class LoginForm(forms.Form):
         si controlla se la password passata corrisponde a quella presente sul DB"""
 
         passCrypted = False
-
-        #se l'username esiste nella Tabella registered client, si estraggono i dati del cliente
-        if (RegisteredClient.objects.filter(username=self.cleaned_data["username"]).exists()):
-            user = RegisteredClient.objects.get(username=self.cleaned_data["username"])
-        # se l'username esiste nella Tabella registered client, si estraggono i dati dell'albergatore
-        elif (HotelKeeper.objects.filter(username=self.cleaned_data["username"]).exists()):
-            user = HotelKeeper.objects.get(username=self.cleaned_data["username"])
-        # se l'username non è sul DB viene sollevate un'eccezione
-        else:
+        try:
+            #se l'username esiste nella Tabella registered client, si estraggono i dati del cliente
+            if (RegisteredClient.objects.filter(username=self.cleaned_data["username"]).exists()):
+                user = RegisteredClient.objects.get(username=self.cleaned_data["username"])
+            # se l'username esiste nella Tabella registered client, si estraggono i dati dell'albergatore
+            elif (HotelKeeper.objects.filter(username=self.cleaned_data["username"]).exists()):
+                user = HotelKeeper.objects.get(username=self.cleaned_data["username"])
+            # se l'username non è sul DB viene sollevate un'eccezione
+            else:
+                raise forms.ValidationError('User not exist')
+        except:
             raise forms.ValidationError('User not exist')
 
         #verifica che la password sia criptata o no
