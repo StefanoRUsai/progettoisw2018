@@ -2,6 +2,8 @@
 
 # Progetto ISW 2018 Gruppo12 #
 ## Progetto Sistema di webApp Booking progettato con framework Django ##
+## (Repository clonato da bitbucket i commit non tornano) ##
+
 ### Giorgia Campanile, Edoardo Cittadini, Marta Pibiri, Mario Taccori, Stefano R. Usai ###
 
 Sviluppo di un’applicazione Web per la gestione di delle prenotazioni di hotel online
